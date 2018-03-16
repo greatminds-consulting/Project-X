@@ -1,0 +1,4 @@
+[08-Mar-2018 17:21:01 Australia/Sydney] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: tblsessions) in /home/navarravenues/public_html/system/libraries/Session/Session.php on line 143
+[08-Mar-2018 17:21:02 Australia/Sydney] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: tblsessions) in /home/navarravenues/public_html/system/libraries/Session/Session.php on line 143
+[08-Mar-2018 17:23:01 Australia/Sydney] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: tblsessions) in /home/navarravenues/public_html/system/libraries/Session/Session.php on line 143
+[08-Mar-2018 17:23:02 Australia/Sydney] PHP Fatal error:  session_start(): Failed to initialize storage module: user (path: tblsessions) in /home/navarravenues/public_html/system/libraries/Session/Session.php on line 143
