@@ -70,4 +70,17 @@ class Templates_model extends CRM_Model {
     public function get_rel_type() {
         return $this->rel_type;
     }
+
+    /**
+     * Create new  template
+     */
+    public function add_template($data) {
+        $this->db->insert('tbltemplates', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            return $insert_id;
+        }
+        return false;
+    }
+
 }

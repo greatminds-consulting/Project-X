@@ -30,4 +30,19 @@ class Templates extends Admin_controller {
         return $this->db->get('tbltemplates')->row();
     }
 
+    /* Add New template */
+    public function new_template() {
+        $data['title']     = _l('add_new_template');
+        $this->load->view('admin/templates/new_template', $data);
+    }
+
+    public function add_template() {
+        $data['name']           = $this->input->post('name');
+        $data['message']        = $this->input->post('message[0]');
+        $data['type']           = $this->input->post('type');
+        $data['active']         = 1;
+        $this->templates_model->add_template($data);
+        redirect(admin_url('templates'));
+    }
+
 }
