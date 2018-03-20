@@ -107,4 +107,28 @@ class Templates_model extends CRM_Model {
         return false;
     }
 
+    /**
+     * Change template to active/inactive
+     * @param  string $templateId    template id
+     * @param  mixed $enabled enabled or disabled / 1 or 0
+     * @return boolean
+     */
+    public function mark_as($templateId, $enabled) {
+        $this->db->where('templateid', $templateId);
+        $this->db->update('tbltemplates', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    /**
+     * Change template to active/inactive
+     * @param  string $type    template type
+     * @param  mixed $enabled enabled or disabled / 1 or 0
+     * @return boolean
+     */
+    public function mark_as_by_type($type,$enabled) {
+        $this->db->where('type', $type);
+        $this->db->update('tbltemplates', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
 }

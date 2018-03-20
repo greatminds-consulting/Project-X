@@ -74,5 +74,35 @@ class Templates extends Admin_controller {
         $this->load->view('admin/templates/template', $data);
     }
 
+    public function disable($id) {
+        if (has_permission('templates','','edit')) {
+            $template = $this->templates_model->get_template_by_id($id);
+            $this->templates_model->mark_as($template->templateid,0);
+        }
+        redirect(admin_url('templates'));
+    }
+
+    public function enable($id) {
+        if (has_permission('templates','','edit')) {
+            $template = $this->templates_model->get_template_by_id($id);
+            $this->templates_model->mark_as($template->templateid,1);
+        }
+        redirect(admin_url('templates'));
+    }
+
+    public function enable_by_type($type){
+        if (has_permission('templates','','edit')) {
+            $this->templates_model->mark_as_by_type($type,1);
+        }
+        redirect(admin_url('templates'));
+    }
+
+    public function disable_by_type($type){
+        if (has_permission('templates','','edit')) {
+            $this->templates_model->mark_as_by_type($type,0);
+        }
+        redirect(admin_url('templates'));
+    }
+
 
 }
