@@ -29,12 +29,12 @@ foreach ($rResult as $aRow) {
 
         }
         if ($aColumns[$i] == 'name' || $aColumns[$i] == 'id') {
-            $_data = '<a href="' . admin_url('venues/edit/' . $aRow['id']) . '">' . $_data . '</a>';
+            $_data = '<a href="' . admin_url('venues/venue/' . $aRow['id']) . '">' . $_data . '</a>';
         }
     $row[] = $_data;
     }
 
-    $options = icon_btn('venues/edit/' . $aRow['id'], 'pencil-square-o');
+    $options = icon_btn('venues/venue/' . $aRow['id'], 'pencil-square-o');
     $row[]   = $options .= icon_btn('venues/delete/' . $aRow['id'], 'remove', 'btn-danger _delete');
 
     $output['aaData'][] = $row;
