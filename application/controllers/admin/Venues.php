@@ -144,14 +144,6 @@ class Venues extends Admin_controller
         }
         redirect(admin_url('venues'));
     }
-    public function edit($id)
-    {
-        $data['venuedetails']   = $this->venues_model->getdetails($id);
-        $data['gallery']        = $this->venues_model->gallery($id);
-        $data['title']          = _l('venues');
-        $this->load->view('admin/venues/edit' , $data);
-
-    }
 
     public function imagedelete()
     {
