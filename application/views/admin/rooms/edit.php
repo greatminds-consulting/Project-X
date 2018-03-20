@@ -11,7 +11,8 @@
                         <div class="col-md-6">
                             <div class="form-group" app-field-wrapper="venueName">
                                 <label for="company" class="control-label"> <small class="req text-danger">* </small>Venue Name</label>
-                                <select class="form-control" name="venueName" readonly>
+                                <input type="hidden" name="venueName" value="<?php echo $roomdetails->venue_id;?>">
+                                <select class="form-control" name="venueNames" disabled>
                                     <option value="">Select venue</option>
                                     <?php
                                     foreach($venues as $venueDetails) {?>

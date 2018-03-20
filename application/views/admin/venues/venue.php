@@ -215,9 +215,8 @@
     }
     $('.timepicker').datetimepicker({
         datepicker: false,
-        format:'h:i A',
-        formatTime:	'h:i A',
-        step: 30
+        format:	'H:i (h:i a)',
+        formatTime:	'H:i a'
     });
 _validate_form($('#add_venues'),{name:'required',date:'required',email: {required: true,email: true}});
 
