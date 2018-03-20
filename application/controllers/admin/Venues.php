@@ -13,7 +13,7 @@ class Venues extends Admin_controller
         if ($this->input->is_ajax_request()) {
             $this->app->get_table_data('venue_fields');
         }
-        $data['title']      = _l('venues');
+        $data['title']      = _l('Venues');
         $this->load->view('admin/venues/manage', $data);
     }
 
