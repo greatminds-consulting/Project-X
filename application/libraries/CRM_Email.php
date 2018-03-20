@@ -115,6 +115,7 @@ class CRM_Email extends CI_Email
             $bcc = !empty($email->bcc) ? explode(", ", $email->bcc) : array();
 
             $this->_headers = unserialize($email->headers);
+            $this->_subject = isset($this->_headers['Subject']) ? $this->_headers['Subject'] : '';
 
             if (array_key_exists('Reply-To', $this->_headers) && !empty($this->_headers['Reply-To'])) {
                 $this->_replyto_flag = true;

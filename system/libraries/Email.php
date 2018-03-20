@@ -1881,8 +1881,11 @@ class CI_Email {
         } else {
             $to = $this->_recipients;
         }
-
-        $from = new SendGrid\Email(isset($this->_headers['FromName']) ? $this->_headers['FromName'] : '', $this->clean_email($this->_headers['From']));
+        $fromEmail = $this->clean_email($this->_headers['From']);
+        if (!$fromEmail) {
+            $fromEmail = get_option('smtp_email');
+        }
+        $from = new SendGrid\Email(isset($this->_headers['FromName']) ? $this->_headers['FromName'] : '', $fromEmail);
         $to = new SendGrid\Email("", $to);
         $content = new SendGrid\Content("text/html",  $this->_body);
         $mail = new SendGrid\Mail($from, $this->_subject, $to, $content);
