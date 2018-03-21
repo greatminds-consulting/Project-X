@@ -15,7 +15,8 @@
                <?php echo render_input('name','template_name',$template->name,'text',array('disabled'=>true)); ?>
                <?php echo render_input('subject['.$template->emailtemplateid.']','template_subject',$template->subject); ?>
                <?php echo render_input('fromname','template_fromname',$template->fromname); ?>
-               <?php if($template->slug != 'two-factor-authentication'){ ?>
+               <?php echo render_input('template_type','',$template->type,'hidden',array('disabled'=>true)); ?>
+                  <?php if($template->slug != 'two-factor-authentication'){ ?>
                <i class="fa fa-question-circle" data-toggle="tooltip" data-title="<?php echo _l('email_template_only_domain_email'); ?>"></i>
                <?php echo render_input('fromemail','template_fromemail',$template->fromemail,'email'); ?>
                <?php } ?>
