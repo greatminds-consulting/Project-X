@@ -43,7 +43,7 @@ class Venues extends Admin_controller
         $data['wheelchairaccess']   = $this->input->post('wheelchair');
         $data['carramp']            = $this->input->post('carramp');
         $config['upload_path']      = './uploads/venues/';
-        $config['allowed_types']    = 'gif|jpg|png';
+        $config['allowed_types']    = 'gif|jpg|png|jpeg';
         $this->load->library('upload', $config);
         if ( ! $this->upload->do_upload('image'))
         {
