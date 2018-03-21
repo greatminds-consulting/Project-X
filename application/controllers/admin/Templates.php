@@ -119,7 +119,4 @@ class Templates extends Admin_controller {
         $data['proposalArray'] = $proposalArray;
         $this->load->view('admin/templates/list_templates',$data);
     }
-
-
-
 }

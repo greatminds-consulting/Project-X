@@ -22,7 +22,6 @@
                                       <a href="<?php echo admin_url('templates/disable_by_type/proposals'); ?>" class="pull-right mleft5 mright25"><small><?php echo _l('disable_all'); ?></small></a>
                                       <a href="<?php echo admin_url('templates/enable_by_type/proposals'); ?>" class="pull-right"><small><?php echo _l('enable_all'); ?></small></a>
                                      <?php } ?>
-
                                     </h4>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">

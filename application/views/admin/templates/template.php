@@ -65,7 +65,7 @@
    });
     _validate_form($('form'), {
       name: 'required',
-      fromname: 'required',
+      fromname: 'required'
     });
   });
 </script>
