@@ -61,7 +61,7 @@ class Migration_Version_203 extends CI_Migration
                             2 =>
                                 array (
                                     'name' => 'Area',
-                                    'url' => 'area',
+                                    'url' => 'venues/area',
                                     'permission' => '',
                                     'icon' => '',
                                     'id' => 'rooms',
@@ -69,7 +69,7 @@ class Migration_Version_203 extends CI_Migration
                             3 =>
                                 array (
                                     'name' => 'Settings',
-                                    'url' => 'venuesettings',
+                                    'url' => 'venues/settings',
                                     'permission' => '',
                                     'icon' => '',
                                     'id' => 'rooms',
