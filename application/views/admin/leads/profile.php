@@ -233,21 +233,17 @@
                echo render_leads_source_select($sources, $selected,'lead_add_edit_source');
             ?>
          </div>
-
-
-          <div class="col-md-4 mtop15">
+            <div class="col-md-4 mtop15">
               <?php
               $selected = array();
               if(isset($assigners)){
-
-                  foreach($assigners as $member){
+                    foreach($assigners as $member){
                       array_push($selected,$member['staffid']);
                   }
               } else {
                   array_push($selected,get_staff_user_id());
               }
-
-              echo render_select('assigned[]',$project_members,array('staffid',array('firstname','lastname')),'Assigned',$selected,array('multiple'=>true,'data-actions-box'=>true),array(),'','',false);
+                echo render_select('assigned[]',$project_members,array('staffid',array('firstname','lastname')),'Assigned',$selected,array('multiple'=>true,'data-actions-box'=>true),array(),'','',false);
 
               ?>
           </div>

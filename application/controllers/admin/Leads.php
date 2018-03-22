@@ -35,9 +35,6 @@ class Leads extends Admin_controller
         $data['title']    = _l('leads');
         $data['assigners']     = $this->leads_model->get_assigners($id);
         $data['project_members'] = $this->leads_model->get_assigners();
-        //print_r($data['assigners']);
-       // exit;
-        // in case accesed the url leads/index/ directly with id - used in search
         $data['leadid']   = $id;
         $this->load->view('admin/leads/manage_leads', $data);
     }
@@ -78,10 +75,10 @@ class Leads extends Admin_controller
                     'leadView'=>$id ? $this->_get_lead_data($id) : array(),
                 ));
             } else {
-                $emailOriginal = $this->db->select('email')->where('id', $id)->get('tblleads')->row()->email;
-                $proposalWarning = false;
-                $message          = '';
-                $success          = $this->leads_model->update($this->input->post(), $id);
+                $emailOriginal      = $this->db->select('email')->where('id', $id)->get('tblleads')->row()->email;
+                $proposalWarning    = false;
+                $message            = '';
+                $success            = $this->leads_model->update($this->input->post(), $id);
 
                 if ($success) {
                     $emailNow = $this->db->select('email')->where('id', $id)->get('tblleads')->row()->email;
@@ -142,11 +139,9 @@ class Leads extends Admin_controller
             $data['assigners']     = $this->leads_model->get_assignedstaff($id);
 
         }
-
-
-        $data['statuses'] = $this->leads_model->get_status();
-        $data['sources']  = $this->leads_model->get_source();
-        $data['project_members'] = $this->leads_model->get_assigners();
+        $data['statuses']           = $this->leads_model->get_status();
+        $data['sources']            = $this->leads_model->get_source();
+        $data['project_members']    = $this->leads_model->get_assigners();
         $data = do_action('lead_view_data', $data);
         return array(
             'data' => $this->load->view('admin/leads/lead', $data, true),
@@ -1152,9 +1147,10 @@ class Leads extends Admin_controller
                                 //   $insert['lastcontact'] = null;
                                 $insert['status']      = $this->input->post('status');
                                 $insert['source']      = $this->input->post('source');
-                                if ($this->input->post('responsible')) {
-                                    $insert['assigned'] = $this->input->post('responsible');
-                                }
+                                if ($this->input->post('assigned')) {
+
+                                    $insert['assigned'] = $this->input->post('assigned');
+                                 }
                                 if (!$simulate) {
                                     foreach ($insert as $key=>$val) {
                                         $insert[$key] = trim($val);
@@ -1163,8 +1159,28 @@ class Leads extends Admin_controller
                                         $tags = $insert['tags'];
                                         unset($insert['tags']);
                                     }
+                                    $assigned_field_values=$this->input->post('assigned');
+                                    if (isset($assigned_field_values)) {
+                                       unset($insert['assigned']);
+                                    }
                                     $this->db->insert('tblleads', $insert);
-                                    $leadid = $this->db->insert_id();
+                                     $leadid = $this->db->insert_id();
+                                    if ($this->input->post('assigned')) {
+
+                                        $datastaff['lead_id']=$leadid;
+                                        $datastaff['datecreated']=date("Y/m/d H:i:s");
+                                        foreach($this->input->post('assigned') as $staffs)
+                                        {
+                                            $datastaff['staff_id']=$staffs;
+                                            $this->db->insert('tblleadstaffs', $datastaff);
+                                        }
+                                    }
+                                    else{
+                                        $datastaff['lead_id']=$leadid;
+                                        $datastaff['datecreated']=date("Y/m/d H:i:s");
+                                        $datastaff['staff_id']= 0 ;
+                                        $this->db->insert('tblleadstaffs', $datastaff);
+                                    }
                                 } else {
                                     if ($insert['country'] != 0) {
                                         $c = get_country($insert['country']);
@@ -1211,10 +1227,12 @@ class Leads extends Admin_controller
                 }
             }
         }
-        $data['statuses'] = $this->leads_model->get_status();
-        $data['sources']  = $this->leads_model->get_source();
-
-        $data['members'] = $this->staff_model->get('', 1);
+        $id='';
+        $data['statuses']       = $this->leads_model->get_status();
+        $data['sources']        = $this->leads_model->get_source();
+        $data['members']        = $this->staff_model->get('', 1);
+        $data['assigners']      = $this->leads_model->get_assigners($id);
+        $data['project_members']= $this->leads_model->get_assigners();
 
         if (count($simulate_data) > 0) {
             $data['simulate'] = $simulate_data;

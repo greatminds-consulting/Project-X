@@ -49,7 +49,7 @@ if ($this->ci->input->post('custom_view')) {
     } elseif ($filter == 'junk') {
         array_push($where, 'AND junk = 1');
     } elseif ($filter == 'not_assigned') {
-        array_push($where, 'AND staff_id = 1');
+        array_push($where, 'AND staff_id = 0');
     } elseif ($filter == 'contacted_today') {
         array_push($where, 'AND lastcontact LIKE "'.date('Y-m-d').'%"');
     } elseif ($filter == 'created_today') {
@@ -64,7 +64,7 @@ if (!$filter || ($filter && $filter != 'lost' && $filter != 'junk')) {
 }
 
 if (has_permission('leads','','view') && $this->ci->input->post('assigned')) {
-    array_push($where, 'AND assigned =' . $this->ci->input->post('assigned'));
+    array_push($where, 'AND staff_id =' . $this->ci->input->post('assigned'));
 }
 
 if ($this->ci->input->post('status')

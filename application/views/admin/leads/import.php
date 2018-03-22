@@ -150,9 +150,21 @@ if($this->input->post('download_sample') === 'true'){
                     <?php
                       echo render_leads_status_select($statuses, ($this->input->post('status') ? $this->input->post('status') : get_option('leads_default_status')),'lead_import_status');
                       echo render_leads_source_select($sources, ($this->input->post('source') ? $this->input->post('source') : get_option('leads_default_source')),'lead_import_source');
-                    ?>
-                    <?php echo render_select('responsible',$members,array('staffid',array('firstname','lastname')),'leads_import_assignee',$this->input->post('responsible')); ?>
-                    <div class="form-group">
+
+                      $selected = array();
+                      if(isset($assigners)){
+
+                          foreach($assigners as $member){
+                              array_push($selected,$member['staffid']);
+                          }
+                      } else {
+                          array_push($selected,get_staff_user_id());
+                      }
+
+                      echo render_select('assigned[]',$project_members,array('staffid',array('firstname','lastname')),'Assigned',$selected,array('multiple'=>true,'data-actions-box'=>true),array(),'','',false);
+
+                      ?>
+                      <div class="form-group">
                       <button type="button" class="btn btn-info import btn-import-submit"><?php echo _l('import'); ?></button>
                       <button type="button" class="btn btn-info simulate btn-import-submit"><?php echo _l('simulate_import'); ?></button>
                     </div>
