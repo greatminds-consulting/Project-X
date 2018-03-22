@@ -8587,4 +8587,13 @@ td[align="center"] {
 .logo-text:active {
     color:#fff;
 }
+.profile-initials {
+    background-color: #f6f8fa;
+    border-radius: 50%;
+    color: rgb(65, 81, 100);
+    font-weight: bold;
+    padding: 8px;
+    text-align: center;
+    vertical-align: middle;
+}
 
