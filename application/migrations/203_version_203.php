@@ -21,7 +21,7 @@ class Migration_Version_203 extends CI_Migration
         $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueareaamenities`( `id` INT NOT NULL AUTO_INCREMENT, `area_id` INT, `amenity_id` INT, PRIMARY KEY (`id`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         // Venues Amenities - new feature
-        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueamenities`( `id` INT NOT NULL AUTO_INCREMENT, `name` INT, PRIMARY KEY (`id`)
+        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueamenities`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), PRIMARY KEY (`id`)
           ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         // Venues Layouts - new feature
