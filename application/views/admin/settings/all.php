@@ -94,12 +94,7 @@
           'name'=>'misc',
           'lang'=>_l('settings_group_misc'),
           'order'=>16,
-          ),
-        array(
-          'name'=>'update',
-          'lang'=>_l('settings_update'),
-          'order'=>17,
-          ),
+          )
         );
 
       $settings_groups = do_action('settings_groups',$settings_groups);
