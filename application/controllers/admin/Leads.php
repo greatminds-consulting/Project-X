@@ -33,6 +33,10 @@ class Leads extends Admin_controller
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
         $data['title']    = _l('leads');
+        $data['assigners']     = $this->leads_model->get_assigners($id);
+        $data['project_members'] = $this->leads_model->get_assigners();
+        //print_r($data['assigners']);
+       // exit;
         // in case accesed the url leads/index/ directly with id - used in search
         $data['leadid']   = $id;
         $this->load->view('admin/leads/manage_leads', $data);
@@ -135,14 +139,15 @@ class Leads extends Admin_controller
             $data['mail_activity'] = $this->leads_model->get_mail_activity($id);
             $data['notes']         = $this->misc_model->get_notes($id, 'lead');
             $data['activity_log']  = $this->leads_model->get_lead_activity_log($id);
+            $data['assigners']     = $this->leads_model->get_assignedstaff($id);
+
         }
 
 
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
-
+        $data['project_members'] = $this->leads_model->get_assigners();
         $data = do_action('lead_view_data', $data);
-
         return array(
             'data' => $this->load->view('admin/leads/lead', $data, true),
             'reminder_data' => $reminder_data,

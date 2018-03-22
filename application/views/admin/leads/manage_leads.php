@@ -120,9 +120,9 @@
                                  <p class="bold"><?php echo _l('filter_by'); ?></p>
                               </div>
                               <?php if(has_permission('leads','','view')){ ?>
-                              <div class="col-md-3 leads-filter-column">
-                                 <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
-                              </div>
+                                  <div class="col-md-3 leads-filter-column">
+                                      <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
+                                  </div>
                               <?php } ?>
                               <div class="col-md-3 leads-filter-column">
                                  <?php

@@ -30,7 +30,7 @@
                         </div>
                         <div class="form-group" app-field-wrapper="email">
                             <label for="email" class="control-label"> <small class="req text-danger">* </small>Email</label>
-                            <input type="text" id="email" name="email" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->email) !== ''){ echo $venuedetails->email; } ?>">
+                            <input type="text" id="email" name="email" class="form-control " autofocus="1" value="<?php if(isset($venuedetails->email) !== ''){ echo $venuedetails->email; } ?>">
                         </div>
                         <div class="form-group" app-field-wrapper="amenities">
                             <label for="amenities" class="control-label">Amenities</label>
