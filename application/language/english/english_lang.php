@@ -132,6 +132,7 @@ $lang['department_list_name']        = 'Name';
 
 # Email Templates
 $lang['email_templates']                        = 'Email Templates';
+$lang['templates']                              = 'Templates';
 $lang['email_template']                         = 'Email Template';
 $lang['email_template_lowercase']               = 'email template';
 $lang['email_templates_lowercase']              = 'email templates';
@@ -140,12 +141,14 @@ $lang['email_template_invoices_fields_heading'] = 'Invoices';
 $lang['email_template_clients_fields_heading']  = 'Customers';
 
 $lang['template_name']                                      = 'Template Name';
+$lang['template_type']                                      = 'Template Type';
 $lang['template_subject']                                   = 'Subject';
 $lang['template_fromname']                                  = 'From Name';
 $lang['template_fromemail']                                 = 'From Email';
 $lang['send_as_plain_text']                                 = 'Send as Plaintext';
-$lang['email_template_disabled']                             = 'Disabled';
+$lang['email_template_disabled']                            = 'Disabled';
 $lang['email_template_email_message']                       = 'Email message';
+$lang['email_template_message']                             = 'Template message';
 $lang['available_merge_fields']                             = 'Available merge fields';
 # Home
 $lang['dashboard_string']                                   = 'Dashboard';
@@ -407,8 +410,8 @@ $lang['settings_cron_send_overdue_reminder']                 = 'Send invoice ove
 $lang['settings_cron_send_overdue_reminder_tooltip']         = 'Send overdue email to client when invoice status updated to overdue from Cron Job';
 $lang['automatically_send_invoice_overdue_reminder_after']   = 'Auto send reminder after (days)';
 $lang['automatically_resend_invoice_overdue_reminder_after'] = 'Auto re-send reminder after (days)';
-$lang['settings_email_sendgrid_key']      = 'SENDGRID API KEY';
 $lang['settings_email_host']      = 'SMTP Host';
+$lang['settings_email_sendgrid_key']      = 'SENDGRID API KEY';
 $lang['settings_email_port']      = 'SMTP Port';
 $lang['settings_email']           = 'SMTP Email';
 $lang['settings_email_password']  = 'SMTP Password';
@@ -568,6 +571,7 @@ $lang['acs_sales_taxes_submenu']               = 'Tax Rates';
 $lang['acs_sales_currencies_submenu']          = 'Currencies';
 $lang['acs_sales_payment_modes_submenu']       = 'Payment Modes';
 $lang['acs_email_templates']                   = 'Email Templates';
+$lang['acs_templates']                         = 'Templates';
 $lang['acs_roles']                             = 'Roles';
 $lang['acs_settings']                          = 'Settings';
 
@@ -1379,6 +1383,10 @@ $lang['acs_expense_categories']                                      = 'Expenses
 $lang['expense_category']                                            = 'Expense Category';
 $lang['expense_category_lowercase']                                  = 'expense category';
 $lang['new_expense']                                                 = 'Record Expense';
+$lang['new_venue']                                                   = 'New Venue';
+
+$lang['new_template']                                                = 'New Template';
+$lang['add_new_template']                                            = 'Add New Template';
 $lang['expense_add_edit_name']                                       = 'Category Name';
 $lang['expense_add_edit_description']                                = 'Category Description';
 $lang['expense_categories']                                          = 'Expense Categories';
@@ -1386,6 +1394,8 @@ $lang['new_expense_category']                                        = 'New Cate
 $lang['dt_expense_description']                                      = 'Description';
 $lang['expense']                                                     = 'Expense';
 $lang['expenses']                                                    = 'Expenses';
+$lang['venues']                                                      = 'Venues';
+$lang['add_new_venue']                                               = 'Add New Venues';
 $lang['expense_lowercase']                                           = 'expense';
 $lang['expense_add_edit_customer']                                   = 'Customer';
 $lang['expense_add_edit_note']                                       = 'Note';

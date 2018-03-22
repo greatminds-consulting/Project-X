@@ -3619,7 +3619,7 @@ function init_editor(selector, settings) {
             'advlist autoresize autosave lists link image print hr codesample',
             'visualblocks code fullscreen',
             'media save table contextmenu',
-            'paste textcolor colorpicker'
+            'paste textcolor colorpicker',
         ],
         toolbar1: 'fontselect fontsizeselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | image link | bullist numlist | restoredraft',
         file_browser_callback: elFinderBrowser,
