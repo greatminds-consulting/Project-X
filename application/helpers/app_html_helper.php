@@ -560,7 +560,7 @@ function staff_profile_image($id, $classes = array('staff-profile-image'), $type
             return $blankImageFormatted;
         }
     } else {
-        $profile_image = '<img src="' . $url . '" ' . $_attributes . ' class="' . implode(' ', $classes) . '" alt="' . $result->firstname . ' ' . $result->lastname . '" />';
+        $profile_image = '<span class="profile-initials" style="">'.strtoupper(substr($result->firstname, 0, 1).substr($result->lastname, 0, 1)).'</span>';
     }
 
     return $profile_image;
