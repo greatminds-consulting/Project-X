@@ -117,16 +117,30 @@ class Venues_model extends CRM_Model
      * @param mixed $data All $_POST data
      * @return boolean
      */
-    public function add_amenities($data)
-    {
+    public function add_amenities($data) {
         $data['active'] = 1;
+        if (isset($data['amenity_id'])) {
+            unset($data['amenity_id']);
+        }
         $this->db->insert('tblvenueamenities', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
-            logActivity('New Expense Category Added [ID: ' . $insert_id . ']');
+            logActivity('New Amenity Added [ID: ' . $insert_id . ']');
             return $insert_id;
         }
         return false;
     }
 
+    public function update_amenities($data)
+    {
+        $data['id'] = $data['amenity_id'];
+        unset($data['amenity_id']);
+        $this->db->where('id', $data['id']);
+        $this->db->update('tblvenueamenities', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Amenity Updated [ID: ' . $data['amenity_id'] . ']');
+            return true;
+        }
+        return false;
+    }
 }

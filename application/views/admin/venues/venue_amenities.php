@@ -5,7 +5,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">
-                    <span class="add-title"><?php echo _l('add_amenities'); ?></span>
+                    <span class="add-title"></span>
                 </h4>
             </div>
             <div class="modal-body">
@@ -13,6 +13,7 @@
                     <div class="col-md-12">
                         <div id="additional"></div>
                         <?php echo render_input('name','amenity_name'); ?>
+                        <?php echo render_input('amenity_id','','','hidden'); ?>
                     </div>
                 </div>
             </div>
@@ -39,25 +40,31 @@
             if(response.success == true){
                 $('#venue-amenities-modal').modal('hide');
                 alert_float('success',response.message);
-                if($('table').hasClass('amenities')) {
-                 $('.table.amenities tbody').append('<tr><td><a href="">'+response.name+'</a><a href="" class="pull-right"><small>Disable</small></a></td></tr>');
+                if (response.type == 'add') {
+                    if($('table').hasClass('amenities')) {
+                        $('.table.amenities tbody').append('<tr><td><a href="">'+response.name+'</a><a href="" class="pull-right"><small>Disable</small></a></td></tr>');
+                    }
+                } else {
+                    if($('table').hasClass('amenities')) {
+                        $('.table.amenities tbody tr.amenity_'+response.id).html('<td><a href="">'+response.name+'</a><a href="" class="pull-right"><small>Disable</small></a></td>');
+                    }
                 }
+
             }
         });
         return false;
     }
 
     function new_amenities(){
+        $('.add-title').html('Add Amenity');
         $('#venue-amenities-modal').modal('show');
     }
 
-    function edit_category(invoker,id){
-        var name = $(invoker).data('name');
-        var description = $(invoker).data('description');
-        $('#additional').append(hidden_input('id',id));
-        $('#expense-category-modal input[name="name"]').val(name);
-        $('#expense-category-modal textarea').val(description);
-        $('#expense-category-modal').modal('show');
-        $('.add-title').addClass('hide');
+    function edit_amenities($id,$name) {
+          $('#venue-amenities-modal').modal('show');
+          $('#venue-amenities-modal input[name="name"]').val($name);
+          $('#venue-amenities-modal input[name="amenity_id"]').val($id);
+          $('.add-title').html('Edit Amenity');
     }
 </script>
+

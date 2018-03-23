@@ -167,13 +167,20 @@ class Venues extends Admin_controller
             access_denied('expenses');
         }
         if ($this->input->post()) {
+            if (!$this->input->post('amenity_id')) {
                 $id = $this->venues_model->add_amenities($this->input->post());
                 echo json_encode(array(
                     'success'=>$id ? true : false,
                     'message'=>$id ? _l('added_successfully', _l('new_amenity')) : '',
                     'id'=>$id,
-                    'name'=>$this->input->post('name')
+                    'name'=>$this->input->post('name'),
+                    'type' => 'add'
                 ));
+            } else {
+                $success = $this->venues_model->update_amenities($this->input->post());
+                $message = _l('updated_successfully', _l('amenity'));
+                echo json_encode(array('success' => $success,'message' => $message,'type' => 'edit','id' => $this->input->post('amenity_id'),'name' => $this->input->post('name')  ));
+            }
         }
     }
     public function area() {
