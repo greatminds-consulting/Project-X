@@ -143,4 +143,15 @@ class Venues_model extends CRM_Model
         }
         return false;
     }
+
+    public function get_venue_amenity_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenueamenities')->row();
+    }
+
+    public function mark_as($templateId, $enabled) {
+        $this->db->where('id', $templateId);
+        $this->db->update('tblvenueamenities', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
 }

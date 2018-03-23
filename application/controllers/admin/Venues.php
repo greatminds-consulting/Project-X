@@ -187,5 +187,15 @@ class Venues extends Admin_controller
         $this->load->view('admin/venues/area');
     }
 
+    public function amenitiesDisable($id) {
+        $venueAmenity = $this->venues_model->get_venue_amenity_by_id($id);
+        $this->venues_model->mark_as($venueAmenity->id,0);
+        redirect(admin_url('venues/settings'));
+    }
 
+    public function amenitiesEnable($id) {
+        $venueAmenity = $this->venues_model->get_venue_amenity_by_id($id);
+        $this->venues_model->mark_as($venueAmenity->id,1);
+        redirect(admin_url('venues/settings'));
+    }
 }
