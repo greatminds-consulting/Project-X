@@ -155,6 +155,30 @@ class Venues extends Admin_controller
         else {
             echo "false";
         }
-
     }
+    public function settings() {
+        $data['title']                = _l('venue_settings');
+        $data['amenities']            = $this->venues_model->getamenities();
+        $this->load->view('admin/venues/settings' , $data);
+    }
+    public function amenities()
+    {
+        if (!is_admin() && get_option('staff_members_create_inline_expense_categories') == '0') {
+            access_denied('expenses');
+        }
+        if ($this->input->post()) {
+                $id = $this->venues_model->add_amenities($this->input->post());
+                echo json_encode(array(
+                    'success'=>$id ? true : false,
+                    'message'=>$id ? _l('added_successfully', _l('new_amenity')) : '',
+                    'id'=>$id,
+                    'name'=>$this->input->post('name')
+                ));
+        }
+    }
+    public function area() {
+        $this->load->view('admin/venues/area');
+    }
+
+
 }

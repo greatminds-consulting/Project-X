@@ -103,4 +103,30 @@ class Venues_model extends CRM_Model
         return false;
     }
 
+    public function getamenities()
+    {
+        $this->db->select('*');
+        $this->db->from('tblvenueamenities');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    /**
+     * Add new expense category
+     * @param mixed $data All $_POST data
+     * @return boolean
+     */
+    public function add_amenities($data)
+    {
+        $data['active'] = 1;
+        $this->db->insert('tblvenueamenities', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Expense Category Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
 }
