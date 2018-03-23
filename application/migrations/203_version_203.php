@@ -14,18 +14,18 @@ class Migration_Version_203 extends CI_Migration
         $this->db->query("ALTER TABLE `tblvenues` DROP COLUMN `details`, DROP COLUMN `amenities`, ADD COLUMN `suburb` VARCHAR(16) NULL AFTER `carramp`, ADD COLUMN `state` VARCHAR(128) NULL AFTER `suburb`, ADD COLUMN `postcode` VARCHAR(16) NULL AFTER `state`;");
 
         // Venues Areas - new feature
-        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueareas`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), `layout_id` INT, `layout_minimum` INT, `layout_maximum` INT, PRIMARY KEY (`id`)
+        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueareas`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), `layout_id` INT, `layout_minimum` INT, `layout_maximum` INT,`active` tinyint(4) DEFAULT NULL, PRIMARY KEY (`id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         // Venues Areas Amenities - new feature
-        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueareaamenities`( `id` INT NOT NULL AUTO_INCREMENT, `area_id` INT, `amenity_id` INT, PRIMARY KEY (`id`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueareaamenities`( `id` INT NOT NULL AUTO_INCREMENT, `area_id` INT, `amenity_id` INT,`active` tinyint(4) DEFAULT NULL, PRIMARY KEY (`id`) ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         // Venues Amenities - new feature
-        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueamenities`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), PRIMARY KEY (`id`)
+        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenueamenities`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), `active` tinyint(4) DEFAULT NULL,PRIMARY KEY (`id`)
           ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         // Venues Layouts - new feature
-        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenuelayouts`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256), PRIMARY KEY (`id`)
+        $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenuelayouts`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256),`active` tinyint(4) DEFAULT NULL, PRIMARY KEY (`id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
         $menu = get_option('setup_menu_active');
