@@ -159,13 +159,10 @@ class Venues extends Admin_controller
     public function settings() {
         $data['title']                = _l('venue_settings');
         $data['amenities']            = $this->venues_model->getamenities();
+        $data['layouts']              = $this->venues_model->getlayouts();
         $this->load->view('admin/venues/settings' , $data);
     }
-    public function amenities()
-    {
-        if (!is_admin() && get_option('staff_members_create_inline_expense_categories') == '0') {
-            access_denied('expenses');
-        }
+    public function amenities() {
         if ($this->input->post()) {
             if (!$this->input->post('amenity_id')) {
                 $id = $this->venues_model->add_amenities($this->input->post());
@@ -197,5 +194,36 @@ class Venues extends Admin_controller
         $venueAmenity = $this->venues_model->get_venue_amenity_by_id($id);
         $this->venues_model->mark_as($venueAmenity->id,1);
         redirect(admin_url('venues/settings'));
+    }
+
+    public function layoutDisable($id) {
+        $venueLayout = $this->venues_model->get_venue_layout_by_id($id);
+        $this->venues_model->layout_mark_as($venueLayout->id,0);
+        redirect(admin_url('venues/settings'));
+    }
+
+    public function layoutEnable($id) {
+        $venueLayout = $this->venues_model->get_venue_layout_by_id($id);
+        $this->venues_model->layout_mark_as($venueLayout->id,1);
+        redirect(admin_url('venues/settings'));
+    }
+
+    public function layout() {
+        if ($this->input->post()) {
+            if (!$this->input->post('layout_id')) {
+                $id = $this->venues_model->add_layout($this->input->post());
+                echo json_encode(array(
+                    'success'=>$id ? true : false,
+                    'message'=>$id ? _l('added_successfully', _l('new_layout')) : '',
+                    'id'=>$id,
+                    'name'=>$this->input->post('name'),
+                    'type' => 'add'
+                ));
+            } else {
+                $success = $this->venues_model->update_layout($this->input->post());
+                $message = _l('updated_successfully', _l('layout'));
+                echo json_encode(array('success' => $success,'message' => $message,'type' => 'edit','id' => $this->input->post('layout_id'),'name' => $this->input->post('name')  ));
+            }
+        }
     }
 }

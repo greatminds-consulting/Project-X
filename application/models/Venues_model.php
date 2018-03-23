@@ -111,9 +111,17 @@ class Venues_model extends CRM_Model
         $data = $query->result_array();
         return  $data;
     }
+    public function getlayouts()
+    {
+        $this->db->select('*');
+        $this->db->from('tblvenuelayouts');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
 
     /**
-     * Add new expense category
+     * Add amenities
      * @param mixed $data All $_POST data
      * @return boolean
      */
@@ -152,6 +160,49 @@ class Venues_model extends CRM_Model
     public function mark_as($templateId, $enabled) {
         $this->db->where('id', $templateId);
         $this->db->update('tblvenueamenities', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    /**
+     * Add layout
+     * @param mixed $data All $_POST data
+     * @return boolean
+     */
+    public function add_layout($data) {
+        $data['active'] = 1;
+        if (isset($data['layout_id'])) {
+            unset($data['layout_id']);
+        }
+        $this->db->insert('tblvenuelayouts', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Layout Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_layout($data)
+    {
+        $data['id'] = $data['layout_id'];
+        unset($data['layout_id']);
+        $this->db->where('id', $data['id']);
+        $this->db->update('tblvenuelayouts', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Layout Updated [ID: ' . $data['layout_id'] . ']');
+            return true;
+        }
+        return false;
+    }
+
+    public function get_venue_layout_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenuelayouts')->row();
+    }
+
+    public function layout_mark_as($templateId, $enabled) {
+        $this->db->where('id', $templateId);
+        $this->db->update('tblvenuelayouts', array('active'=>$enabled));
         return $this->db->affected_rows() > 0 ? true : false;
     }
 }
