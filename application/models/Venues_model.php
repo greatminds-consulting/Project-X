@@ -14,9 +14,23 @@ class Venues_model extends CRM_Model
         return  $insert_id;
     }
 
-    public function add_openingHours($data1)
-    {
-        $this->db->insert('tblvenueopeninghours', $data1);
+    public function add_openingHours($postData,$venue_id) {
+        $data['monday_from']            = $postData['monday_from'];
+        $data['monday_to']              = $postData['monday_to'];
+        $data['tuesday_from']           = $postData['tuesday_from'];
+        $data['tuesday_to']             = $postData['tuesday_to'];
+        $data['wednesday_from']         = $postData['wednesday_from'];
+        $data['wednesday_to']           = $postData['wednesday_to'];
+        $data['thursday_from']          = $postData['thursday_from'];
+        $data['thursday_to']            = $postData['thursday_to'];
+        $data['friday_from']            = $postData['friday_from'];
+        $data['friday_to']              = $postData['friday_to'];
+        $data['saturday_from']          = $postData['saturday_from'];
+        $data['saturday_to']            = $postData['saturday_to'];
+        $data['sunday_from']            = $postData['sunday_from'];
+        $data['sunday_to']              = $postData['sunday_to'];
+        $data['venue_id']               = $venue_id;
+        $this->db->insert('tblvenueopeninghours', $data);
         $insert_id = $this->db->insert_id();
         return  $insert_id;
     }
@@ -82,15 +96,25 @@ class Venues_model extends CRM_Model
         return false;
     }
 
-    public function update_openingHours($data1,$venueid)
-    {
+    public function update_openingHours($postData,$venueid) {
+        $data['monday_from']            = $postData['monday_from'];
+        $data['monday_to']              = $postData['monday_to'];
+        $data['tuesday_from']           = $postData['tuesday_from'];
+        $data['tuesday_to']             = $postData['tuesday_to'];
+        $data['wednesday_from']         = $postData['wednesday_from'];
+        $data['wednesday_to']           = $postData['wednesday_to'];
+        $data['thursday_from']          = $postData['thursday_from'];
+        $data['thursday_to']            = $postData['thursday_to'];
+        $data['friday_from']            = $postData['friday_from'];
+        $data['friday_to']              = $postData['friday_to'];
+        $data['saturday_from']          = $postData['saturday_from'];
+        $data['saturday_to']            = $postData['saturday_to'];
+        $data['sunday_from']            = $postData['sunday_from'];
+        $data['sunday_to']              = $postData['sunday_to'];
+        $data['venue_id']               = $venueid;
         $this->db->where('venue_id',$venueid);
-        $this->db->update('tblvenueopeninghours',$data1);
-
-        if ($this->db->affected_rows() > 0) {
-            return true;
-        }
-        return false;
+        $this->db->update('tblvenueopeninghours',$data);
+        return true;
     }
 
     public function deleteimage($id)

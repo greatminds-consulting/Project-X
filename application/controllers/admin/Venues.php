@@ -58,21 +58,12 @@ class Venues extends Admin_controller
         if(  $fetured  !='') {
             $data['featured_image']     =   $fetured;
         }
-        $data1['monday']            = $this->input->post('monday');
-        $data1['tuesday']           = $this->input->post('tuesday');
-        $data1['wednesday']         = $this->input->post('wednesday');
-        $data1['thursday']          = $this->input->post('thursday');
-        $data1['friday']            = $this->input->post('friday');
-        $data1['saturday']          = $this->input->post('saturday');
-        $data1['sunday']            = $this->input->post('sunday');
         if( $id!='' ) {
             $updatevenues               = $this->venues_model->update_venues($data,$venueid);
-            $openingHours               = $this->venues_model->update_openingHours($data1,$venueid);
+            $openingHours               = $this->venues_model->update_openingHours($this->input->post(),$venueid);
         } else {
-
             $venueId                    = $this->venues_model->add_venues($data);
-            $data1['venue_id']          = $venueId ;
-            $openingHours               = $this->venues_model->add_openingHours($data1);
+            $openingHours               = $this->venues_model->add_openingHours($this->input->post(),$venueId);
         }
         $files = $_FILES;
         $cpt = count($_FILES['userfile']['name']);
