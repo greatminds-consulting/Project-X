@@ -290,4 +290,15 @@ class Venues_model extends CRM_Model
         }
         return true;
     }
+
+    public function get_area_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenueareas')->row();
+    }
+
+    public function area_mark_as($areaId, $enabled) {
+        $this->db->where('id', $areaId);
+        $this->db->update('tblvenueareas', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
 }

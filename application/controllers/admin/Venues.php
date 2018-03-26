@@ -262,4 +262,16 @@ class Venues extends Admin_controller
         redirect(admin_url('venues/areas'));
     }
 
+    public function areaDisable($id) {
+        $area = $this->venues_model->get_area_by_id($id);
+        $this->venues_model->area_mark_as($area->id,0);
+        redirect(admin_url('venues/areas'));
+    }
+
+    public function areaEnable($id) {
+        $area = $this->venues_model->get_area_by_id($id);
+        $this->venues_model->area_mark_as($area->id,1);
+        redirect(admin_url('venues/areas'));
+    }
+
 }
