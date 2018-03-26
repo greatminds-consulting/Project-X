@@ -181,10 +181,10 @@ class Venues extends Admin_controller
             }
         }
     }
-    public function area() {
+    public function areas() {
         $data['areas']            = $this->venues_model->getareas();
         $data['title']            = _l('venue_area');
-        $this->load->view('admin/venues/area' , $data);
+        $this->load->view('admin/venues/areas' , $data);
     }
 
     public function amenitiesDisable($id) {

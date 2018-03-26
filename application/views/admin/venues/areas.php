@@ -11,7 +11,7 @@
                                     <hr class="hr-panel-heading" />
                                     <div class="panel-body _buttons">
                                         <?php if(has_permission('amenities','','create')){ ?>
-                                            <a href="#" class="btn btn-info pull-left display-block" onclick="new_amenities();return false;"><?php echo _l('new_area'); ?></a>
+                                            <a href="<?php echo admin_url('venues/addarea'); ?>"  class="btn btn-info pull-left display-block"><?php echo _l('new_area'); ?></a>
                                         <?php } ?>
                                     </div>
                                     <div class="table-responsive">

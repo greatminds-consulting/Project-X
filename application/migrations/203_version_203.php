@@ -61,7 +61,7 @@ class Migration_Version_203 extends CI_Migration
                             2 =>
                                 array (
                                     'name' => 'Area',
-                                    'url' => 'venues/area',
+                                    'url' => 'venues/areas',
                                     'permission' => '',
                                     'icon' => '',
                                     'id' => 'rooms',
