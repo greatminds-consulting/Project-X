@@ -25,7 +25,7 @@
                                             <?php foreach($areas as $area){ ?>
                                                 <tr>
                                                     <td class="<?php if($area['active'] == 0){echo 'text-throught';} ?>">
-                                                        <a href="<?php echo admin_url('Venues/add_areas/'.$area->id); ?>"><?php echo $area['name']; ?></a>
+                                                        <a href="<?php echo admin_url('venues/area/'.$area['id']); ?>"><?php echo $area['name']; ?></a>
                                                         <a href="" class="pull-right"><small><?php echo _l($area['active'] == 1 ? 'disable' : 'enable'); ?></small></a>
                                                     </td>
                                                 </tr>

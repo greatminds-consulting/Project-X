@@ -220,10 +220,14 @@ class Venues_model extends CRM_Model
         return  $data;
     }
 
-    public function add_area($data) {
+    public function add_area($postData) {
+        $data['name']               = $postData['name'];
+        $data['layout_id']          = $postData['layout'];
+        $data['layout_minimum']     = $postData['layout_minimum'];
+        $data['layout_maximum']     = $postData['layout_maximum'];
         $data['active'] = 1;
-        if (isset($data['area_id'])) {
-            unset($data['area_id']);
+        if (isset($data['venue_area_id'])) {
+            unset($data['venue_area_id']);
         }
         $this->db->insert('tblvenueareas', $data);
         $insert_id = $this->db->insert_id();
@@ -240,6 +244,49 @@ class Venues_model extends CRM_Model
             $data['amenity_id'] = $dataField;
             $this->db->insert('tblvenueareaamenities', $data);
             $this->db->insert_id();
+        }
+        return true;
+    }
+
+    public function get_area_amenity_by_area_id($id) {
+        $this->db->select('amenity_id');
+        $this->db->from('tblvenueareaamenities');
+        $this->db->where('area_id',$id);
+        $query = $this->db->get();
+        $amenities = $query->result_array();
+        $return = array();
+        foreach ($amenities as $amenity) {
+          $return[$amenity['amenity_id']] = true;
+        }
+        return $return;
+    }
+
+    public function update_area($postData) {
+        $data['name']               = $postData['name'];
+        $data['layout_id']          = $postData['layout'];
+        $data['layout_minimum']     = $postData['layout_minimum'];
+        $data['layout_maximum']     = $postData['layout_maximum'];
+        $data['active'] = 1;
+        $data['id'] = $postData['venue_area_id'];
+        $this->db->where('id',$data['id']);
+        $this->db->update('tblvenueareas',$data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update_area_amenities($dataFields, $areaId) {
+        $this->db->where('area_id', $areaId);
+        $this->db->delete('tblvenueareaamenities');
+        if ($dataFields) {
+            foreach ($dataFields as $dataField) {
+                $data['active'] = 1;
+                $data['area_id'] = $areaId;
+                $data['amenity_id'] = $dataField;
+                $this->db->insert('tblvenueareaamenities', $data);
+                $this->db->insert_id();
+            }
         }
         return true;
     }

@@ -232,7 +232,8 @@ class Venues extends Admin_controller
 
     public function area($id = '') {
         if($id != '') {
-            $data['details']   = $this->venues_model->getareadetails($id);
+            $data['details']         = $this->venues_model->getareadetails($id);
+            $data['area_amenities'] = $this->venues_model->get_area_amenity_by_area_id($id);
             $data['title']          = _l('Edit Area');
         }
         else {
@@ -244,17 +245,21 @@ class Venues extends Admin_controller
     }
 
     public function add_areas() {
-        $data['name']               = $this->input->post('name');
-        $data['layout_id']          = $this->input->post('layout');
-        $data['layout_minimum']     = $this->input->post('layout_minimum');
-        $data['layout_maximum']     = $this->input->post('layout_maximum');
-        $areaId = $this->venues_model->add_area($data);
-        if ($this->input->post('amenity')) {
-           $this->venues_model->add_area_amenities($this->input->post('amenity'),$areaId);
-        }
-        if ($areaId) {
-            set_alert('success', _l('Added Area Successfully', _l('venue_field')));
+        if (!$this->input->post('venue_area_id')) {
+            $areaId = $this->venues_model->add_area($this->input->post());
+            if ($this->input->post('amenity')) {
+                $this->venues_model->add_area_amenities($this->input->post('amenity'),$areaId);
+            }
+            if ($areaId) {
+                set_alert('success', _l('Added Area Successfully', _l('venue_field')));
+            }
+        } else {
+            $this->venues_model->update_area_amenities($this->input->post('amenity'),$this->input->post('venue_area_id'));
+            if ($this->venues_model->update_area($this->input->post())) {
+                set_alert('success', _l('Updated Area Successfully', _l('venue_field')));
+            }
         }
         redirect(admin_url('venues/areas'));
     }
+
 }
