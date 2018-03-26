@@ -37,6 +37,9 @@ class Venues extends Admin_controller
         $data['address2']           = $this->input->post('addressTwo');
         $data['phone']              = $this->input->post('phone');
         $data['email']              = $this->input->post('email');
+        $data['suburb']             = $this->input->post('suburb');
+        $data['postcode']           = $this->input->post('postcode');
+        $data['state']              = $this->input->post('state');
         $data['datecreated']        = date("Y/m/d");
         $data['wheelchairaccess']   = $this->input->post('wheelchair');
         $data['carramp']            = $this->input->post('carramp');

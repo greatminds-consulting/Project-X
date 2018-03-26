@@ -14,11 +14,11 @@
                         </div>
                         <div class="form-group" app-field-wrapper="address">
                             <label for="address" class="control-label">Address1</label>
-                            <textarea id="addressOne" name="addressOne" class="form-control" rows="4"><?php if(isset($venuedetails->address1) !== ''){  echo $venuedetails->address1; }?></textarea>
+                            <input type="text" id="addressOne" name="addressOne" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->address1) !== ''){ echo $venuedetails->address1;}?>">
                         </div>
                         <div class="form-group" app-field-wrapper="addresstwo">
                             <label for="address" class="control-label">Address2</label>
-                            <textarea id="addressTwo" name="addressTwo" class="form-control" rows="4"><?php if(isset($venuedetails->address2) !== ''){ echo $venuedetails->address2; }?></textarea>
+                            <input type="text" id="addressTwo" name="addressTwo" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->address2) !== ''){ echo $venuedetails->address2;}?>">
                         </div>
                         <div class="form-group" app-field-wrapper="phone">
                             <label for="phone" class="control-label">Phone</label>
@@ -27,6 +27,24 @@
                         <div class="form-group" app-field-wrapper="email">
                             <label for="email" class="control-label"> <small class="req text-danger">* </small>Email</label>
                             <input type="text" id="email" name="email" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->email) !== ''){ echo $venuedetails->email; } ?>">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="suburb">
+                                    <label for="phone" class="control-label">Suburb</label>
+                                    <input type="text" id="suburb" name="suburb" class="form-control" value="<?php if(isset($venuedetails->suburb) !== ''){ echo $venuedetails->suburb; } ?>">
+                                </div>
+                            </div><div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="state">
+                                    <label for="phone" class="control-label">State</label>
+                                    <input type="text" id="state" name="state" class="form-control" value="<?php if(isset($venuedetails->state) !== ''){ echo $venuedetails->state; } ?>">
+                                </div>
+                            </div><div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="postcode">
+                                    <label for="phone" class="control-label">Postcode</label>
+                                    <input type="text" id="postcode" name="postcode" class="form-control" value="<?php if(isset($venuedetails->postcode) !== ''){ echo $venuedetails->postcode; } ?>">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group" app-field-wrapper="wheelchair">
