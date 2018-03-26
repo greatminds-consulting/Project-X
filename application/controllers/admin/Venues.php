@@ -229,4 +229,32 @@ class Venues extends Admin_controller
             }
         }
     }
+
+    public function area($id = '') {
+        if($id != '') {
+            $data['details']   = $this->venues_model->getareadetails($id);
+            $data['title']          = _l('Edit Area');
+        }
+        else {
+            $data['title']      = _l('Add Area');
+        }
+        $data['layouts']              = $this->venues_model->getlayouts();
+        $data['amenities']            = $this->venues_model->getamenities();
+        $this->load->view('admin/venues/area' , $data);
+    }
+
+    public function add_areas() {
+        $data['name']               = $this->input->post('name');
+        $data['layout_id']          = $this->input->post('layout');
+        $data['layout_minimum']     = $this->input->post('layout_minimum');
+        $data['layout_maximum']     = $this->input->post('layout_maximum');
+        $areaId = $this->venues_model->add_area($data);
+        if ($this->input->post('amenity')) {
+           $this->venues_model->add_area_amenities($this->input->post('amenity'),$areaId);
+        }
+        if ($areaId) {
+            set_alert('success', _l('Added Area Successfully', _l('venue_field')));
+        }
+        redirect(admin_url('venues/areas'));
+    }
 }

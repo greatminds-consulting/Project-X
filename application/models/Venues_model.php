@@ -210,4 +210,37 @@ class Venues_model extends CRM_Model
         $data = $query->result_array();
         return  $data;
     }
+
+    public function getareadetails($id) {
+        $this->db->select('*');
+        $this->db->from('tblvenueareas');
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    public function add_area($data) {
+        $data['active'] = 1;
+        if (isset($data['area_id'])) {
+            unset($data['area_id']);
+        }
+        $this->db->insert('tblvenueareas', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Area Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+    public function add_area_amenities($dataFields,$areaId) {
+        foreach ($dataFields as $dataField) {
+            $data['active'] = 1;
+            $data['area_id'] = $areaId;
+            $data['amenity_id'] = $dataField;
+            $this->db->insert('tblvenueareaamenities', $data);
+            $this->db->insert_id();
+        }
+        return true;
+    }
 }

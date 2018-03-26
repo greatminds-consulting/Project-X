@@ -11,7 +11,7 @@
                                     <hr class="hr-panel-heading" />
                                     <div class="panel-body _buttons">
                                         <?php if(has_permission('amenities','','create')){ ?>
-                                            <a href="<?php echo admin_url('venues/addarea'); ?>"  class="btn btn-info pull-left display-block"><?php echo _l('new_area'); ?></a>
+                                            <a href="<?php echo admin_url('venues/area'); ?>"  class="btn btn-info pull-left display-block"><?php echo _l('new_area'); ?></a>
                                         <?php } ?>
                                     </div>
                                     <div class="table-responsive">
@@ -25,7 +25,7 @@
                                             <?php foreach($areas as $area){ ?>
                                                 <tr>
                                                     <td class="<?php if($area['active'] == 0){echo 'text-throught';} ?>">
-                                                        <a href="#" onclick="edit_amenities(<?php echo $area['id']?>,'<?php echo $area['name']?>');return false;"><?php echo $area['name']; ?></a>
+                                                        <a href="<?php echo admin_url('Venues/add_areas/'.$area->id); ?>"><?php echo $area['name']; ?></a>
                                                         <a href="" class="pull-right"><small><?php echo _l($area['active'] == 1 ? 'disable' : 'enable'); ?></small></a>
                                                     </td>
                                                 </tr>

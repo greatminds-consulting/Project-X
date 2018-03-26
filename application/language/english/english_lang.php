@@ -481,6 +481,7 @@ $lang['lead_status']             = 'Lead Status';
 $lang['amenities']               = 'Amenities';
 $lang['venue_settings']          = 'Venue Settings';
 $lang['venue_area']              = 'Venue Areas';
+$lang['area_layout']             = 'Area Layout';
 $lang['new_area']                = 'New Area';
 $lang['area_name']               = 'Area Name';
 $lang['venue_amenities']         = 'Venue Amenities';
