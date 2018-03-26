@@ -20,10 +20,6 @@
                             <label for="address" class="control-label">Address2</label>
                             <textarea id="addressTwo" name="addressTwo" class="form-control" rows="4"><?php if(isset($venuedetails->address2) !== ''){ echo $venuedetails->address2; }?></textarea>
                         </div>
-                        <div class="form-group" app-field-wrapper="details">
-                            <label for="address" class="control-label">Details</label>
-                            <textarea id="details" name="details" class="form-control" rows="4"><?php if(isset($venuedetails->details) !== ''){  echo $venuedetails->details; }?></textarea>
-                        </div>
                         <div class="form-group" app-field-wrapper="phone">
                             <label for="phone" class="control-label">Phone</label>
                             <input type="text" id="phone" name="phone" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->phone) !== ''){  echo $venuedetails->phone; }?>">
@@ -31,10 +27,6 @@
                         <div class="form-group" app-field-wrapper="email">
                             <label for="email" class="control-label"> <small class="req text-danger">* </small>Email</label>
                             <input type="text" id="email" name="email" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->email) !== ''){ echo $venuedetails->email; } ?>">
-                        </div>
-                        <div class="form-group" app-field-wrapper="amenities">
-                            <label for="amenities" class="control-label">Amenities</label>
-                            <textarea id="amenities" name="amenities" class="form-control" rows="4"><?php if(isset($venuedetails->amenities) !== ''){ echo $venuedetails->amenities; } ?></textarea>
                         </div>
 
                         <div class="form-group" app-field-wrapper="wheelchair">

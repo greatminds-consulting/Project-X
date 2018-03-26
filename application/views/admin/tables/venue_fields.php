@@ -7,7 +7,6 @@ $aColumns     = array(
     'address2',
     'email',
     'phone',
-    'details',
 );
 $sIndexColumn = "id";
 $sTable       = 'tblvenues';
