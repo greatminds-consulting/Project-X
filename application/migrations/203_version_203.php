@@ -28,6 +28,9 @@ class Migration_Version_203 extends CI_Migration
         $this->db->query("CREATE TABLE IF NOT EXISTS `tblvenuelayouts`( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(256),`active` tinyint(4) DEFAULT NULL, PRIMARY KEY (`id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
+        // Venue Opening hours  - alteration
+        $this->db->query("ALTER TABLE `tblvenueopeninghours` ADD COLUMN `monday_from` VARCHAR(64) NULL AFTER `venue_id`, CHANGE `monday` `monday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `tuesday_from` VARCHAR(64) NULL AFTER `monday_to`, CHANGE `tuesday` `tuesday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `wednesday_from` VARCHAR(64) NULL AFTER `tuesday_to`, CHANGE `wednesday` `wednesday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `thursday_from` VARCHAR(64) NULL AFTER `wednesday_to`, CHANGE `thursday` `thursday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `friday_from` VARCHAR(64) NULL AFTER `thursday_to`, CHANGE `friday` `friday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `saturday_from` VARCHAR(64) NULL AFTER `friday_to`, CHANGE `saturday` `saturday_to` VARCHAR(64) CHARSET utf8 COLLATE utf8_general_ci NULL, ADD COLUMN `sunday_from` VARCHAR(64) NULL AFTER `saturday_to`, CHANGE `sunday` `sunday_to` VARCHAR(64) ;");
+
         $menu = get_option('setup_menu_active');
         $menu = json_decode($menu, 1);
         $finalMenu = array();
