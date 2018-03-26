@@ -81,14 +81,6 @@ class Migration_Version_203 extends CI_Migration
             }
 
         }
-        $order = count($finalMenu);
-        $finalMenu[] = array (
-            'name' => 'templates',
-            'permission' => 'is_admin',
-            'url' => 'templates',
-            'id' => 'templates',
-            'order' => $order
-        );
         $menu['setup_menu_active'] = $finalMenu;
         update_option('setup_menu_active', json_encode($menu));
 
