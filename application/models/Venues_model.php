@@ -103,16 +103,14 @@ class Venues_model extends CRM_Model
         return false;
     }
 
-    public function getamenities()
-    {
+    public function getamenities() {
         $this->db->select('*');
         $this->db->from('tblvenueamenities');
         $query = $this->db->get();
         $data = $query->result_array();
         return  $data;
     }
-    public function getlayouts()
-    {
+    public function getlayouts() {
         $this->db->select('*');
         $this->db->from('tblvenuelayouts');
         $query = $this->db->get();
@@ -182,8 +180,7 @@ class Venues_model extends CRM_Model
         return false;
     }
 
-    public function update_layout($data)
-    {
+    public function update_layout($data) {
         $data['id'] = $data['layout_id'];
         unset($data['layout_id']);
         $this->db->where('id', $data['id']);
@@ -204,5 +201,13 @@ class Venues_model extends CRM_Model
         $this->db->where('id', $templateId);
         $this->db->update('tblvenuelayouts', array('active'=>$enabled));
         return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    public function getareas() {
+        $this->db->select('*');
+        $this->db->from('tblvenueareas');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
     }
 }
