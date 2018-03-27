@@ -14,9 +14,23 @@ class Venues_model extends CRM_Model
         return  $insert_id;
     }
 
-    public function add_openingHours($data1)
-    {
-        $this->db->insert('tblvenueopeninghours', $data1);
+    public function add_openingHours($postData,$venue_id) {
+        $data['monday_from']            = $postData['monday_from'];
+        $data['monday_to']              = $postData['monday_to'];
+        $data['tuesday_from']           = $postData['tuesday_from'];
+        $data['tuesday_to']             = $postData['tuesday_to'];
+        $data['wednesday_from']         = $postData['wednesday_from'];
+        $data['wednesday_to']           = $postData['wednesday_to'];
+        $data['thursday_from']          = $postData['thursday_from'];
+        $data['thursday_to']            = $postData['thursday_to'];
+        $data['friday_from']            = $postData['friday_from'];
+        $data['friday_to']              = $postData['friday_to'];
+        $data['saturday_from']          = $postData['saturday_from'];
+        $data['saturday_to']            = $postData['saturday_to'];
+        $data['sunday_from']            = $postData['sunday_from'];
+        $data['sunday_to']              = $postData['sunday_to'];
+        $data['venue_id']               = $venue_id;
+        $this->db->insert('tblvenueopeninghours', $data);
         $insert_id = $this->db->insert_id();
         return  $insert_id;
     }
@@ -82,15 +96,25 @@ class Venues_model extends CRM_Model
         return false;
     }
 
-    public function update_openingHours($data1,$venueid)
-    {
+    public function update_openingHours($postData,$venueid) {
+        $data['monday_from']            = $postData['monday_from'];
+        $data['monday_to']              = $postData['monday_to'];
+        $data['tuesday_from']           = $postData['tuesday_from'];
+        $data['tuesday_to']             = $postData['tuesday_to'];
+        $data['wednesday_from']         = $postData['wednesday_from'];
+        $data['wednesday_to']           = $postData['wednesday_to'];
+        $data['thursday_from']          = $postData['thursday_from'];
+        $data['thursday_to']            = $postData['thursday_to'];
+        $data['friday_from']            = $postData['friday_from'];
+        $data['friday_to']              = $postData['friday_to'];
+        $data['saturday_from']          = $postData['saturday_from'];
+        $data['saturday_to']            = $postData['saturday_to'];
+        $data['sunday_from']            = $postData['sunday_from'];
+        $data['sunday_to']              = $postData['sunday_to'];
+        $data['venue_id']               = $venueid;
         $this->db->where('venue_id',$venueid);
-        $this->db->update('tblvenueopeninghours',$data1);
-
-        if ($this->db->affected_rows() > 0) {
-            return true;
-        }
-        return false;
+        $this->db->update('tblvenueopeninghours',$data);
+        return true;
     }
 
     public function deleteimage($id)
@@ -103,4 +127,203 @@ class Venues_model extends CRM_Model
         return false;
     }
 
+    public function getamenities() {
+        $this->db->select('*');
+        $this->db->from('tblvenueamenities');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+    public function getlayouts() {
+        $this->db->select('*');
+        $this->db->from('tblvenuelayouts');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    /**
+     * Add amenities
+     * @param mixed $data All $_POST data
+     * @return boolean
+     */
+    public function add_amenities($data) {
+        $data['active'] = 1;
+        if (isset($data['amenity_id'])) {
+            unset($data['amenity_id']);
+        }
+        $this->db->insert('tblvenueamenities', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Amenity Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_amenities($data)
+    {
+        $data['id'] = $data['amenity_id'];
+        unset($data['amenity_id']);
+        $this->db->where('id', $data['id']);
+        $this->db->update('tblvenueamenities', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Amenity Updated [ID: ' . $data['amenity_id'] . ']');
+            return true;
+        }
+        return false;
+    }
+
+    public function get_venue_amenity_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenueamenities')->row();
+    }
+
+    public function mark_as($templateId, $enabled) {
+        $this->db->where('id', $templateId);
+        $this->db->update('tblvenueamenities', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    /**
+     * Add layout
+     * @param mixed $data All $_POST data
+     * @return boolean
+     */
+    public function add_layout($data) {
+        $data['active'] = 1;
+        if (isset($data['layout_id'])) {
+            unset($data['layout_id']);
+        }
+        $this->db->insert('tblvenuelayouts', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Layout Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+
+    public function update_layout($data) {
+        $data['id'] = $data['layout_id'];
+        unset($data['layout_id']);
+        $this->db->where('id', $data['id']);
+        $this->db->update('tblvenuelayouts', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Layout Updated [ID: ' . $data['layout_id'] . ']');
+            return true;
+        }
+        return false;
+    }
+
+    public function get_venue_layout_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenuelayouts')->row();
+    }
+
+    public function layout_mark_as($templateId, $enabled) {
+        $this->db->where('id', $templateId);
+        $this->db->update('tblvenuelayouts', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    public function getareas() {
+        $this->db->select('tblvenueareas.name as area_name,tblvenueareas.active as area_active,tblvenueareas.layout_minimum as layout_minimum,,tblvenueareas.layout_maximum as layout_maximum,tblvenueareas.id as area_id,tblvenuelayouts.*');
+        $this->db->from('tblvenueareas');
+        $this->db->join('tblvenuelayouts','tblvenuelayouts.id=tblvenueareas.layout_id','left');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    public function getareadetails($id) {
+        $this->db->select('*');
+        $this->db->from('tblvenueareas');
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    public function add_area($postData) {
+        $data['name']               = $postData['name'];
+        $data['layout_id']          = $postData['layout'];
+        $data['layout_minimum']     = $postData['layout_minimum'];
+        $data['layout_maximum']     = $postData['layout_maximum'];
+        $data['active'] = 1;
+        if (isset($data['venue_area_id'])) {
+            unset($data['venue_area_id']);
+        }
+        $this->db->insert('tblvenueareas', $data);
+        $insert_id = $this->db->insert_id();
+        if ($insert_id) {
+            logActivity('New Area Added [ID: ' . $insert_id . ']');
+            return $insert_id;
+        }
+        return false;
+    }
+    public function add_area_amenities($dataFields,$areaId) {
+        foreach ($dataFields as $dataField) {
+            $data['active'] = 1;
+            $data['area_id'] = $areaId;
+            $data['amenity_id'] = $dataField;
+            $this->db->insert('tblvenueareaamenities', $data);
+            $this->db->insert_id();
+        }
+        return true;
+    }
+
+    public function get_area_amenity_by_area_id($id) {
+        $this->db->select('amenity_id');
+        $this->db->from('tblvenueareaamenities');
+        $this->db->where('area_id',$id);
+        $query = $this->db->get();
+        $amenities = $query->result_array();
+        $return = array();
+        foreach ($amenities as $amenity) {
+          $return[$amenity['amenity_id']] = true;
+        }
+        return $return;
+    }
+
+    public function update_area($postData) {
+        $data['name']               = $postData['name'];
+        $data['layout_id']          = $postData['layout'];
+        $data['layout_minimum']     = $postData['layout_minimum'];
+        $data['layout_maximum']     = $postData['layout_maximum'];
+        $data['active'] = 1;
+        $data['id'] = $postData['venue_area_id'];
+        $this->db->where('id',$data['id']);
+        $this->db->update('tblvenueareas',$data);
+        if ($this->db->affected_rows() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function update_area_amenities($dataFields, $areaId) {
+        $this->db->where('area_id', $areaId);
+        $this->db->delete('tblvenueareaamenities');
+        if ($dataFields) {
+            foreach ($dataFields as $dataField) {
+                $data['active'] = 1;
+                $data['area_id'] = $areaId;
+                $data['amenity_id'] = $dataField;
+                $this->db->insert('tblvenueareaamenities', $data);
+                $this->db->insert_id();
+            }
+        }
+        return true;
+    }
+
+    public function get_area_by_id($id) {
+        $this->db->where('id', $id);
+        return $this->db->get('tblvenueareas')->row();
+    }
+
+    public function area_mark_as($areaId, $enabled) {
+        $this->db->where('id', $areaId);
+        $this->db->update('tblvenueareas', array('active'=>$enabled));
+        return $this->db->affected_rows() > 0 ? true : false;
+    }
 }
