@@ -209,11 +209,14 @@ class Dashboard_model extends CRM_Model
         foreach ($statuses as $status) {
             $sql .= ' SELECT COUNT(*) as total';
             $sql .= ' FROM tblleads';
+            $sql .= ' LEFT JOIN  tblleadstaffs';
+            $sql .= ' ON tblleadstaffs.lead_id=tblleads.id';
             $sql .= ' WHERE status='.$status['id'];
             if (!$has_permission_view) {
-                $sql .= ' AND (addedfrom = ' . get_staff_user_id() . ' OR is_public = 1 OR assigned = ' . get_staff_user_id() . ')';
+                $sql .= ' AND (addedfrom = ' . get_staff_user_id() . ' OR is_public = 1 OR tblleadstaffs.staff_id = ' . get_staff_user_id() . ')';
             }
             $sql .= ' UNION ALL ';
+            //echo $sql;
             $sql = trim($sql);
         }
 

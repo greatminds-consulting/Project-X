@@ -563,14 +563,14 @@ $(function() {
             description: description,
             listid: listid
         }).done(function(response) {
-            response = JSON.parse(response);
-            if (response.can_be_template === true) {
-                textArea.parents('.checklist').find('.save-checklist-template').removeClass('hide');
-            }
-            if (description === '') {
-                $('#checklist-items').find('.checklist[data-checklist-id="' + listid + '"]').remove();
-            }
-        });
+                response = JSON.parse(response);
+                if (response.can_be_template === true) {
+                    textArea.parents('.checklist').find('.save-checklist-template').removeClass('hide');
+                }
+                if (description === '') {
+                    $('#checklist-items').find('.checklist[data-checklist-id="' + listid + '"]').remove();
+                }
+            });
     });
 
     $("body").on('rendered.bs.select,refreshed.bs.select', 'select.checklist-items-template-select', function() {
@@ -1288,11 +1288,11 @@ $(function() {
             leadid: aLeadId,
             activity: message
         }).done(function(response) {
-            response = JSON.parse(response);
-            _lead_init_data(response, response.id);
-        }).fail(function(data) {
-            alert_float('danger', data.responseText);
-        });
+                response = JSON.parse(response);
+                _lead_init_data(response, response.id);
+            }).fail(function(data) {
+                alert_float('danger', data.responseText);
+            });
     });
 
     // Submit notes on lead modal do ajax not the regular request
@@ -1303,8 +1303,8 @@ $(function() {
             response = JSON.parse(response);
             _lead_init_data(response, response.id);
         }).fail(function(data) {
-            alert_float('danger', data.responseText);
-        });
+                alert_float('danger', data.responseText);
+            });
         return false;
     });
 
@@ -1312,7 +1312,7 @@ $(function() {
     var LeadsServerParams = {
         "custom_view": "[name='custom_view']",
         "assigned": "[name='view_assigned']",
-       //"assigned": "[name='assigned[]']",
+        //"assigned": "[name='assigned[]']",
         "status": "[name='view_status[]']",
         "source": "[name='view_source']",
     }
@@ -2402,7 +2402,7 @@ function _init_tasks_billable_select(tasks, project_id) {
         delay(function() {
             if ((tasks_help_wrapper.attr('info-shown-count') < 3 || typeof(tasks_help_wrapper.attr('info-shown-count')) == 'undefined')
                 && $('.projects-wrapper').is(':visible') && tasks.length > 0) {
-               tasks_help_wrapper.attr('info-shown-count', typeof(tasks_help_wrapper.attr('info-shown-count')) == 'undefined' ? 1 : parseInt(tasks_help_wrapper.attr('info-shown-count')) + 1);
+                tasks_help_wrapper.attr('info-shown-count', typeof(tasks_help_wrapper.attr('info-shown-count')) == 'undefined' ? 1 : parseInt(tasks_help_wrapper.attr('info-shown-count')) + 1);
                 tasks_help_wrapper.find('.popover-invoker').click()
             }
         }, 3500);
@@ -3796,12 +3796,12 @@ function edit_note(id) {
         $.post(admin_url + 'misc/edit_note/' + id, {
             description: description
         }).done(function(response) {
-            response = JSON.parse(response);
-            if (response.success == true) {
-                alert_float('success', response.message);
-                $("body").find('[data-note-description="' + id + '"]').html(nl2br(description));
-            }
-        });
+                response = JSON.parse(response);
+                if (response.success == true) {
+                    alert_float('success', response.message);
+                    $("body").find('[data-note-description="' + id + '"]').html(nl2br(description));
+                }
+            });
         toggle_edit_note(id);
     }
 
@@ -3875,8 +3875,8 @@ function kanban_load_more(status_id, e, url, column_px, container_px) {
             $(e).attr('data-page', page);
             fix_kanban_height(column_px, container_px);
         }).fail(function(error) {
-            alert_float('danger', error.responseText);
-        });
+                alert_float('danger', error.responseText);
+            });
         if (page >= total_pages - 1) {
             $(e).addClass("disabled");
         }
@@ -4100,9 +4100,9 @@ function load_post_likes(postid) {
             page: track_load_post_likes,
             postid: postid
         }).done(function(response) {
-            track_load_post_likes++
-            $('#modal_post_likes_wrapper').append(response);
-        });
+                track_load_post_likes++
+                $('#modal_post_likes_wrapper').append(response);
+            });
 
         if (track_load_post_likes >= post_likes_total_pages - 1) {
             $('.likes_modal .modal-footer').addClass('hide');
@@ -4118,9 +4118,9 @@ function load_comment_likes(commentid) {
             page: track_load_comment_likes,
             commentid: commentid
         }).done(function(response) {
-            track_load_comment_likes++
-            $('#modal_comment_likes_wrapper').append(response);
-        });
+                track_load_comment_likes++
+                $('#modal_comment_likes_wrapper').append(response);
+            });
 
         if (track_load_comment_likes >= comment_likes_total_pages - 1) {
             $('.likes_modal .modal-footer').addClass('hide');
@@ -4138,9 +4138,9 @@ function load_more_comments(link) {
         $.post(admin_url + 'newsfeed/init_post_comments/' + postid, {
             page: page
         }).done(function(response) {
-            $(link).data('track-load-comments', page);
-            $('[data-comments-postid="' + postid + '"] .load-more-comments').before(response);
-        });
+                $(link).data('track-load-comments', page);
+                $('[data-comments-postid="' + postid + '"] .load-more-comments').before(response);
+            });
         page++;
         $(link).find('input[name="page"]').val(page);
         if (page >= total_pages - 1) {
@@ -4223,16 +4223,16 @@ function add_comment(input) {
         content: $(input).val(),
         postid: postid
     }).done(function(response) {
-        response = JSON.parse(response);
-        if (response.success == true) {
-            $(input).val('');
-            if ($("body").find('[data-comments-postid="' + postid + '"] .post-comment').length > 0) {
-                $("body").find('[data-comments-postid="' + postid + '"] .post-comment').prepend(response.comment);
-            } else {
-                refresh_post_comments(postid);
+            response = JSON.parse(response);
+            if (response.success == true) {
+                $(input).val('');
+                if ($("body").find('[data-comments-postid="' + postid + '"] .post-comment').length > 0) {
+                    $("body").find('[data-comments-postid="' + postid + '"] .post-comment').prepend(response.comment);
+                } else {
+                    refresh_post_comments(postid);
+                }
             }
-        }
-    });
+        });
 }
 
 // Removes post comment
@@ -4437,9 +4437,9 @@ function lead_profile_form_handler(form) {
             table_leads.DataTable().ajax.reload(null, false);
         }
     }).fail(function(data) {
-        alert_float('danger', data.responseText);
-        return false;
-    });
+            alert_float('danger', data.responseText);
+            return false;
+        });
     return false;
 }
 
@@ -4448,12 +4448,12 @@ function update_all_proposal_emails_linked_to_lead(id) {
     $.post(admin_url + 'leads/update_all_proposal_emails_linked_to_lead/' + id, {
         update: true
     }).done(function(response) {
-        response = JSON.parse(response);
-        if (response.success) {
-            alert_float('success', response.message);
-        }
-        init_lead_modal_data(id);
-    });
+            response = JSON.parse(response);
+            if (response.success) {
+                alert_float('success', response.message);
+            }
+            init_lead_modal_data(id);
+        });
 }
 
 // Add lead data returned from server to the lead modal
@@ -4486,8 +4486,8 @@ function _lead_init_data(data, id) {
                         lead_id: id,
                         external: 'dropbox'
                     }).done(function() {
-                        init_lead_modal_data(id);
-                    });
+                            init_lead_modal_data(id);
+                        });
                 },
                 linkType: "preview",
                 extensions: app_allowed_files.split(','),
@@ -4534,8 +4534,8 @@ function init_lead_modal_data(id, url) {
     requestGetJSON((typeof(url) != 'undefined' ? url : 'leads/lead/') + (typeof(id) != 'undefined' ? id : '')).done(function(response) {
         _lead_init_data(response, id);
     }).fail(function(data) {
-        alert_float('danger', data.responseText);
-    });
+            alert_float('danger', data.responseText);
+        });
 }
 
 // Kan ban leads sorting
@@ -4598,8 +4598,8 @@ function delete_lead_attachment(wrapper, id) {
         requestGetJSON('leads/delete_attachment/' + id).done(function(response) {
             if (response.success == true) { $(wrapper).parents('.lead-attachment-wrapper').remove(); }
         }).fail(function(data) {
-            alert_float('danger', data.responseText);
-        });
+                alert_float('danger', data.responseText);
+            });
     }
 }
 
@@ -4609,8 +4609,8 @@ function delete_lead_note(wrapper, id) {
         requestGetJSON('leads/delete_note/' + id).done(function(response) {
             if (response.success == true) { $(wrapper).parents('.lead-note').remove(); }
         }).fail(function(data) {
-            alert_float('danger', data.responseText);
-        });
+                alert_float('danger', data.responseText);
+            });
     }
 }
 
@@ -4624,8 +4624,8 @@ function lead_mark_as_lost(id) {
         }
         _lead_init_data(response, response.id);
     }).fail(function(error) {
-        alert_float('danger', error.responseText);
-    });
+            alert_float('danger', error.responseText);
+        });
 }
 
 // Unmark lead as lost function
@@ -4634,8 +4634,8 @@ function lead_unmark_as_lost(id) {
         if (response.success == true) { alert_float('success', response.message); }
         _lead_init_data(response, response.id);
     }).fail(function(error) {
-        alert_float('danger', error.responseText);
-    });
+            alert_float('danger', error.responseText);
+        });
 }
 
 // Mark lead as junk function
@@ -4648,8 +4648,8 @@ function lead_mark_as_junk(id) {
         }
         _lead_init_data(response, response.id);
     }).fail(function(error) {
-        alert_float('danger', error.responseText);
-    });
+            alert_float('danger', error.responseText);
+        });
 }
 
 // Unmark lead as junk function
@@ -4658,8 +4658,8 @@ function lead_unmark_as_junk(id) {
         if (response.success == true) { alert_float('success', response.message); }
         _lead_init_data(response, response.id);
     }).fail(function(error) {
-        alert_float('danger', error.responseText);
-    });
+            alert_float('danger', error.responseText);
+        });
 }
 
 // Convert lead to customer
@@ -4673,19 +4673,26 @@ function convert_lead_to_customer(id) {
             keyboard: false
         });
     }).fail(function(data) {
-        alert_float('danger', data.responseText);
-    });
+            alert_float('danger', data.responseText);
+        });
 }
 
 // Leads bulk action
 function leads_bulk_action(event) {
+
     if (confirm_delete()) {
-        var mass_delete = $('#mass_delete').prop('checked');
+
+var mass_delete = $('#mass_delete').prop('checked');
         var ids = [];
         var data = {};
         if (mass_delete == false || typeof(mass_delete) == 'undefined') {
             data.status = $('#move_to_status_leads_bulk').val();
-            data.assigned = $('#assign_to_leads_bulk').val();
+            var selectmembers = [];
+            $( "select.leads_dt_assigned option:selected" ).each(function() {
+                selectmembers.push($(this).val());
+            });
+            var assignedMembers = selectmembers.join(', ');
+            data.assigned=assignedMembers;
             data.source = $('#move_to_source_leads_bulk').val();
             data.last_contact = $('#leads_bulk_last_contact').val();
             data.tags = $('#tags_bulk').tagit('assignedTags');
@@ -4710,12 +4717,14 @@ function leads_bulk_action(event) {
         data.ids = ids;
         $(event).addClass('disabled');
         setTimeout(function() {
-            $.post(admin_url + 'leads/bulk_action', data).done(function() {
-                window.location.reload();
+            $.post(admin_url + 'leads/bulk_action', data).done(function(data) {
+
+               window.location.reload();
             }).fail(function(data) {
-                $('#lead-modal').modal('hide');
-                alert_float('danger', data.responseText);
-            });
+
+                   $('#lead-modal').modal('hide');
+                  alert_float('danger', data.responseText);
+                });
         }, 200);
     }
 }
@@ -4903,8 +4912,8 @@ function add_task_checklist_item(task_id, description) {
         taskid: task_id,
         description: description
     }).done(function() {
-        init_tasks_checklist_items(true, task_id);
-    });
+            init_tasks_checklist_items(true, task_id);
+        });
 }
 
 // Remove task checklist item from the task
@@ -4922,14 +4931,14 @@ function init_tasks_checklist_items(is_new, task_id) {
     $.post(admin_url + 'tasks/init_checklist_items', {
         taskid: task_id
     }).done(function(data) {
-        $('#checklist-items').html(data);
-        if (typeof(is_new) != 'undefined') {
-            var first = $('#checklist-items').find('.checklist textarea').eq(0);
-            if (first.val() == '') { first.focus(); }
-        }
-        recalculate_checklist_items_progress();
-        update_checklist_order();
-    });
+            $('#checklist-items').html(data);
+            if (typeof(is_new) != 'undefined') {
+                var first = $('#checklist-items').find('.checklist textarea').eq(0);
+                if (first.val() == '') { first.focus(); }
+            }
+            recalculate_checklist_items_progress();
+            update_checklist_order();
+        });
 }
 
 // Removes task single attachment
@@ -5152,28 +5161,28 @@ function task_form_handler(form) {
         processData: false,
         url: formURL
     }).done(function(response) {
-        response = JSON.parse(response);
-        if (response.success == true) { alert_float('success', response.message); }
-        if (!$("body").hasClass('project')) {
-            $('#_task_modal').attr('data-task-created', true);
-            $('#_task_modal').modal('hide');
-            init_task_modal(response.id);
-            reload_tasks_tables();
-        } else {
-            // reload page on project area
-            var location = window.location.href;
-            var params = [];
-            location = location.split('?');
-            var group = get_url_param('group');
-            var excludeCompletedTasks = get_url_param('exclude_completed');
-            if (group) { params['group'] = group; }
-            if (excludeCompletedTasks) { params['exclude_completed'] = excludeCompletedTasks; }
-            params['taskid'] = response.id;
-            window.location.href = buildUrl(location[0], params)
-        }
-    }).fail(function(error) {
-        alert_float('danger', JSON.parse(error.responseText));
-    });
+            response = JSON.parse(response);
+            if (response.success == true) { alert_float('success', response.message); }
+            if (!$("body").hasClass('project')) {
+                $('#_task_modal').attr('data-task-created', true);
+                $('#_task_modal').modal('hide');
+                init_task_modal(response.id);
+                reload_tasks_tables();
+            } else {
+                // reload page on project area
+                var location = window.location.href;
+                var params = [];
+                location = location.split('?');
+                var group = get_url_param('group');
+                var excludeCompletedTasks = get_url_param('exclude_completed');
+                if (group) { params['group'] = group; }
+                if (excludeCompletedTasks) { params['exclude_completed'] = excludeCompletedTasks; }
+                params['taskid'] = response.id;
+                window.location.href = buildUrl(location[0], params)
+            }
+        }).fail(function(error) {
+            alert_float('danger', JSON.parse(error.responseText));
+        });
 
     return false;
 }
@@ -5281,9 +5290,9 @@ function init_task_modal(task_id) {
     requestGet('tasks/get_task_data/' + task_id + queryStr).done(function(response) {
         _task_append_html(response);
     }).fail(function(data) {
-        $('#task-modal').modal('hide');
-        alert_float('danger', data.responseText);
-    });
+            $('#task-modal').modal('hide');
+            alert_float('danger', data.responseText);
+        });
 }
 
 // General function to append task html returned from request
@@ -6186,8 +6195,8 @@ function delete_invoice_attachment(id) {
                 init_invoice($("body").find('input[name="_attachment_sale_id"]').val());
             }
         }).fail(function(error) {
-            alert_float('danger', error.responseText);
-        });
+                alert_float('danger', error.responseText);
+            });
     }
 }
 
@@ -6200,8 +6209,8 @@ function delete_credit_note_attachment(id) {
                 init_credit_note($("body").find('input[name="_attachment_sale_id"]').val());
             }
         }).fail(function(error) {
-            alert_float('danger', error.responseText);
-        });
+                alert_float('danger', error.responseText);
+            });
     }
 }
 
@@ -6215,8 +6224,8 @@ function delete_estimate_attachment(id) {
                 $("body").hasClass('estimates-pipeline') ? estimate_pipeline_open(rel_id) : init_estimate(rel_id);
             }
         }).fail(function(error) {
-            alert_float('danger', error.responseText);
-        });
+                alert_float('danger', error.responseText);
+            });
     }
 }
 
@@ -6230,8 +6239,8 @@ function delete_proposal_attachment(id) {
                 $("body").hasClass('proposals-pipeline') ? proposal_pipeline_open(rel_id) : init_proposal(rel_id);
             }
         }).fail(function(error) {
-            alert_float('danger', error.responseText);
-        });
+                alert_float('danger', error.responseText);
+            });
     }
 }
 
@@ -6315,8 +6324,8 @@ function init_estimates_total(manual) {
         customer_id: customer_id,
         project_id: project_id,
     }).done(function(response) {
-        $('#estimates_total').html(response);
-    });
+            $('#estimates_total').html(response);
+        });
 }
 
 // Expenses quick total stats
@@ -6345,8 +6354,8 @@ function init_expenses_total() {
         customer_id: customer_id,
         project_id: project_id,
     }).done(function(response) {
-        $('#expenses_total').html(response);
-    });
+            $('#expenses_total').html(response);
+        });
 }
 
 // Validate invoice add/edit form
@@ -6758,28 +6767,28 @@ function fetch_notifications(callback) {
                         'tag': notId,
                         'closeTime': app_dismiss_desktop_not_after != "0" ? app_dismiss_desktop_not_after * 1000 : null
                     }).close(function() {
-                        requestGet('misc/set_desktop_notification_read/' + notId).done(function(response) {
-                            var $totalIndicator = nw.find('.icon-total-indicator');
-                            nw.find('li[data-notification-id="' + notId + '"] .notification-box').removeClass('unread');
-                            var currentTotalNotifications = $totalIndicator.text();
-                            currentTotalNotifications = currentTotalNotifications.trim();
-                            currentTotalNotifications = (currentTotalNotifications - 1);
-                            if (currentTotalNotifications > 0) {
-                                document.title = '(' + currentTotalNotifications + ') ' + doc_initial_title;
-                                $totalIndicator.html(currentTotalNotifications)
-                            } else {
-                                document.title = doc_initial_title;
-                                $totalIndicator.addClass('hide');
-                            }
+                            requestGet('misc/set_desktop_notification_read/' + notId).done(function(response) {
+                                var $totalIndicator = nw.find('.icon-total-indicator');
+                                nw.find('li[data-notification-id="' + notId + '"] .notification-box').removeClass('unread');
+                                var currentTotalNotifications = $totalIndicator.text();
+                                currentTotalNotifications = currentTotalNotifications.trim();
+                                currentTotalNotifications = (currentTotalNotifications - 1);
+                                if (currentTotalNotifications > 0) {
+                                    document.title = '(' + currentTotalNotifications + ') ' + doc_initial_title;
+                                    $totalIndicator.html(currentTotalNotifications)
+                                } else {
+                                    document.title = doc_initial_title;
+                                    $totalIndicator.addClass('hide');
+                                }
+                            });
+                        }).click(function(e) {
+                            parent.focus();
+                            window.focus();
+                            setTimeout(function() {
+                                nw.find(nSelector + ' .notification-link').addClass('desktopClick').click();
+                                e.target.close();
+                            }, 70);
                         });
-                    }).click(function(e) {
-                        parent.focus();
-                        window.focus();
-                        setTimeout(function() {
-                            nw.find(nSelector + ' .notification-link').addClass('desktopClick').click();
-                            e.target.close();
-                        }, 70);
-                    });
                 });
             }
         }, 10);
