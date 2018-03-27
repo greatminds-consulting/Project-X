@@ -230,8 +230,8 @@ class Venues extends Admin_controller
         else {
             $data['title']      = _l('Add Area');
         }
-        $data['layouts']              = $this->venues_model->getlayouts();
-        $data['amenities']            = $this->venues_model->getamenities();
+        $data['layouts']              = $this->venues_model->getlayouts(true);
+        $data['amenities']            = $this->venues_model->getamenities(true);
         $this->load->view('admin/venues/area' , $data);
     }
 

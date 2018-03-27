@@ -127,15 +127,21 @@ class Venues_model extends CRM_Model
         return false;
     }
 
-    public function getamenities() {
+    public function getamenities($amenity = '') {
         $this->db->select('*');
+        if ($amenity) {
+            $this->db->where('active', 1);
+        }
         $this->db->from('tblvenueamenities');
         $query = $this->db->get();
         $data = $query->result_array();
         return  $data;
     }
-    public function getlayouts() {
+    public function getlayouts($layout = '') {
         $this->db->select('*');
+        if ($layout) {
+            $this->db->where('active', 1);
+        }
         $this->db->from('tblvenuelayouts');
         $query = $this->db->get();
         $data = $query->result_array();
