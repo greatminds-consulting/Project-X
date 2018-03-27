@@ -57,6 +57,6 @@
 <?php init_tail(); ?>
 
 <script>
-_validate_form($('#add_areas'),{name:'required',layout:'required'});
+_validate_form($('#add_areas'),{name:'required',layout:'required',layout_minimum: {required: true,digits: true},layout_maximum: {required: true,digits: true}});
 </script>
 
