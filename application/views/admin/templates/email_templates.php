@@ -49,6 +49,40 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
+                            <div class="col-md-12">
+                                <h4 class="bold well email-template-heading">
+                                    <?php echo _l('email_template_contracts_fields_heading'); ?>
+                                    <?php if($hasPermissionEdit){ ?>
+                                        <a href="<?php echo admin_url('templates/disable_by_type/contracts'); ?>" class="pull-right mleft5 mright25"><small><?php echo _l('disable_all'); ?></small></a>
+                                        <a href="<?php echo admin_url('templates/enable_by_type/contracts'); ?>" class="pull-right"><small><?php echo _l('enable_all'); ?></small></a>
+                                    <?php } ?>
+                                </h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th><?php echo _l('email_templates_table_heading_name'); ?></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php foreach($contracts as $contract_template){ ?>
+                                            <tr>
+                                                <td class="<?php if($contract_template['active'] == 0){echo 'text-throught';} ?>">
+                                                    <a href="<?php echo admin_url('templates/template/'.$contract_template['templateid']); ?>"><?php echo $contract_template['name']; ?></a>
+                                                    <?php if(ENVIRONMENT !== 'production'){ ?>
+                                                        <br/><small><?php echo $contract_template['slug']; ?></small>
+                                                    <?php } ?>
+                                                    <?php if($hasPermissionEdit){ ?>
+                                                        <a href="<?php echo admin_url('templates/'.($contract_template['active'] == '1' ? 'disable/' : 'enable/').$contract_template['templateid']); ?>" class="pull-right"><small><?php echo _l($contract_template['active'] == 1 ? 'disable' : 'enable'); ?></small></a>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
                         </div>
                     </div>
                 </div>
