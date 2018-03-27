@@ -19,14 +19,29 @@
                                             <thead>
                                             <tr>
                                                 <th><?php echo _l('area_name'); ?></th>
+                                                <th><?php echo _l('area_layout_minimum'); ?></th>
+                                                <th><?php echo _l('area_layout_maximum'); ?></th>
+                                                <th><?php echo _l('area_layout'); ?></th>
+                                                <th class="pull-right">Options</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <?php foreach($areas as $area){ ?>
                                                 <tr>
-                                                    <td class="<?php if($area['active'] == 0){echo 'text-throught';} ?>">
-                                                        <a href="<?php echo admin_url('venues/area/'.$area['id']); ?>"><?php echo $area['name']; ?></a>
-                                                        <a href="<?php echo admin_url('venues/area'.($area['active'] == '1' ? 'disable/' : 'enable/').$area['id']); ?>" class="pull-right"><small><?php echo _l($area['active'] == 1 ? 'disable' : 'enable'); ?></small></a>
+                                                    <td class="<?php if($area['area_active'] == 0){echo 'text-throught';} ?>">
+                                                        <a href="<?php echo admin_url('venues/area/'.$area['area_id']); ?>"><?php echo $area['area_name']; ?></a>
+                                                    </td>
+                                                    <td>
+                                                       <p><?php echo $area['layout_minimum'];?></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><?php echo $area['layout_maximum'];?></p>
+                                                    </td>
+                                                    <td>
+                                                        <p><?php echo $area['name'];?></p>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<?php echo admin_url('venues/area'.($area['area_active'] == '1' ? 'disable/' : 'enable/').$area['area_id']); ?>" class="pull-right"><small><?php echo _l($area['area_active'] == 1 ? 'disable' : 'enable'); ?></small></a>
                                                     </td>
                                                 </tr>
                                             <?php } ?>

@@ -228,8 +228,9 @@ class Venues_model extends CRM_Model
     }
 
     public function getareas() {
-        $this->db->select('*');
+        $this->db->select('tblvenueareas.name as area_name,tblvenueareas.active as area_active,tblvenueareas.layout_minimum as layout_minimum,,tblvenueareas.layout_maximum as layout_maximum,tblvenueareas.id as area_id,tblvenuelayouts.*');
         $this->db->from('tblvenueareas');
+        $this->db->join('tblvenuelayouts','tblvenuelayouts.id=tblvenueareas.layout_id','left');
         $query = $this->db->get();
         $data = $query->result_array();
         return  $data;
