@@ -61,9 +61,10 @@
            if(total_rows('tblcontacts',array('email'=>$lead->email)) > 0 && total_rows('tblclients',array('leadid'=>$lead->id)) == 0){
              $convert_to_client_tooltip_email_exists = _l('lead_email_already_exists');
              $text = _l('lead_convert_to_client');
-          } else if (total_rows('tblclients',array('leadid'=>$lead->id))){
+         } else if (total_rows('tblclients',array('leadid'=>$lead->id))){
              $client = true;
-          } else {
+        }
+           else {
              $text = _l('lead_convert_to_client');
           }
       ?>
@@ -150,7 +151,7 @@
             <p class="bold font-medium-xs mbot15"><?php echo (isset($lead) && $lead->default_language != '' ? $lead->default_language : _l('system_default_string')) ?></p>
             <?php } ?>
             <p class="text-muted lead-field-heading"><?php echo _l('lead_add_edit_assigned'); ?></p>
-            <p class="bold font-medium-xs mbot15"><?php echo (isset($lead) && $lead->assigned != 0 ? get_staff_full_name($lead->assigned) : '-') ?></p>
+            <p class="bold font-medium-xs mbot15"><?php if (isset($assigners)) {foreach($assigners as $assigned){$elements[] = $assigned['firstname']." ".$assigned['lastname'];} echo implode(',', $elements);}?></p>
             <p class="text-muted lead-field-heading"><?php echo _l('tags'); ?></p>
             <p class="bold font-medium-xs mbot10">
                <?php
@@ -233,21 +234,24 @@
                echo render_leads_source_select($sources, $selected,'lead_add_edit_source');
             ?>
          </div>
-         <div class="col-md-4 mtop15">
-            <?php
-               $assigned_attrs = array();
-               $selected = (isset($lead) ? $lead->assigned : get_staff_user_id());
-               if(isset($lead)
-                  && $lead->assigned == get_staff_user_id()
-                  && $lead->addedfrom != get_staff_user_id()
-                  && !is_admin($lead->assigned)
-                  && !has_permission('leads','','view')
-               ){
-                 $assigned_attrs['disabled'] = true;
-               }
-               echo render_select('assigned',$members,array('staffid',array('firstname','lastname')),'lead_add_edit_assigned',$selected,$assigned_attrs); ?>
-         </div>
-         <div class="clearfix"></div>
+            <div class="col-md-4 mtop15">
+              <?php
+              $selected = array();
+              if(isset($assigners)){
+                    foreach($assigners as $member){
+                      array_push($selected,$member['staffid']);
+                  }
+              } else {
+                  array_push($selected,get_staff_user_id());
+              }
+                echo render_select('assigned[]',$project_members,array('staffid',array('firstname','lastname')),'Assigned',$selected,array('multiple'=>true,'data-actions-box'=>true),array(),'','',false);
+
+              ?>
+          </div>
+
+
+
+          <div class="clearfix"></div>
             <hr class="mtop5 mbot10" />
              <div class="col-md-12">
                   <div class="form-group no-mbot" id="inputTagsWrapper">

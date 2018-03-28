@@ -2,9 +2,9 @@
 $is_admin = is_admin();
 $i = 0;
 foreach ($statuses as $status) {
-  $total_pages = ceil($this->leads_model->do_kanban_query($status['id'],$this->input->get('search'),1,array(),true)/get_option('leads_kanban_limit'));
+   $total_pages = ceil($this->leads_model->do_kanban_query($status['id'],$this->input->get('search'),1,array(),true)/get_option('leads_kanban_limit'));
 
-  $settings = '';
+    $settings = '';
   foreach(get_system_favourite_colors() as $color){
     $color_selected_class = 'cpicker-small';
     if($color == $status['color']){
@@ -13,6 +13,7 @@ foreach ($statuses as $status) {
     $settings .= "<div class='kanban-cpicker cpicker ".$color_selected_class."' data-color='".$color."' style='background:".$color.";border:1px solid ".$color."'></div>";
   }
   ?>
+
   <ul class="kan-ban-col" data-col-status-id="<?php echo $status['id']; ?>" data-total-pages="<?php echo $total_pages; ?>">
     <li class="kan-ban-col-wrapper">
       <div class="border-right panel_s">
