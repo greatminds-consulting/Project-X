@@ -18,11 +18,23 @@
                    0 => array(
                        'id' => 'proposals',
                        'name' => 'Proposals'
+                   ),1 => array(
+                       'id' => 'contracts',
+                       'name' => 'Contracts'
                    )
                );
-               echo render_input('name','template_name',$template->name,'text',array('disabled'=>true));
-               echo render_input('type','template_type',$template->type,'text',array('disabled'=>true));
+               echo render_input('name','template_name',$template->name,'text');
                ?>
+              <div class="form-group" app-field-wrapper="name">
+                  <label for="company" class="control-label"><small class="req text-danger">* </small>Template Type</label>
+                  <select class="form-control" name="type">
+                      <option value="">Select Type</option>
+                      <?php
+                      foreach($type as $typ) {?>
+                          <option value="<?php echo $typ['id'];?>" <?php if($template->type == $typ['id']){echo "selected";} ?>><?php echo $typ['name'];?></option>
+                      <?php }?>
+                  </select>
+              </div>
               <hr />
               <?php
               $editors = array();
