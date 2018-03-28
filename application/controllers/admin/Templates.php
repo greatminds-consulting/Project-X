@@ -107,9 +107,9 @@ class Templates extends Admin_controller {
         redirect(admin_url('templates'));
     }
 
-    public function list_templates() {
+    public function list_templates($type = 'proposals') {
         $proposals = $this->templates_model->get(array(
-            'type' => 'proposals',
+            'type' => $type,
             'active' => 1
         ));
         $proposalArray = array();
