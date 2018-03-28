@@ -131,4 +131,14 @@ class Templates_model extends CRM_Model {
         return $this->db->affected_rows() > 0 ? true : false;
     }
 
+    public function delete($id) {
+        $this->db->where('templateid', $id);
+        $this->db->delete('tbltemplates');
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Template Deleted [' . $id . ']');
+            return true;
+        }
+        return false;
+    }
+
 }
