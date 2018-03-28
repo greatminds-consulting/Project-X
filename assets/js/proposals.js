@@ -67,6 +67,12 @@ function init_proposal_editor() {
                $.Shortcuts.stop();
             });
 
+            editor.on('ExecCommand', function (e) {
+                if("mceInsertContent" == e.command && $('div.mce-title:contains("Insert template")').is(':visible')) {
+                    editor.setContent(e.value);
+                }
+            });
+
             editor.addButton('save_button', {
                 text: appLang.proposal_save,
                 icon: false,

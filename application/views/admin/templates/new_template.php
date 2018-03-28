@@ -17,6 +17,9 @@
                    0 => array(
                        'id' => 'proposals',
                        'name' => 'Proposals'
+                   ),1 => array(
+                       'id' => 'contracts',
+                       'name' => 'Contracts'
                    )
                );
                 echo render_input('name','template_name','','text');

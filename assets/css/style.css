@@ -2209,7 +2209,6 @@ input[type="radio"] .styled:checked+label::after {
 
 .panel_s .panel-body {
     background: #fff;
-    border: 1px solid #dce1ef;
     border-radius: 4px;
     padding: 20px;
     position: relative;
@@ -8597,3 +8596,6 @@ td[align="center"] {
     vertical-align: middle;
 }
 
+.mce-branding {
+    display: none !important;
+}

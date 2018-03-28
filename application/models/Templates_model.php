@@ -92,6 +92,9 @@ class Templates_model extends CRM_Model {
             $main_id = $id;
             $_data              = array();
             $_data['message']   = $data['message'][$id];
+            $_data['name']      = $data['name'];
+            $_data['type']      = $data['type'];
+            $_data['message']   = $data['message'][$id];
             $this->db->where('templateid', $id);
             $this->db->update('tbltemplates', $_data);
             if ($this->db->affected_rows() > 0) {
@@ -129,6 +132,16 @@ class Templates_model extends CRM_Model {
         $this->db->where('type', $type);
         $this->db->update('tbltemplates', array('active'=>$enabled));
         return $this->db->affected_rows() > 0 ? true : false;
+    }
+
+    public function delete($id) {
+        $this->db->where('templateid', $id);
+        $this->db->delete('tbltemplates');
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Template Deleted [' . $id . ']');
+            return true;
+        }
+        return false;
     }
 
 }

@@ -15,6 +15,9 @@ class Templates extends Admin_controller {
         $data['proposals'] = $this->templates_model->get(array(
             'type' => 'proposals'
         ));
+        $data['contracts'] = $this->templates_model->get(array(
+            'type' => 'contracts'
+        ));
         $data['title']     = _l('templates');
         $data['hasPermissionEdit'] = has_permission('templates','','edit');
         $this->load->view('admin/templates/email_templates', $data);
@@ -104,9 +107,9 @@ class Templates extends Admin_controller {
         redirect(admin_url('templates'));
     }
 
-    public function list_templates() {
+    public function list_templates($type = 'proposals') {
         $proposals = $this->templates_model->get(array(
-            'type' => 'proposals',
+            'type' => $type,
             'active' => 1
         ));
         $proposalArray = array();
@@ -118,5 +121,18 @@ class Templates extends Admin_controller {
         }
         $data['proposalArray'] = $proposalArray;
         $this->load->view('admin/templates/list_templates',$data);
+    }
+
+    public function delete($id) {
+        if (!$id) {
+            redirect(admin_url('templates'));
+        }
+        $response = $this->templates_model->delete($id);
+        if ($response == true) {
+            set_alert('success', _l('Deleted Template Successfully'));
+        } else {
+            set_alert('warning', _l('Some error occured'));
+        }
+        redirect(admin_url('templates'));
     }
 }
