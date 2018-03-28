@@ -153,8 +153,8 @@ class Staff_model extends CRM_Model
             'addedfrom' => $transfer_data_to,
         ));
 
-        $this->db->where('assigned', $id);
-        $this->db->update('tblleads', array(
+        $this->db->where('staff_id', $id);
+        $this->db->update('tblleadstaffs', array(
             'assigned' => $transfer_data_to,
         ));
 

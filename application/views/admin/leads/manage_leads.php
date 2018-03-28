@@ -39,24 +39,30 @@
                         <h4 class="no-margin"><?php echo _l('leads_summary'); ?></h4>
                      </div>
                      <?php
-                        $whereNoViewPermission = '(addedfrom = '.get_staff_user_id().' OR assigned='.get_staff_user_id().' OR is_public = 1)';
+                        $whereNoViewPermission = '(addedfrom = '.get_staff_user_id().'  OR is_public = 1)';
+                        //$whereNoViewPermission = '(addedfrom = '.get_staff_user_id().' OR assigned='.get_staff_user_id().' OR is_public = 1)';
                         $numStatuses = count($statuses);
                         $has_permission_view = has_permission('leads','','view');
-                        foreach($statuses as $status){ ?>
+
+                        foreach($statuses as $status){?>
                      <div class="col-md-2 col-xs-6 border-right">
                         <?php
                            $this->db->where('status',$status['id']);
                           if(!$has_permission_view){
+
                               $this->db->where($whereNoViewPermission);
                            }
                            $total = $this->db->count_all_results('tblleads');
-                           ?>
+
+                        ?>
                         <h3 class="bold"><?php echo $total; ?></h3>
                         <span style="color:<?php echo $status['color']; ?>"><?php echo $status['name']; ?></span>
                      </div>
                      <?php } ?>
                      <?php
+
                         if(!$has_permission_view){
+
                           $this->db->where($whereNoViewPermission);
                         }
                         $total_leads = $this->db->count_all_results('tblleads');
@@ -65,7 +71,7 @@
                         <?php
                            $this->db->where('lost',1);
                            if(!$has_permission_view){
-                            $this->db->where($whereNoViewPermission);
+                             $this->db->where($whereNoViewPermission);
                            }
                            $total_lost = $this->db->count_all_results('tblleads');
                            $percent_lost = ($total_leads > 0 ? number_format(($total_lost * 100) / $total_leads,2) : 0);
@@ -112,7 +118,7 @@
                            </div>
                         </div>
                      </div>
-                     <?php } else { ?>
+                     <?php } else {?>
                      <div class="row" id="leads-table">
                         <div class="col-md-12">
                            <div class="row">
@@ -120,9 +126,9 @@
                                  <p class="bold"><?php echo _l('filter_by'); ?></p>
                               </div>
                               <?php if(has_permission('leads','','view')){ ?>
-                              <div class="col-md-3 leads-filter-column">
-                                 <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
-                              </div>
+                                  <div class="col-md-3 leads-filter-column">
+                                      <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
+                                  </div>
                               <?php } ?>
                               <div class="col-md-3 leads-filter-column">
                                  <?php
@@ -190,8 +196,9 @@
                                               echo render_select('move_to_source_leads_bulk',$sources,array('id','name'),'lead_source');
                                               echo render_datetime_input('leads_bulk_last_contact','leads_dt_last_contact');
                                               if(has_permission('leads','','edit')){
-                                                echo render_select('assign_to_leads_bulk',$staff,array('staffid',array('firstname','lastname')),'leads_dt_assigned');
-                                              }
+
+                                              echo render_select('assign_to_leads_bulk[]',$project_members,array('staffid',array('firstname','lastname')),'leads_dt_assigned','',array('multiple'=>true,'data-actions-box'=>true),array(),'','leads_dt_assigned',false);
+                                                }
                                              ?>
                                           <div class="form-group">
                                           <?php echo '<p><b><i class="fa fa-tag" aria-hidden="true"></i> ' . _l('tags') . ':</b></p>'; ?>

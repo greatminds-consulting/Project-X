@@ -90,7 +90,7 @@ class Venues extends Admin_controller
                 $dataimage['image']     =   $galleryimage;
             }
             if($id!='') {
-                $dataimage['venue_id']      =   $id;
+                $dataimage['venue_id']  =   $id;
             } else {
                 $dataimage['venue_id']  =   $venueId;
             }

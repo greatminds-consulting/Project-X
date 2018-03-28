@@ -44,13 +44,14 @@ class Leads_model extends CRM_Model
         $default_leads_kanban_sort_type = get_option('default_leads_kanban_sort_type');
         $has_permission_view = has_permission('leads', '', 'view');
 
-        $this->db->select('tblleads.name as lead_name,tblleadssources.name as source_name,tblleads.id as id,tblleads.assigned,tblleads.email,tblleads.phonenumber,tblleads.company,tblleads.dateadded,tblleads.status,tblleads.lastcontact,(SELECT COUNT(*) FROM tblclients WHERE leadid=tblleads.id) as is_lead_client, (SELECT COUNT(id) FROM tblfiles WHERE rel_id=tblleads.id AND rel_type="lead") as total_files, (SELECT COUNT(id) FROM tblnotes WHERE rel_id=tblleads.id AND rel_type="lead") as total_notes,(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblleads.id and rel_type="lead" ORDER by tag_order ASC) as tags');
+        $this->db->select('tblleads.name as lead_name,tblleadssources.name as source_name,tblleads.id as id,tblleadstaffs.staff_id,tblleads.email,tblleads.phonenumber,tblleads.company,tblleads.dateadded,tblleads.status,tblleads.lastcontact,(SELECT COUNT(*) FROM tblclients WHERE leadid=tblleads.id) as is_lead_client, (SELECT COUNT(id) FROM tblfiles WHERE rel_id=tblleads.id AND rel_type="lead") as total_files, (SELECT COUNT(id) FROM tblnotes WHERE rel_id=tblleads.id AND rel_type="lead") as total_notes,(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblleads.id and rel_type="lead" ORDER by tag_order ASC) as tags');
         $this->db->from('tblleads');
+        $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
         $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
-        $this->db->join('tblstaff', 'tblstaff.staffid=tblleads.assigned', 'left');
+        $this->db->join('tblstaff', 'tblstaff.staffid=tblleadstaffs.staff_id', 'left');
         $this->db->where('status', $status);
         if (!$has_permission_view) {
-            $this->db->where('(assigned = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
+            $this->db->where('(tblleadstaffs.staff_id = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
         }
         if ($search != '') {
             if (!_startsWith($search, '#')) {
@@ -66,10 +67,9 @@ class Leads_model extends CRM_Model
 
         if (isset($sort['sort_by']) && $sort['sort_by'] && isset($sort['sort']) && $sort['sort']) {
             $this->db->order_by($sort['sort_by'], $sort['sort']);
-        } else {
+         } else {
             $this->db->order_by($default_leads_kanban_sort, $default_leads_kanban_sort_type);
-        }
-
+         }
         if ($count == false) {
             if ($page > 1) {
                 $page--;
@@ -86,6 +86,28 @@ class Leads_model extends CRM_Model
             return $this->db->count_all_results();
         }
     }
+    /**
+     * Select assigners from database
+     * @param null
+     * @return array
+     */
+    public function get_assigners()
+    {
+        $this->db->select('staffid,firstname,lastname');
+        $this->db->from('tblstaff');
+        $query = $this->db->get();
+        return  $query->result_array();
+
+    }
+    public function get_assignedstaff($id)
+    {
+        $this->db->select('tblstaff.firstname,tblstaff.lastname,tblstaff.staffid');
+        $this->db->from('tblleadstaffs');
+        $this->db->join('tblstaff','tblstaff.staffid=tblleadstaffs.staff_id','left');
+        $this->db->where('tblleadstaffs.lead_id',$id);
+        $query = $this->db->get();
+        return  $query->result_array();
+    }
 
     /**
      * Add new lead to database
@@ -94,6 +116,7 @@ class Leads_model extends CRM_Model
      */
     public function add($data)
     {
+
         if (isset($data['custom_contact_date']) || isset($data['custom_contact_date'])) {
             if (isset($data['contacted_today'])) {
                 $data['lastcontact'] = date('Y-m-d H:i:s');
@@ -121,6 +144,7 @@ class Leads_model extends CRM_Model
         $data['dateadded']   = date('Y-m-d H:i:s');
         $data['addedfrom']   = get_staff_user_id();
 
+
         $data                = do_action('before_lead_added', $data);
 
         $tags = '';
@@ -134,12 +158,19 @@ class Leads_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
+
+        if (isset($data['assigned'])) {
+            $assigned_fields = $data['assigned'];
+            $assigned_members[]=$data['assigned'];
+            unset($data['assigned']);
+        }
+
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
 
         $data['email'] = trim($data['email']);
         $this->db->insert('tblleads', $data);
-        $insert_id = $this->db->insert_id();
+       $insert_id = $this->db->insert_id();
         if ($insert_id) {
             logActivity('New Lead Added [Name: ' . $data['name'] . ']');
             $this->log_lead_activity($insert_id, 'not_lead_activity_created');
@@ -149,7 +180,24 @@ class Leads_model extends CRM_Model
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
-            $this->lead_assigned_member_notification($insert_id, $data['assigned']);
+            if (isset($assigned_fields)) {
+
+                $datastaff['lead_id']=$insert_id;
+                $datastaff['datecreated']=date("Y/m/d H:i:s");
+                foreach($assigned_fields as $staffs)
+                {
+                    $datastaff['staff_id']=$staffs;
+                    $this->db->insert('tblleadstaffs', $datastaff);
+                }
+           }
+            else{
+                $datastaff['lead_id']=$insert_id;
+                $datastaff['datecreated']=date("Y/m/d H:i:s");
+                $datastaff['staff_id']= 0 ;
+                $this->db->insert('tblleadstaffs', $datastaff);
+            }
+
+            $this->lead_assigned_member_notification($insert_id, $assigned_fields);
             do_action('lead_created', $insert_id);
 
             return $insert_id;
@@ -158,17 +206,18 @@ class Leads_model extends CRM_Model
         return false;
     }
 
-    public function lead_assigned_member_notification($lead_id, $assigned, $integration = false)
+    public function lead_assigned_member_notification($lead_id, $assignedstaff, $integration = false)
     {
-        if ((!empty($assigned) && $assigned != 0)) {
+
+        if ((!empty($assignedstaff) && $assignedstaff != 0)) {
             if ($integration == false) {
-                if ($assigned == get_staff_user_id()) {
+                if ($assignedstaff == get_staff_user_id()) {
                     return false;
                 }
             }
 
             $name = $this->db->select('name')->from('tblleads')->where('id', $lead_id)->get()->row()->name;
-
+foreach($assignedstaff as $assigned){
             $notification_data = array(
                 'description' => ($integration == false) ? 'not_assigned_lead_to_you' : 'not_lead_assigned_from_form',
                 'touserid' => $assigned,
@@ -214,6 +263,7 @@ class Leads_model extends CRM_Model
             $not_desc = ($integration == false ? 'not_lead_activity_assigned_to' : 'not_lead_activity_assigned_from_form');
             $this->log_lead_activity($lead_id, $not_desc, $integration, $not_additional_data);
         }
+        }
     }
 
     /**
@@ -224,6 +274,7 @@ class Leads_model extends CRM_Model
      */
     public function update($data, $id)
     {
+
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -248,6 +299,22 @@ class Leads_model extends CRM_Model
             }
             unset($data['custom_fields']);
         }
+        if (isset($data['assigned'])) {
+            $assigned_fields = $data['assigned'];
+            unset($data['assigned']);
+        }
+        if (isset($assigned_fields)) {
+            $this->db->where('lead_id', $id);
+            $this->db->delete('tblleadstaffs');
+            $datastaff['lead_id']=$id;
+            $datastaff['datecreated']=date("Y/m/d H:i:s");
+            foreach($assigned_fields as $staffs)
+            {
+                $datastaff['staff_id']=$staffs;
+                $this->db->insert('tblleadstaffs', $datastaff);
+            }
+        }
+
         if (!defined('API')) {
             if (isset($data['is_public'])) {
                 $data['is_public'] = 1;
@@ -275,10 +342,9 @@ class Leads_model extends CRM_Model
             unset($data['tags']);
         }
 
-        $data['address'] = trim($data['address']);
-        $data['address'] = nl2br($data['address']);
-
-        $data['email'] = trim($data['email']);
+        $data['address']    = trim($data['address']);
+        $data['address']    = nl2br($data['address']);
+        $data['email']      = trim($data['email']);
 
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
@@ -307,11 +373,6 @@ class Leads_model extends CRM_Model
                 ));
             }
 
-            if (isset($data['assigned'])) {
-                if ($current_lead_data->assigned != $data['assigned'] && (!empty($data['assigned']) && $data['assigned'] != 0)) {
-                    $this->lead_assigned_member_notification($id, $data['assigned']);
-                }
-            }
             logActivity('Lead Updated [Name: ' . $data['name'] . ']');
 
             return true;
@@ -337,6 +398,9 @@ class Leads_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->delete('tblleads');
         if ($this->db->affected_rows() > 0) {
+            $this->db->where('lead_id', $id);
+            $this->db->delete('tblleadstaffs');
+
             logActivity('Lead Deleted [Deleted by: ' . get_staff_full_name() . ', LeadID: ' . $id . ']');
 
             $attachments = $this->get_lead_attachments($id);
@@ -697,8 +761,8 @@ class Leads_model extends CRM_Model
             return $this->db->get('tblleadsstatus')->row();
         }
         $this->db->order_by('statusorder', 'asc');
-
-        return $this->db->get('tblleadsstatus')->result_array();
+        $this->db->get('tblleadsstatus');
+       return $this->db->get('tblleadsstatus')->result_array();
     }
 
     /**
@@ -860,7 +924,7 @@ class Leads_model extends CRM_Model
             return true;
         }
 
-        if (total_rows('tblleads', 'id="'.$id.'" AND (assigned='.$staff_id.' OR is_public=1 OR addedfrom='.$staff_id.')') > 0) {
+        if (total_rows('tblleadstaffs', 'lead_id="'.$id.'" AND (staff_id='.$staff_id.')') > 0) {
             return true;
         }
 
