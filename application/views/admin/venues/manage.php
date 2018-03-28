@@ -18,7 +18,6 @@
                                 _l('Address'),
                                 _l('Email'),
                                 _l('Phone'),
-                                _l('Details'),
                                 _l('options')
                             ),'venue-fields'); ?>
                     </div>
@@ -30,7 +29,7 @@
 <?php init_tail(); ?>
 <script>
     $(function(){
-        initDataTable('.table-venue-fields', window.location.href, [6], [6]);
+        initDataTable('.table-venue-fields', window.location.href, [5], [5]);
     });
 </script>
 </body>

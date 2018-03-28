@@ -6,6 +6,7 @@
         <div class="panel_s">
           <div class="panel-body">
             <h4 class="no-margin"><?php echo $title; ?>
+                <input type="hidden" id="contract_template_type" value="contracts">
               <?php if(isset($contract) && has_permission('contracts','','delete')){ ?>
               <small><a href="<?php echo admin_url('contracts/delete/'.$contract->id); ?>" class="pull-right mleft5 text-danger _delete"><?php echo _l('delete'); ?></a></small>
               <?php } ?>
@@ -315,7 +316,7 @@
 
     var editor_settings = {
       selector: 'div.editable',
-      inline: true,
+      inline: false,
       theme: 'modern',
       skin: 'perfex',
       relative_urls: false,
@@ -359,7 +360,11 @@
       editor.on('focus', function() {
        $.Shortcuts.stop();
      });
-
+         editor.on('ExecCommand', function (e) {
+            if("mceInsertContent" == e.command && $('div.mce-title:contains("Insert template")').is(':visible')) {
+                    editor.setContent(e.value);
+                }
+         });
       editor.addButton('save_button', {
         text: appLang.contract_save,
         icon: false,
@@ -379,12 +384,10 @@
       });
      }
    });
-    },
+    }
   }
-  if (_templates.length > 0) {
-    editor_settings.templates = _templates;
+    editor_settings.templates = '/admin/templates/list_templates/contracts';
     editor_settings.plugins[3] = 'template ' + editor_settings.plugins[3];
-  }
 
   tinymce.init(editor_settings);
 });

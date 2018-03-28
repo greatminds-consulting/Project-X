@@ -14,15 +14,11 @@
                         </div>
                         <div class="form-group" app-field-wrapper="address">
                             <label for="address" class="control-label">Address1</label>
-                            <textarea id="addressOne" name="addressOne" class="form-control" rows="4"><?php if(isset($venuedetails->address1) !== ''){  echo $venuedetails->address1; }?></textarea>
+                            <input type="text" id="addressOne" name="addressOne" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->address1) !== ''){ echo $venuedetails->address1;}?>">
                         </div>
                         <div class="form-group" app-field-wrapper="addresstwo">
                             <label for="address" class="control-label">Address2</label>
-                            <textarea id="addressTwo" name="addressTwo" class="form-control" rows="4"><?php if(isset($venuedetails->address2) !== ''){ echo $venuedetails->address2; }?></textarea>
-                        </div>
-                        <div class="form-group" app-field-wrapper="details">
-                            <label for="address" class="control-label">Details</label>
-                            <textarea id="details" name="details" class="form-control" rows="4"><?php if(isset($venuedetails->details) !== ''){  echo $venuedetails->details; }?></textarea>
+                            <input type="text" id="addressTwo" name="addressTwo" class="form-control" autofocus="1" value="<?php if(isset($venuedetails->address2) !== ''){ echo $venuedetails->address2;}?>">
                         </div>
                         <div class="form-group" app-field-wrapper="phone">
                             <label for="phone" class="control-label">Phone</label>
@@ -32,9 +28,23 @@
                             <label for="email" class="control-label"> <small class="req text-danger">* </small>Email</label>
                             <input type="text" id="email" name="email" class="form-control " autofocus="1" value="<?php if(isset($venuedetails->email) !== ''){ echo $venuedetails->email; } ?>">
                         </div>
-                        <div class="form-group" app-field-wrapper="amenities">
-                            <label for="amenities" class="control-label">Amenities</label>
-                            <textarea id="amenities" name="amenities" class="form-control" rows="4"><?php if(isset($venuedetails->amenities) !== ''){ echo $venuedetails->amenities; } ?></textarea>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="suburb">
+                                    <label for="phone" class="control-label">Suburb</label>
+                                    <input type="text" id="suburb" name="suburb" class="form-control" value="<?php if(isset($venuedetails->suburb) !== ''){ echo $venuedetails->suburb; } ?>">
+                                </div>
+                            </div><div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="state">
+                                    <label for="phone" class="control-label">State</label>
+                                    <input type="text" id="state" name="state" class="form-control" value="<?php if(isset($venuedetails->state) !== ''){ echo $venuedetails->state; } ?>">
+                                </div>
+                            </div><div class="col-md-4">
+                                <div class="form-group" app-field-wrapper="postcode">
+                                    <label for="phone" class="control-label">Postcode</label>
+                                    <input type="text" id="postcode" name="postcode" class="form-control" value="<?php if(isset($venuedetails->postcode) !== ''){ echo $venuedetails->postcode; } ?>">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="form-group" app-field-wrapper="wheelchair">
@@ -85,47 +95,88 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="monday">
-                                    <label for="phone" class="control-label">Monday</label>
-                                    <input type="text" id="monday" name="monday" class="form-control timepicker" value="<?php if(isset($venuedetails->monday) !== ''){ echo $venuedetails->monday; } ?>">
+                                    <label for="phone" class="control-label">Monday From</label>
+                                    <input type="text" id="monday_from" name="monday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->monday_from) !== ''){ echo $venuedetails->monday_from; } ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="monday">
+                                    <label for="phone" class="control-label">Monday To</label>
+                                    <input type="text" id="monday_to" name="monday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->monday_to) !== ''){ echo $venuedetails->monday_to; } ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="monday">
+                                    <label for="phone" class="control-label">Tuesday From</label>
+                                    <input type="text" id="tuesday_from" name="tuesday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->tuesday_from) !== ''){ echo $venuedetails->tuesday_from; } ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="tuesday">
-                                    <label for="phone" class="control-label">Tuesday</label>
-                                    <input type="text" id="tuesday" name="tuesday" class="form-control timepicker" value="<?php if(isset($venuedetails->tuesday) !== ''){  echo $venuedetails->tuesday; } ?>">
+                                    <label for="phone" class="control-label">Tuesday To</label>
+                                    <input type="text" id="tuesday_to" name="tuesday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->tuesday_to) !== ''){ echo $venuedetails->tuesday_to; } ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="wednesday">
-                                    <label for="phone" class="control-label">Wednesday</label>
-                                    <input type="text" id="wednesday" name="wednesday" class="form-control timepicker"  value="<?php if(isset($venuedetails->wednesday) !== ''){ echo $venuedetails->wednesday; } ?>">
+                                    <label for="phone" class="control-label">Wednesday From</label>
+                                    <input type="text" id="wednesday_from" name="wednesday_from" class="form-control timepicker"  value="<?php if(isset($venuedetails->wednesday_from) !== ''){ echo $venuedetails->wednesday_from; } ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="wednesday">
+                                    <label for="phone" class="control-label">Wednesday To</label>
+                                    <input type="text" id="wednesday_to" name="wednesday_to" class="form-control timepicker"  value="<?php if(isset($venuedetails->wednesday_to) !== ''){ echo $venuedetails->wednesday_to; } ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="thursday">
-                                    <label for="phone" class="control-label">Thursday</label>
-                                    <input type="text" id="thursday" name="thursday" class="form-control timepicker" value="<?php if(isset($venuedetails->thursday) !== ''){ echo $venuedetails->thursday;} ?>">
+                                    <label for="phone" class="control-label">Thursday From</label>
+                                    <input type="text" id="thursday_from" name="thursday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->thursday_from) !== ''){ echo $venuedetails->thursday_from;} ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="thursday">
+                                    <label for="phone" class="control-label">Thursday To</label>
+                                    <input type="text" id="thursday_to" name="thursday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->thursday_to) !== ''){ echo $venuedetails->thursday_to;} ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="friday">
-                                    <label for="phone" class="control-label">Friday</label>
-                                    <input type="text" id="friday" name="friday" class="form-control timepicker" value="<?php if(isset($venuedetails->friday) !== ''){ echo $venuedetails->friday;} ?>">
+                                    <label for="phone" class="control-label">Friday From</label>
+                                    <input type="text" id="friday_from" name="friday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->friday_from) !== ''){ echo $venuedetails->friday_from;} ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="friday">
+                                    <label for="phone" class="control-label">Friday To</label>
+                                    <input type="text" id="friday_to" name="friday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->friday_to) !== ''){ echo $venuedetails->friday_to;} ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="saturday">
-                                    <label for="phone" class="control-label">Saturday</label>
-                                    <input type="text" id="saturday" name="saturday" class="form-control timepicker" value="<?php if(isset($venuedetails->saturday) !== ''){  echo $venuedetails->saturday; } ?>">
+                                    <label for="phone" class="control-label">Saturday From</label>
+                                    <input type="text" id="saturday_from" name="saturday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->saturday_from) !== ''){  echo $venuedetails->saturday_from; } ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="saturday">
+                                    <label for="phone" class="control-label">Saturday To</label>
+                                    <input type="text" id="saturday_to" name="saturday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->saturday_to) !== ''){  echo $venuedetails->saturday_to; } ?>">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group" app-field-wrapper="sunday">
-                                    <label for="phone" class="control-label">Sunday</label>
-                                    <input type="text" id="sunday" name="sunday" class="form-control timepicker" value="<?php if(isset($venuedetails->sunday) !== ''){  echo $venuedetails->sunday; } ?>">
+                                    <label for="phone" class="control-label">Sunday From</label>
+                                    <input type="text" id="sunday" name="sunday_from" class="form-control timepicker" value="<?php if(isset($venuedetails->sunday_from) !== ''){  echo $venuedetails->sunday_from; } ?>">
                                 </div>
                             </div>
-
+                            <div class="col-md-6">
+                                <div class="form-group" app-field-wrapper="sunday">
+                                    <label for="phone" class="control-label">Sunday To</label>
+                                    <input type="text" id="sunday_to" name="sunday_to" class="form-control timepicker" value="<?php if(isset($venuedetails->sunday_to) !== ''){  echo $venuedetails->sunday_to; } ?>">
+                                </div>
+                            </div>
                         </div>
                         <div class="clearfix mtop15"></div>
                         <div class="row">
@@ -213,11 +264,21 @@
             }
         });
     }
-    $('.timepicker').datetimepicker({
+    var time_picker_options = {
         datepicker: false,
-        format:	'H:i (h:i a)',
-        formatTime:	'H:i a'
-    });
+        format:	'g:i a',
+        formatTime:	'g:i a',
+        validateOnBlur: false
+    }
+    var time_format = '<?php echo get_option('time_format'); ?>';
+    if(time_format == 24){
+        time_picker_options.format = 'H:i';
+        time_picker_options.formatTime = 'H:i';
+    } else {
+        time_picker_options.format = ' g:i A';
+        time_picker_options.formatTime = 'g:i A';
+    }
+    $('.timepicker').datetimepicker(time_picker_options);
 _validate_form($('#add_venues'),{name:'required',date:'required',email: {required: true,email: true}});
 
 
