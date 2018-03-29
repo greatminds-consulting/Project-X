@@ -1,59 +1,35 @@
 <?php init_head(); ?>
-    <div id="wrapper">
-        <div class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="panel_s">
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <h4 class="no-margin"><?php echo _l('venue_area'); ?></h4>
-                                    <hr class="hr-panel-heading" />
-                                    <div class="panel-body _buttons">
-                                        <?php if(has_permission('amenities','','create')){ ?>
-                                            <a href="<?php echo admin_url('venues/area'); ?>"  class="btn btn-info pull-left display-block"><?php echo _l('new_area'); ?></a>
-                                        <?php } ?>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered amenities">
-                                            <thead>
-                                            <tr>
-                                                <th><?php echo _l('area_name'); ?></th>
-                                                <th><?php echo _l('area_layout_minimum'); ?></th>
-                                                <th><?php echo _l('area_layout_maximum'); ?></th>
-                                                <th><?php echo _l('area_layout'); ?></th>
-                                                <th class="pull-right">Options</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <?php foreach($areas as $area){ ?>
-                                                <tr>
-                                                    <td class="<?php if($area['area_active'] == 0){echo 'text-throught';} ?>">
-                                                        <a href="<?php echo admin_url('venues/area/'.$area['area_id']); ?>"><?php echo $area['area_name']; ?></a>
-                                                    </td>
-                                                    <td>
-                                                       <p><?php echo $area['layout_minimum'];?></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><?php echo $area['layout_maximum'];?></p>
-                                                    </td>
-                                                    <td>
-                                                        <p><?php echo $area['name'];?></p>
-                                                    </td>
-                                                    <td>
-                                                        <a href="<?php echo admin_url('venues/area'.($area['area_active'] == '1' ? 'disable/' : 'enable/').$area['area_id']); ?>" class="pull-right"><small><?php echo _l($area['area_active'] == 1 ? 'disable' : 'enable'); ?></small></a>
-                                                    </td>
-                                                </tr>
-                                            <?php } ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
+<div id="wrapper">
+    <div class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel_s">
+                    <div class="panel-body">
+                        <div class="_buttons">
+                            <a href="<?php echo admin_url('venues/area'); ?>"  class="btn btn-info pull-left display-block"><?php echo _l('new_area'); ?></a>
                         </div>
+                        <div class="clearfix"></div>
+                        <hr class="hr-panel-heading" />
+                        <div class="clearfix"></div>
+                        <?php render_datatable(
+                            array(
+                                _l('#'),
+                                _l('name'),
+                                _l('Layout Name'),
+                                _l('Amenities Name'),
+                                _l('options')
+                            ),'areas'); ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <?php init_tail(); ?>
+<script>
+    $(function(){
+        initDataTable('.table-areas', window.location.href, [4], [4]);
+    });
+</script>
+</body>
+</html>

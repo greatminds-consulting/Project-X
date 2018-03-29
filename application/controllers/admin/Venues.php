@@ -173,7 +173,9 @@ class Venues extends Admin_controller
         }
     }
     public function areas() {
-        $data['areas']            = $this->venues_model->getareas();
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data('areas');
+        }
         $data['title']            = _l('venue_area');
         $this->load->view('admin/venues/areas' , $data);
     }
@@ -225,6 +227,7 @@ class Venues extends Admin_controller
         if($id != '') {
             $data['details']         = $this->venues_model->getareadetails($id);
             $data['area_amenities'] = $this->venues_model->get_area_amenity_by_area_id($id);
+            $data['area_layouts'] = $this->venues_model->get_area_layout_by_area_id($id);
             $data['title']          = _l('Edit Area');
         }
         else {
@@ -241,11 +244,15 @@ class Venues extends Admin_controller
             if ($this->input->post('amenity')) {
                 $this->venues_model->add_area_amenities($this->input->post('amenity'),$areaId);
             }
+            if ($this->input->post('layout')) {
+                $this->venues_model->add_area_layouts($this->input->post(),$areaId);
+            }
             if ($areaId) {
                 set_alert('success', _l('Added Area Successfully', _l('venue_field')));
             }
         } else {
             $this->venues_model->update_area_amenities($this->input->post('amenity'),$this->input->post('venue_area_id'));
+            $this->venues_model->update_area_layouts($this->input->post(),$this->input->post('venue_area_id'));
             if ($this->venues_model->update_area($this->input->post())) {
                 set_alert('success', _l('Updated Area Successfully', _l('venue_field')));
             }
@@ -264,5 +271,19 @@ class Venues extends Admin_controller
         $this->venues_model->area_mark_as($area->id,1);
         redirect(admin_url('venues/areas'));
     }
+
+    public function areaDelete($id) {
+        if (!$id) {
+            redirect(admin_url('venues/areas'));
+        }
+        $response = $this->venues_model->deleteArea($id);
+        if ($response == true) {
+            set_alert('success', _l('Deleted Area Successfully'));
+        } else {
+            set_alert('warning', _l('Some error occured'));
+        }
+        redirect(admin_url('venues/areas'));
+    }
+
 
 }
