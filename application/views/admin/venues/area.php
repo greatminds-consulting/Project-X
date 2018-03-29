@@ -58,7 +58,7 @@
                                     </div>
                                     <div class="form-group" app-field-wrapper="name">
                                         <label for="layout_maximum" class="control-label">Layout Maximum</label>
-                                        <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="<?php echo $details[0]['layout_maximum'];?>">
+                                        <input type="text"  required name="layout_maximum[]" class="form-control" value="<?php echo $details[0]['layout_maximum'];?>">
                                     </div>
                                     <div class="clearfix"><hr class="hr-panel-heading" /></div>
                                 </div>
@@ -94,7 +94,7 @@
         <div class="layout-div-section">
             <div class="form-group" app-field-wrapper="name">
                 <label for="company" class="control-label"><small class="req text-danger">* </small>Area Layout</label>
-                <select class="form-control add-area" name="layout[]" required>
+                <select class="form-control" name="layout[]" required>
                     <option value="">Select Layout</option>
                                             <?php
                                             foreach($layouts as $layout) {?>
@@ -104,11 +104,11 @@
             </div>
             <div class="form-group">
                 <label for="layout_minimum" class="control-label">Layout Minimum</label>
-                <input type="text"  required name="layout_minimum[]" class="form-control add-area"  value="">
+                <input type="text"  required name="layout_minimum[]" class="form-control"  value="">
             </div>
             <div class="form-group" app-field-wrapper="name">
                 <label for="layout_maximum" class="control-label">Layout Maximum</label>
-                <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="">
+                <input type="text"  required name="layout_maximum[]" class="form-control" value="">
             </div>
             <div class="clearfix"><hr class="hr-panel-heading" /></div>
         </div>

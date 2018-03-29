@@ -377,6 +377,10 @@ class Venues_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->delete('tblvenueareas');
         if ($this->db->affected_rows() > 0) {
+            $this->db->where('area_id', $id);
+            $this->db->delete('tblvenueareaslayout');
+            $this->db->where('area_id', $id);
+            $this->db->delete('tblvenueareaamenities');
             logActivity('Venue Area Deleted [' . $id . ']');
             return true;
         }
