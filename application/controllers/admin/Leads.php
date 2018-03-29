@@ -10,6 +10,7 @@ class Leads extends Admin_controller
         parent::__construct();
         $this->not_importable_leads_fields = do_action('not_importable_leads_fields', array('id', 'source', 'assigned', 'status', 'dateadded', 'last_status_change', 'addedfrom', 'leadorder', 'date_converted', 'lost', 'junk', 'is_imported_from_email_integration', 'email_integration_uid', 'is_public', 'dateassigned', 'client_id', 'lastcontact', 'last_lead_status', 'from_form_id', 'default_language'));
         $this->load->model('leads_model');
+
     }
 
     /* List all leads */
@@ -29,7 +30,6 @@ class Leads extends Admin_controller
         }
 
         $data['staff'] = $this->staff_model->get('', 1);
-
         $data['statuses'] = $this->leads_model->get_status();
         $data['sources']  = $this->leads_model->get_source();
         $data['title']    = _l('leads');
@@ -53,6 +53,7 @@ class Leads extends Admin_controller
             ajax_access_denied();
         }
         $data['statuses'] = $this->leads_model->get_status();
+
         echo $this->load->view('admin/leads/kan-ban', $data, true);
     }
 
@@ -65,7 +66,7 @@ class Leads extends Admin_controller
 
         if ($this->input->post()) {
             if ($id == '') {
-                $id      = $this->leads_model->add($this->input->post());
+               $id      = $this->leads_model->add($this->input->post());
                 $message = $id ? _l('added_successfully', _l('lead')) : '';
 
                 echo json_encode(array(
@@ -1136,10 +1137,10 @@ class Leads extends Admin_controller
                             }
 
                             if (count($insert) > 0) {
-                                if (isset($insert['email']) && $insert['email'] != '') {
-                                    if (total_rows('tblleads', array('email'=>$insert['email'])) > 0) {
-                                        continue;
-                                    }
+                              if (isset($insert['email']) && $insert['email'] != '') {
+                                  if (total_rows('tblleads', array('email'=>$insert['email'])) > 0) {
+                                      continue;
+                                   }
                                 }
                                 $total_imported++;
                                 $insert['dateadded']   = date('Y-m-d H:i:s');
@@ -1254,6 +1255,7 @@ class Leads extends Admin_controller
             $leadid = $this->input->post('leadid');
 
             if ($leadid != '') {
+
                 $this->db->where('id', $leadid);
                 $_current_email = $this->db->get('tblleads')->row();
                 if ($_current_email->email == $this->input->post('email')) {
@@ -1264,17 +1266,18 @@ class Leads extends Admin_controller
             $exists = total_rows('tblleads', array(
                 'email' => $this->input->post('email'),
             ));
-            if ($exists > 0) {
-                echo 'false';
-            } else {
-                echo 'true';
-            }
+
+            if ($exists != 0) {
+               echo 'false';
+           } else {
+              echo 'true';
+           }
         }
     }
 
     public function bulk_action()
     {
-        if (!is_staff_member()) {
+       if (!is_staff_member()) {
             $this->access_denied_ajax();
         }
 
@@ -1290,7 +1293,7 @@ class Leads extends Admin_controller
             $last_contact = $this->input->post('last_contact');
             $has_permission_delete = has_permission('leads', '', 'delete');
             if (is_array($ids)) {
-                foreach ($ids as $id) {
+                 foreach ($ids as $id) {
                     if ($this->input->post('mass_delete')) {
                         if ($has_permission_delete) {
                             if ($this->leads_model->delete($id)) {
@@ -1298,8 +1301,9 @@ class Leads extends Admin_controller
                             }
                         }
                     } else {
-                        if ($status || $source || $assigned || $last_contact || $visibility) {
-                            $update = array();
+                       if ($status || $source || $assigned || $last_contact || $visibility) {
+                           $assign_mem = explode(',', $assigned);
+                           $update = array();
                             if ($status) {
                                 // We will use the same function to update the status
                                 $this->leads_model->update_lead_status(array(
@@ -1311,8 +1315,18 @@ class Leads extends Admin_controller
                                 $update['source'] = $source;
                             }
                             if ($assigned) {
-                                $update['assigned'] = $assigned;
+                                $this->db->where('lead_id', $id);
+                                $this->db->delete('tblleadstaffs');
+                                foreach($assign_mem as $staffs)
+                                {
+                                    $datastaff['staff_id']      =   $staffs;
+                                    $datastaff['lead_id']       =   $id;
+                                    $datastaff['datecreated']   =   date("Y/m/d");
+                                    $this->db->insert('tblleadstaffs', $datastaff);
+                                }
+
                             }
+
                             if ($last_contact) {
                                 $last_contact = to_sql_date($last_contact, true);
                                 $update['lastcontact'] = $last_contact;
@@ -1329,19 +1343,31 @@ class Leads extends Admin_controller
                             if (count($update) > 0) {
                                 $this->db->where('id', $id);
                                 $this->db->update('tblleads', $update);
+//                               $this->db->where('lead_id', $id);
+//                               $this->db->delete('tblleadstaffs');
+//                                foreach($assign_mem as $staffs)
+//                                {
+//                                    $datastaff['staff_id']=$staffs;
+//                                    $datastaff['lead_id']=$id;
+//                                    $this->db->insert('tblleadstaffs', $datastaff);
+//                                }
+
                             }
                         }
-                        if ($tags) {
-                            handle_tags_save($tags, $id, 'lead');
-                        }
+                      if ($tags) {
+                          handle_tags_save($tags, $id, 'lead');
+                   }
+
                     }
+
                 }
+
             }
         }
 
-        if ($this->input->post('mass_delete')) {
-            set_alert('success', _l('total_leads_deleted', $total_deleted));
-        }
+     if ($this->input->post('mass_delete')) {
+         set_alert('success', _l('total_leads_deleted', $total_deleted));
+    }
     }
 
     private function access_denied_ajax()

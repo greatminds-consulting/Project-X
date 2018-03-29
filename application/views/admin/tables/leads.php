@@ -78,7 +78,8 @@ if ($this->ci->input->post('source')) {
 }
 
 if (!has_permission('leads','','view')) {
-    array_push($where, 'AND (assigned =' . get_staff_user_id() . ' OR addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
+   // array_push($where, 'AND (assigned =' . get_staff_user_id() . ' OR addedfrom = ' . get_staff_user_id() . ' OR is_public = 1)');
+    array_push($where, 'AND staff_id =' . get_staff_user_id() );
 }
 
 $aColumns = do_action('leads_table_sql_columns', $aColumns);

@@ -61,9 +61,10 @@
            if(total_rows('tblcontacts',array('email'=>$lead->email)) > 0 && total_rows('tblclients',array('leadid'=>$lead->id)) == 0){
              $convert_to_client_tooltip_email_exists = _l('lead_email_already_exists');
              $text = _l('lead_convert_to_client');
-          } else if (total_rows('tblclients',array('leadid'=>$lead->id))){
+         } else if (total_rows('tblclients',array('leadid'=>$lead->id))){
              $client = true;
-          } else {
+        }
+           else {
              $text = _l('lead_convert_to_client');
           }
       ?>
