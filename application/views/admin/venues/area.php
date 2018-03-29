@@ -14,27 +14,56 @@
                         </div>
                         <div class="form-group" app-field-wrapper="name"><button type="button" class="btn btn-info" onclick="add_layout()">Add New Layout</button></div>
                         <div class="layout-div">
-                            <div class="layout-div-section">
-                            <div class="form-group" app-field-wrapper="name">
-                                <label for="company" class="control-label"><small class="req text-danger">* </small>Area Layout</label>
-                                <select class="form-control add-area" name="layout[]" required>
-                                    <option value="">Select Layout</option>
-                                    <?php
-                                    foreach($layouts as $layout) {?>
-                                        <option value="<?php echo $layout['id'];?>" <?php if($details[0]['layout_id'] == $layout['id']){echo "selected";} ?>><?php echo $layout['name'];?></option>
-                                    <?php }?>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="layout_minimum" class="control-label">Layout Minimum</label>
-                                <input type="text"  required name="layout_minimum[]" class="form-control add-area"  value="<?php echo $details[0]['layout_minimum'];?>">
-                            </div>
-                            <div class="form-group" app-field-wrapper="name">
-                                <label for="layout_maximum" class="control-label">Layout Maximum</label>
-                                <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="<?php echo $details[0]['layout_maximum'];?>">
-                            </div>
-                            <div class="clearfix"><hr class="hr-panel-heading" /></div>
-                            </div>
+                        <?php if ($area_layouts) {
+                            foreach ($area_layouts as $area_layout) { ?>
+
+                                    <div class="layout-div-section">
+                                        <div class="form-group" app-field-wrapper="name">
+                                            <label for="company" class="control-label"><small class="req text-danger">* </small>Area Layout</label>
+                                            <select class="form-control add-area" name="layout[]" required>
+                                                <option value="">Select Layout</option>
+                                                <?php
+                                                foreach($layouts as $layout) {?>
+                                                    <option value="<?php echo $layout['id'];?>" <?php if($area_layout['layout_id'] == $layout['id']){echo "selected";} ?>><?php echo $layout['name'];?></option>
+                                                <?php }?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="layout_minimum" class="control-label">Layout Minimum</label>
+                                            <input type="text"  required name="layout_minimum[]" class="form-control add-area"  value="<?php echo $area_layout['layout_min'];?>">
+                                        </div>
+                                        <div class="form-group" app-field-wrapper="name">
+                                            <label for="layout_maximum" class="control-label">Layout Maximum</label>
+                                            <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="<?php echo $area_layout['layout_max'];?>">
+                                        </div>
+                                        <div class="clearfix"><hr class="hr-panel-heading" /></div>
+                                    </div>
+
+                           <?php  }
+                        } else { ?>
+                                <div class="layout-div-section">
+                                    <div class="form-group" app-field-wrapper="name">
+                                        <label for="company" class="control-label"><small class="req text-danger">* </small>Area Layout</label>
+                                        <select class="form-control add-area" name="layout[]" required>
+                                            <option value="">Select Layout</option>
+                                            <?php
+                                            foreach($layouts as $layout) {?>
+                                                <option value="<?php echo $layout['id'];?>" <?php if($details[0]['layout_id'] == $layout['id']){echo "selected";} ?>><?php echo $layout['name'];?></option>
+                                            <?php }?>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="layout_minimum" class="control-label">Layout Minimum</label>
+                                        <input type="text"  required name="layout_minimum[]" class="form-control add-area"  value="<?php echo $details[0]['layout_minimum'];?>">
+                                    </div>
+                                    <div class="form-group" app-field-wrapper="name">
+                                        <label for="layout_maximum" class="control-label">Layout Maximum</label>
+                                        <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="<?php echo $details[0]['layout_maximum'];?>">
+                                    </div>
+                                    <div class="clearfix"><hr class="hr-panel-heading" /></div>
+                                </div>
+
+                        <?php }?>
                         </div>
                         <?php echo render_input('venue_area_id','',$details[0]['id'],'hidden'); ?>
                         <div class="form-group" app-field-wrapper="amenity">
@@ -61,11 +90,34 @@
     </div>
 </div>
 <?php init_tail(); ?>
+<script type="text/html" class="area-layout">
+        <div class="layout-div-section">
+            <div class="form-group" app-field-wrapper="name">
+                <label for="company" class="control-label"><small class="req text-danger">* </small>Area Layout</label>
+                <select class="form-control add-area" name="layout[]" required>
+                    <option value="">Select Layout</option>
+                                            <?php
+                                            foreach($layouts as $layout) {?>
+                                                <option value="<?php echo $layout['id'];?>" <?php if($details[0]['layout_id'] == $layout['id']){echo "selected";} ?>><?php echo $layout['name'];?></option>
+                                            <?php }?>
+                                        </select>
+            </div>
+            <div class="form-group">
+                <label for="layout_minimum" class="control-label">Layout Minimum</label>
+                <input type="text"  required name="layout_minimum[]" class="form-control add-area"  value="">
+            </div>
+            <div class="form-group" app-field-wrapper="name">
+                <label for="layout_maximum" class="control-label">Layout Maximum</label>
+                <input type="text"  required name="layout_maximum[]" class="form-control add-area" value="">
+            </div>
+            <div class="clearfix"><hr class="hr-panel-heading" /></div>
+        </div>
+</script>
 <script>
 _validate_form($('#add_areas'),{name:'required','layout':'required','layout_minimum': {required: true,digits: true},layout_maximum: {required: true,digits: true}});
 
     function add_layout() {
-        $('.layout-div').append($('.layout-div-section').html());
+        $('.layout-div').append($('.area-layout').html());
     }
 </script>
 

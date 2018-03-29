@@ -227,6 +227,7 @@ class Venues extends Admin_controller
         if($id != '') {
             $data['details']         = $this->venues_model->getareadetails($id);
             $data['area_amenities'] = $this->venues_model->get_area_amenity_by_area_id($id);
+            $data['area_layouts'] = $this->venues_model->get_area_layout_by_area_id($id);
             $data['title']          = _l('Edit Area');
         }
         else {
@@ -251,6 +252,7 @@ class Venues extends Admin_controller
             }
         } else {
             $this->venues_model->update_area_amenities($this->input->post('amenity'),$this->input->post('venue_area_id'));
+            $this->venues_model->update_area_layouts($this->input->post(),$this->input->post('venue_area_id'));
             if ($this->venues_model->update_area($this->input->post())) {
                 set_alert('success', _l('Updated Area Successfully', _l('venue_field')));
             }

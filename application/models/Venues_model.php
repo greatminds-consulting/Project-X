@@ -291,6 +291,15 @@ class Venues_model extends CRM_Model
         return true;
     }
 
+    public function get_area_layout_by_area_id($id) {
+        $this->db->select('*');
+        $this->db->from('tblvenueareaslayout');
+        $this->db->where('area_id',$id);
+        $query = $this->db->get();
+        $layouts = $query->result_array();
+        return $layouts;
+    }
+
     public function get_area_amenity_by_area_id($id) {
         $this->db->select('amenity_id');
         $this->db->from('tblvenueareaamenities');
@@ -333,6 +342,25 @@ class Venues_model extends CRM_Model
         }
         return true;
     }
+     public function update_area_layouts($postData, $areaId) {
+         $this->db->where('area_id', $areaId);
+         $this->db->delete('tblvenueareaslayout');
+         if ($postData['layout']) {
+             foreach ($postData['layout'] as $layoutKey => $layoutValue) {
+                 if (!$layoutValue) {
+                     continue;
+                 }
+                 $data['area_id'] = $areaId;
+                 $data['layout_id'] = $layoutValue;
+                 $data['layout_min'] = $postData['layout_minimum'][$layoutKey];
+                 $data['layout_max'] = $postData['layout_maximum'][$layoutKey];
+                 $this->db->insert('tblvenueareaslayout', $data);
+                 $this->db->insert_id();
+             }
+             return true;
+         }
+         return false;
+     }
 
     public function get_area_by_id($id) {
         $this->db->where('id', $id);
