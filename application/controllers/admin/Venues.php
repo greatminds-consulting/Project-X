@@ -243,6 +243,9 @@ class Venues extends Admin_controller
             if ($this->input->post('amenity')) {
                 $this->venues_model->add_area_amenities($this->input->post('amenity'),$areaId);
             }
+            if ($this->input->post('layout')) {
+                $this->venues_model->add_area_layouts($this->input->post(),$areaId);
+            }
             if ($areaId) {
                 set_alert('success', _l('Added Area Successfully', _l('venue_field')));
             }

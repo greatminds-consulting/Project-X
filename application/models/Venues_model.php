@@ -253,18 +253,30 @@ class Venues_model extends CRM_Model
 
     public function add_area($postData) {
         $data['name']               = $postData['name'];
-        $data['layout_id']          = $postData['layout'];
-        $data['layout_minimum']     = $postData['layout_minimum'];
-        $data['layout_maximum']     = $postData['layout_maximum'];
         $data['active'] = 1;
-        if (isset($data['venue_area_id'])) {
-            unset($data['venue_area_id']);
-        }
         $this->db->insert('tblvenueareas', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
             logActivity('New Area Added [ID: ' . $insert_id . ']');
             return $insert_id;
+        }
+        return false;
+    }
+
+    public function add_area_layouts($postData, $areaId) {
+        if ($postData['layout']) {
+            foreach ($postData['layout'] as $layoutKey => $layoutValue) {
+                    if (!$layoutValue) {
+                        continue;
+                    }
+                    $data['area_id'] = $areaId;
+                    $data['layout_id'] = $layoutValue;
+                    $data['layout_min'] = $postData['layout_minimum'][$layoutKey];
+                    $data['layout_max'] = $postData['layout_maximum'][$layoutKey];
+                    $this->db->insert('tblvenueareaslayout', $data);
+                    $this->db->insert_id();
+            }
+            return true;
         }
         return false;
     }
