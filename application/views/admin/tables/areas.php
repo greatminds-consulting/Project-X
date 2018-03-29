@@ -7,6 +7,7 @@ $custom_fields = get_table_custom_fields('areas');
 $aColumns     = array(
     'tblvenueareas.id as id',
     'tblvenueareas.name as name',
+    'tblvenueareas.active as active',
     get_sql_select_area_layout_full_names().' as layouts',
     );
 
@@ -23,6 +24,10 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['name'];
         $row[] = $aRow['layouts'];
     $options = icon_btn('venues/area/' . $aRow['id'], 'pencil-square-o');
-    $row[]   = $options .= icon_btn('venues/delete/' . $aRow['id'], 'remove', 'btn-danger _delete');
-    $output['aaData'][] = $row;
+    $options .= icon_btn('venues/areaDelete/' . $aRow['id'], 'remove', 'btn-danger _delete');
+    $row[]   = $options .= '<a href="area'.($aRow['active'] == 1 ? 'disable/' : 'enable/').$aRow['id'].'">'.($aRow['active'] == 1 ? 'Disable' : 'Enable').'</a>';
+
+$output['aaData'][] = $row;
 }
+
+

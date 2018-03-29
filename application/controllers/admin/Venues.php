@@ -267,4 +267,18 @@ class Venues extends Admin_controller
         redirect(admin_url('venues/areas'));
     }
 
+    public function areaDelete($id) {
+        if (!$id) {
+            redirect(admin_url('venues/areas'));
+        }
+        $response = $this->venues_model->deleteArea($id);
+        if ($response == true) {
+            set_alert('success', _l('Deleted Area Successfully'));
+        } else {
+            set_alert('warning', _l('Some error occured'));
+        }
+        redirect(admin_url('venues/areas'));
+    }
+
+
 }

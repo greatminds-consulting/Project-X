@@ -332,4 +332,14 @@ class Venues_model extends CRM_Model
         $this->db->update('tblvenueareas', array('active'=>$enabled));
         return $this->db->affected_rows() > 0 ? true : false;
     }
+
+    public function deleteArea($id) {
+        $this->db->where('id', $id);
+        $this->db->delete('tblvenueareas');
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Venue Area Deleted [' . $id . ']');
+            return true;
+        }
+        return false;
+    }
 }
