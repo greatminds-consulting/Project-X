@@ -173,7 +173,9 @@ class Venues extends Admin_controller
         }
     }
     public function areas() {
-        $data['areas']            = $this->venues_model->getareas();
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data('areas');
+        }
         $data['title']            = _l('venue_area');
         $this->load->view('admin/venues/areas' , $data);
     }

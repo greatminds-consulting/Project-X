@@ -37,6 +37,11 @@ function get_sql_select_lead_asignees_full_names()
     return '(SELECT GROUP_CONCAT(CONCAT(firstname, \' \', lastname) SEPARATOR ",") FROM tblleadstaffs JOIN tblstaff ON tblstaff.staffid = tblleadstaffs.staff_id WHERE lead_id=tblleads.id ORDER BY tblleadstaffs.staff_id)';
 }
 
+function get_sql_select_area_layout_full_names()
+{
+    return '(select GROUP_CONCAT(name SEPARATOR ",") from tblvenueareaslayout join tblvenuelayouts on tblvenuelayouts.id = tblvenueareaslayout.layout_id where tblvenueareaslayout.area_id = tblvenueareas.id)';
+}
+
 function get_sql_select_task_total_checklist_items(){
     return '(SELECT COUNT(id) FROM tbltaskchecklists WHERE taskid=tblstafftasks.id) as total_checklist_items';
 }
