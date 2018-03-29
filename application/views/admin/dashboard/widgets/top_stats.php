@@ -34,7 +34,8 @@
                <?php
                   $where = '';
                   if(!is_admin()){
-                    $where .= '(addedfrom = '.get_staff_user_id().' OR assigned = '.get_staff_user_id().')';
+                   // $where .= '(addedfrom = '.get_staff_user_id().' OR assigned = '.get_staff_user_id().')';
+                      $where .= '(addedfrom = '.get_staff_user_id().')';
                   }
                           // Junk leads are excluded from total
                   $total_leads = total_rows('tblleads',($where == '' ? 'junk=0' : $where .= ' AND junk =0'));

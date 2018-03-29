@@ -67,8 +67,10 @@ class Leads_model extends CRM_Model
 
         if (isset($sort['sort_by']) && $sort['sort_by'] && isset($sort['sort']) && $sort['sort']) {
             $this->db->order_by($sort['sort_by'], $sort['sort']);
+            $this->db->group_by('tblleads.id');
          } else {
             $this->db->order_by($default_leads_kanban_sort, $default_leads_kanban_sort_type);
+            $this->db->group_by('tblleads.id');
          }
         if ($count == false) {
             if ($page > 1) {
@@ -217,7 +219,7 @@ class Leads_model extends CRM_Model
             }
 
             $name = $this->db->select('name')->from('tblleads')->where('id', $lead_id)->get()->row()->name;
-foreach($assignedstaff as $assigned){
+            foreach($assignedstaff as $assigned){
             $notification_data = array(
                 'description' => ($integration == false) ? 'not_assigned_lead_to_you' : 'not_lead_assigned_from_form',
                 'touserid' => $assigned,
