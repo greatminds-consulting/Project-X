@@ -1312,6 +1312,7 @@ $(function() {
     var LeadsServerParams = {
         "custom_view": "[name='custom_view']",
         "assigned": "[name='view_assigned']",
+       //"assigned": "[name='assigned[]']",
         "status": "[name='view_status[]']",
         "source": "[name='view_source']",
     }

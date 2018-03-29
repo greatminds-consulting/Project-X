@@ -86,6 +86,28 @@ class Leads_model extends CRM_Model
             return $this->db->count_all_results();
         }
     }
+    /**
+     * Select assigners from database
+     * @param null
+     * @return array
+     */
+    public function get_assigners()
+    {
+        $this->db->select('staffid,firstname,lastname');
+        $this->db->from('tblstaff');
+        $query = $this->db->get();
+        return  $query->result_array();
+
+    }
+    public function get_assignedstaff($id)
+    {
+        $this->db->select('tblstaff.firstname,tblstaff.lastname,tblstaff.staffid');
+        $this->db->from('tblleadstaffs');
+        $this->db->join('tblstaff','tblstaff.staffid=tblleadstaffs.staff_id','left');
+        $this->db->where('tblleadstaffs.lead_id',$id);
+        $query = $this->db->get();
+        return  $query->result_array();
+    }
 
     /**
      * Add new lead to database
@@ -94,6 +116,7 @@ class Leads_model extends CRM_Model
      */
     public function add($data)
     {
+
         if (isset($data['custom_contact_date']) || isset($data['custom_contact_date'])) {
             if (isset($data['contacted_today'])) {
                 $data['lastcontact'] = date('Y-m-d H:i:s');
@@ -121,6 +144,7 @@ class Leads_model extends CRM_Model
         $data['dateadded']   = date('Y-m-d H:i:s');
         $data['addedfrom']   = get_staff_user_id();
 
+
         $data                = do_action('before_lead_added', $data);
 
         $tags = '';
@@ -134,12 +158,18 @@ class Leads_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
+
+        if (isset($data['assigned'])) {
+            $assigned_fields = $data['assigned'];
+            unset($data['assigned']);
+        }
+
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
 
         $data['email'] = trim($data['email']);
         $this->db->insert('tblleads', $data);
-        $insert_id = $this->db->insert_id();
+       $insert_id = $this->db->insert_id();
         if ($insert_id) {
             logActivity('New Lead Added [Name: ' . $data['name'] . ']');
             $this->log_lead_activity($insert_id, 'not_lead_activity_created');
@@ -149,6 +179,17 @@ class Leads_model extends CRM_Model
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
+            if (isset($assigned_fields)) {
+
+                $datastaff['lead_id']=$insert_id;
+                $datastaff['datecreated']=date("Y/m/d H:i:s");
+                foreach($assigned_fields as $staffs)
+                {
+                    $datastaff['staff_id']=$staffs;
+                    $this->db->insert('tblleadstaffs', $datastaff);
+                }
+            }
+
             $this->lead_assigned_member_notification($insert_id, $data['assigned']);
             do_action('lead_created', $insert_id);
 
@@ -224,6 +265,7 @@ class Leads_model extends CRM_Model
      */
     public function update($data, $id)
     {
+
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -248,6 +290,22 @@ class Leads_model extends CRM_Model
             }
             unset($data['custom_fields']);
         }
+        if (isset($data['assigned'])) {
+            $assigned_fields = $data['assigned'];
+            unset($data['assigned']);
+        }
+        if (isset($assigned_fields)) {
+            $this->db->where('lead_id', $id);
+            $this->db->delete('tblleadstaffs');
+            $datastaff['lead_id']=$id;
+            $datastaff['datecreated']=date("Y/m/d H:i:s");
+            foreach($assigned_fields as $staffs)
+            {
+                $datastaff['staff_id']=$staffs;
+                $this->db->insert('tblleadstaffs', $datastaff);
+            }
+        }
+
         if (!defined('API')) {
             if (isset($data['is_public'])) {
                 $data['is_public'] = 1;
@@ -307,11 +365,12 @@ class Leads_model extends CRM_Model
                 ));
             }
 
-            if (isset($data['assigned'])) {
-                if ($current_lead_data->assigned != $data['assigned'] && (!empty($data['assigned']) && $data['assigned'] != 0)) {
-                    $this->lead_assigned_member_notification($id, $data['assigned']);
-                }
-            }
+//            if (isset($data['assigned'])) {
+//                if ($current_lead_data->assigned != $data['assigned'] && (!empty($data['assigned']) && $data['assigned'] != 0)) {
+//                    $this->lead_assigned_member_notification($id, $data['assigned']);
+//                }
+//            }
+
             logActivity('Lead Updated [Name: ' . $data['name'] . ']');
 
             return true;
@@ -337,6 +396,9 @@ class Leads_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->delete('tblleads');
         if ($this->db->affected_rows() > 0) {
+            $this->db->where('lead_id', $id);
+            $this->db->delete('tblleadstaffs');
+
             logActivity('Lead Deleted [Deleted by: ' . get_staff_full_name() . ', LeadID: ' . $id . ']');
 
             $attachments = $this->get_lead_attachments($id);
