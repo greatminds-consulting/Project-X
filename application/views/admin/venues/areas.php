@@ -16,6 +16,7 @@
                                 _l('#'),
                                 _l('name'),
                                 _l('Layout Name'),
+                                _l('Amenities Name'),
                                 _l('options')
                             ),'areas'); ?>
                     </div>
@@ -27,7 +28,7 @@
 <?php init_tail(); ?>
 <script>
     $(function(){
-        initDataTable('.table-areas', window.location.href, [3], [3]);
+        initDataTable('.table-areas', window.location.href, [4], [4]);
     });
 </script>
 </body>

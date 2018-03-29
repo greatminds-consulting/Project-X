@@ -9,6 +9,7 @@ $aColumns     = array(
     'tblvenueareas.name as name',
     'tblvenueareas.active as active',
     get_sql_select_area_layout_full_names().' as layouts',
+    get_sql_select_area_amenities_full_names().' as amenities',
     );
 
 $sIndexColumn = "id";
@@ -23,6 +24,7 @@ foreach ($rResult as $aRow) {
         $row[] = $aRow['id'];
         $row[] = $aRow['name'];
         $row[] = $aRow['layouts'];
+        $row[] = $aRow['amenities'];
     $options = icon_btn('venues/area/' . $aRow['id'], 'pencil-square-o');
     $options .= icon_btn('venues/areaDelete/' . $aRow['id'], 'remove', 'btn-danger _delete');
     $row[]   = $options .= '<a href="area'.($aRow['active'] == 1 ? 'disable/' : 'enable/').$aRow['id'].'">'.($aRow['active'] == 1 ? 'Disable' : 'Enable').'</a>';
