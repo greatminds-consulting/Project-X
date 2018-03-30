@@ -22,6 +22,7 @@
                                       <a href="<?php echo admin_url('templates/disable_by_type/proposals'); ?>" class="pull-right mleft5 mright25"><small><?php echo _l('disable_all'); ?></small></a>
                                       <a href="<?php echo admin_url('templates/enable_by_type/proposals'); ?>" class="pull-right"><small><?php echo _l('enable_all'); ?></small></a>
                                      <?php } ?>
+
                                     </h4>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
@@ -34,7 +35,9 @@
                                         <tbody>
                                             <?php foreach($proposals as $proposal_template){ ?>
                                             <tr>
+
                                                 <td width="70%" class="<?php if($proposal_template['active'] == 0){echo 'text-throught';} ?>">
+
                                                     <a href="<?php echo admin_url('templates/template/'.$proposal_template['templateid']); ?>"><?php echo $proposal_template['name']; ?></a>
                                                     <?php if(ENVIRONMENT !== 'production'){ ?>
                                                     <br/><small><?php echo $proposal_template['slug']; ?></small>
@@ -82,6 +85,7 @@
                                                 </td>
                                             </tr>
                                         <?php } ?>
+
                                         </tbody>
                                     </table>
                                 </div>
