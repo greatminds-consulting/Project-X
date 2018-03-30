@@ -71,6 +71,7 @@ $config['migration_auto_latest'] = FALSE;
 
 $config['migration_version'] = 202; // 2.0.2
 
+
 /*
 |--------------------------------------------------------------------------
 | Migrations Path
