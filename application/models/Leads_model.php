@@ -301,15 +301,25 @@ class Leads_model extends CRM_Model
             }
             unset($data['custom_fields']);
         }
+        $assigned_fields = array();
         if (isset($data['assigned'])) {
             $assigned_fields = $data['assigned'];
             unset($data['assigned']);
         }
         if (isset($assigned_fields)) {
+            $this->db->select('staff_id');
+            $this->db->from('tblleadstaffs');
             $this->db->where('lead_id', $id);
-            $this->db->delete('tblleadstaffs');
+            $query = $this->db->get();
+            $currentStaffLeads = $query->result_array();
             $datastaff['lead_id']=$id;
             $datastaff['datecreated']=date("Y/m/d H:i:s");
+
+            foreach ($currentStaffLeads as $currentStaffLead) {
+                if (false !== $key = array_search($currentStaffLead['staff_id'], $assigned_fields)) {
+                    unset($assigned_fields[$key]);
+                }
+            }
             foreach($assigned_fields as $staffs)
             {
                 $datastaff['staff_id']=$staffs;
@@ -350,7 +360,7 @@ class Leads_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
-        if ($this->db->affected_rows() > 0) {
+        if ($this->db->affected_rows() > 0 || $assigned_fields) {
             $affectedRows++;
             if (isset($data['status']) && $current_status_id != $data['status']) {
                 $this->db->where('id', $id);
@@ -373,6 +383,10 @@ class Leads_model extends CRM_Model
                     'junk' => 0,
                     'lost' => 0,
                 ));
+            }
+
+            if ($assigned_fields) {
+                $this->lead_assigned_member_notification($id, $assigned_fields);
             }
 
             logActivity('Lead Updated [Name: ' . $data['name'] . ']');
