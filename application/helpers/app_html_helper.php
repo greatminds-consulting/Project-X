@@ -327,6 +327,9 @@ function init_head($aside = true)
     if ($aside == true) {
         $CI->load->view('admin/includes/aside');
     }
+   // $CI->load->view('admin/includes/header', array('startedTimers'=>$CI->misc_model->get_staff_started_timers()));
+    $CI->load->view('admin/includes/setup_menu');
+
 }
 /**
  * Init admin footer/tails

@@ -11,7 +11,6 @@
     <title><?php if (isset($title)){ echo $title; } else { echo get_option('companyname'); } ?></title>
     <?php echo app_stylesheet('assets/css','reset.css'); ?>
     <link href='<?php echo base_url('assets/plugins/roboto/roboto.css'); ?>' rel='stylesheet'>
-    <link href="<?php echo base_url('assets/plugins/app-build/vendor.css?v='.get_app_version()); ?>" rel="stylesheet">
     <?php if($isRTL === 'true'){ ?>
     <link href="<?php echo base_url('assets/plugins/bootstrap-arabic/css/bootstrap-arabic.min.css'); ?>" rel="stylesheet">
     <?php } ?>
@@ -25,6 +24,15 @@
     <link href='<?php echo base_url('assets/plugins/jquery-comments/css/jquery-comments.css'); ?>' rel='stylesheet' />
     <link href='<?php echo base_url('assets/plugins/gantt/css/style.css'); ?>' rel='stylesheet' />
     <?php } ?>
+
+    <?php echo app_stylesheet('assets/css','pages.css'); ?>
+    <?php echo app_stylesheet('assets/plugins/pace','pace-theme-flash.css'); ?>
+    <?php echo app_stylesheet('assets/css','pages-icons.css'); ?>
+    <link href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
+    <link href="<?php echo base_url('assets/plugins/font-awesome/css/font-awesome.css'); ?>" rel="stylesheet">
+    <link href="/assets/plugins/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" media="screen" />
+    <?php echo app_stylesheet('assets/css','corporate.css'); ?>
+
     <?php echo app_stylesheet('assets/css','style.css'); ?>
     <?php if(file_exists(FCPATH.'assets/css/custom.css')){ ?>
     <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet">
@@ -48,5 +56,5 @@
     </script>
     <?php do_action('app_admin_head'); ?>
 </head>
-<body <?php if($isRTL === 'true'){ echo 'dir="rtl"';} ?> class="<?php echo 'page'.($this->uri->segment(2) ? '-'.$this->uri->segment(2) : '') . '-'.$this->uri->segment(1); ?> admin <?php if(isset($bodyclass)){echo $bodyclass . ' '; } ?><?php if($this->session->has_userdata('is_mobile') && $this->session->userdata('is_mobile') == true){echo 'mobile hide-sidebar ';} ?><?php if($isRTL === 'true'){echo 'rtl';} ?>">
+<body  <?php if($isRTL === 'true'){ echo 'dir="rtl"';} ?> class=" fixed-header <?php echo 'page'.($this->uri->segment(2) ? '-'.$this->uri->segment(2) : '') . '-'.$this->uri->segment(1); ?> admin <?php if(isset($bodyclass)){echo $bodyclass . ' '; } ?><?php if($this->session->has_userdata('is_mobile') && $this->session->userdata('is_mobile') == true){echo 'mobile hide-sidebar ';} ?><?php if($isRTL === 'true'){echo 'rtl';} ?>">
     <?php do_action('after_body_start'); ?>

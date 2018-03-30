@@ -35,6 +35,19 @@
 <script src="<?php echo base_url('assets/plugins/fullcalendar/locale/'.$locale.'.js'); ?>"></script>
 <?php } ?>
 <?php } ?>
+
+<script src="<?php echo base_url('assets/plugins/pace/pace.min.js')?>" type="text/javascript"></script>
+<script src="<?php echo base_url('assets/plugins/modernizr.custom.js')?>" type="text/javascript"></script>
+<script src="<?php echo base_url('assets/plugins/jquery-ui/jquery-ui.min.js')?>" type="text/javascript"></script>
+<script src="/assets/plugins/tether/js/tether.min.js" type="text/javascript"></script>
+<script src="/assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="<?php echo base_url('assets/plugins/tether/js/tether.min.js')?>" type="text/javascript"></script>
+<script src="/assets/plugins/jquery_1.11/jquery-easy.js" type="text/javascript"></script>
+<script src="/assets/plugins/jquery-unveil/jquery.unveil.min.js" type="text/javascript"></script>
+<script src="/assets/plugins/jquery-ios-list/jquery.ioslist.min.js" type="text/javascript"></script>
+<script src="/assets/plugins/jquery-actual/jquery.actual.min.js"></script>
+<script src="/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<?php echo app_script('assets/js','pages.js'); ?>
 <?php echo app_script('assets/js','main.js'); ?>
 <?php
 /**

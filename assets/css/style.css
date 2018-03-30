@@ -1395,21 +1395,11 @@ body.page-small.show-sidebar #wrapper {
     transition: all 0.5s ease 0s;
 }
 
-#side-menu {
-    background: #626f80;
-}
 
 #side-menu .dashboard {
     border-top: 0px;
 }
 
-#side-menu li a {
-    color: #fff;
-    text-transform: uppercase;
-    padding: 12px 20px 12px 16px;
-    font-size: 13px;
-    font-family: 'Roboto';
-}
 
 #side-menu li:first-child {
     border-bottom: 0px !important;
@@ -1424,11 +1414,6 @@ li a i.menu-icon {
     font-size: 17px;
 }
 
-#side-menu li.active>a {
-    border-radius: 0px;
-    color: #323a45;
-    background: #e9ebef;
-}
 
 #side-menu li .nav-second-level li {
     border-bottom: 0px !important;
@@ -1445,11 +1430,6 @@ li a i.menu-icon {
     -o-transition: ease-in-out 0.2s;
 }
 
-#side-menu li.active,
-li .nav-second-level li {
-    background: #fff;
-    border-bottom: 0px;
-}
 
 #side-menu li .nav-second-level li a {
     padding: 7px 10px 7px 45px;
@@ -1664,18 +1644,12 @@ li .nav-second-level li {
 }
 
 #wrapper {
-    margin: 0 0 0 210px;
     padding: 0;
     background: #e9ebef;
     -webkit-transition: all 0.4s ease 0s;
     transition: all 0.4s ease 0s;
     position: relative;
     min-height: 100%;
-}
-
-.content {
-    padding: 10px 25px 25px 25px;
-    min-width: 320px;
 }
 
 ul.customer-profile-tabs {
@@ -3359,11 +3333,6 @@ table.dataTable thead .sorting:after {
     vertical-align: middle;
     color: #2d2d2d;
     font-weight: 400;
-}
-
-.table>tbody>tr>td,
-.table>tfoot>tr>td {
-    padding: 10px 10px 5px 10px;
 }
 
 .selecpicker:active,
@@ -8598,4 +8567,10 @@ td[align="center"] {
 
 .mce-branding {
     display: none !important;
+}
+.content .content {
+    padding-left:0px !important;
+}
+.header-logo img {
+    width: 100px;
 }
