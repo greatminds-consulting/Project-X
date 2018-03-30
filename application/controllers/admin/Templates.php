@@ -122,4 +122,17 @@ class Templates extends Admin_controller {
         $data['proposalArray'] = $proposalArray;
         $this->load->view('admin/templates/list_templates',$data);
     }
+
+    public function delete($id) {
+        if (!$id) {
+            redirect(admin_url('templates'));
+        }
+        $response = $this->templates_model->delete($id);
+        if ($response == true) {
+            set_alert('success', _l('Deleted Template Successfully'));
+        } else {
+            set_alert('warning', _l('Some error occured'));
+        }
+        redirect(admin_url('templates'));
+    }
 }
