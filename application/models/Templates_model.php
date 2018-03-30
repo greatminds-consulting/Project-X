@@ -92,6 +92,9 @@ class Templates_model extends CRM_Model {
             $main_id = $id;
             $_data              = array();
             $_data['message']   = $data['message'][$id];
+            $_data['name']      = $data['name'];
+            $_data['type']      = $data['type'];
+            $_data['message']   = $data['message'][$id];
             $this->db->where('templateid', $id);
             $this->db->update('tbltemplates', $_data);
             if ($this->db->affected_rows() > 0) {
