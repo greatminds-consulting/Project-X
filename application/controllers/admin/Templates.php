@@ -138,4 +138,34 @@ class Templates extends Admin_controller {
         redirect(admin_url('templates'));
     }
 
+    /* Edit template */
+    public function template($id) {
+        if (!has_permission('templates', '', 'view')) {
+            access_denied('templates');
+        }
+        if (!$id) {
+            redirect(admin_url('templates'));
+        }
+        if ($this->input->post()) {
+            if (!has_permission('templates', '', 'edit')) {
+                access_denied('templates');
+            }
+            $data = $this->input->post();
+            $tmp = $this->input->post(null,false);
+            foreach($data['message'] as $key=>$contents){
+                $data['message'][$key] = $tmp['message'][$key];
+            }
+            $success = $this->templates_model->update($data, $id);
+            if ($success) {
+                set_alert('success', _l('updated_successfully', _l('template')));
+            }
+            redirect(admin_url('templates'));
+        }
+        $data['template']               = $this->templates_model->get_template_by_id($id);
+        $title                          = $data['template']->name;
+        $data['title']                  = $title;
+        $this->load->view('admin/templates/template', $data);
+    }
+
+
 }

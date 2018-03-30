@@ -144,4 +144,28 @@ class Templates_model extends CRM_Model {
         return false;
     }
 
+    /**
+     * Update  template
+     */
+    public function update($data) {
+        $affectedRows = 0;
+        foreach ($data['message'] as $id => $val)   {
+            $main_id = $id;
+            $_data              = array();
+            $_data['message']   = $data['message'][$id];
+            $this->db->where('templateid', $id);
+            $this->db->update('tbltemplates', $_data);
+            if ($this->db->affected_rows() > 0) {
+                $affectedRows++;
+            }
+        }
+        $main_template = $this->get_template_by_id($main_id);
+        if ($affectedRows > 0 && $main_template) {
+            logActivity('Template Updated [' . $main_template->name . ']');
+
+            return true;
+        }
+        return false;
+    }
+
 }
