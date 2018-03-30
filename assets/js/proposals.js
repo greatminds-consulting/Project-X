@@ -19,7 +19,7 @@ function init_proposal_editor() {
 
     var settings = {
         selector: 'div.editable',
-        inline: true,
+        inline: false,
         theme: 'modern',
         skin: 'perfex',
         relative_urls: false,
@@ -95,10 +95,8 @@ function init_proposal_editor() {
             });
         },
     };
-    if (_templates.length > 0) {
-        settings.templates = _templates;
-        settings.plugins[3] = 'template ' + settings.plugins[3];
-    }
+    settings.templates = "/admin/templates/list_templates";
+    settings.plugins[3] = 'template ' + settings.plugins[3];
     tinymce.init(settings);
 }
 

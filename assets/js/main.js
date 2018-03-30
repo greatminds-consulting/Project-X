@@ -3585,10 +3585,6 @@ function init_editor(selector, settings) {
     });
 
     // Original settings
-    var template = '';
-    if ($('#template_type').length > 0 && $('#template_type').val() == 'proposals' ) {
-        template = 'template'
-    }
     var _settings = {
         branding: false,
         selector: selector,
@@ -3608,7 +3604,6 @@ function init_editor(selector, settings) {
         removed_menuitems: 'newdocument restoredraft',
         forced_root_block: false,
         autosave_restore_when_empty: false,
-        templates: "/admin/templates/list_templates",
         fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
         setup: function(ed) {
             // Default fontsize is 12
@@ -3625,7 +3620,6 @@ function init_editor(selector, settings) {
             'visualblocks code fullscreen',
             'media save table contextmenu',
             'paste textcolor colorpicker',
-            template
         ],
         toolbar1: 'fontselect fontsizeselect | forecolor backcolor | bold italic | alignleft aligncenter alignright alignjustify | image link | bullist numlist | restoredraft',
         file_browser_callback: elFinderBrowser,
