@@ -1842,6 +1842,7 @@ $lang['customer_ticket_subject']          = 'Subject';
 
 # Email templates
 $lang['email_template_proposals_fields_heading'] = 'Proposals';
+$lang['email_template_contracts_fields_heading'] = 'Contracts';
 
 # Tasks
 $lang['add_task_attachments']                 = 'Attachment';
