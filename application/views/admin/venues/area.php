@@ -117,7 +117,7 @@
 </script>
 <script>
 _validate_form($('#add_areas'),{name:'required','layout':'required','layout_minimum': {required: true,digits: true},layout_maximum: {required: true,digits: true}});
-
+<?php if (count($area_layouts) <=1) { ?> $('.delete-block').hide(); <?php } ?>
     function add_layout() {
         $('.layout-div').append($('.area-layout').html());
         $('.delete-block').show();
