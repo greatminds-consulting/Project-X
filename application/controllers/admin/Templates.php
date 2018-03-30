@@ -35,7 +35,6 @@ class Templates extends Admin_controller {
         return $this->db->get('tbltemplates')->row();
     }
 
-
     /* Add New template */
     public function new_template() {
         $data['title']     = _l('add_new_template');
@@ -50,7 +49,7 @@ class Templates extends Admin_controller {
         $this->templates_model->add_template($data);
         redirect(admin_url('templates'));
     }
-
+    
     /* Edit template */
     public function template($id) {
         if (!has_permission('templates', '', 'view')) {

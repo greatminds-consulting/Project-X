@@ -82,7 +82,7 @@ class Templates_model extends CRM_Model {
         }
         return false;
     }
-
+    
     /**
      * Update  template
      */
