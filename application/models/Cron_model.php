@@ -1287,8 +1287,14 @@ class Cron_model extends CRM_Model
 
                     $this->db->insert('tblleads', $lead_data);
                     $insert_id = $this->db->insert_id();
+
+                    $data_staff['lead_id'] = $insert_id;
+                    $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                    $data_staff['staff_id'] = $mail->responsible;
+                    $this->db->insert('tblleadstaffs', $data_staff);
+
                     if ($insert_id) {
-                        $this->leads_model->lead_assigned_member_notification($insert_id, $mail->responsible, true);
+                        $this->leads_model->lead_assigned_member_notification($insert_id, array($mail->responsible), true);
                         $this->load->helper('simple_html_dom');
                         $html                      = str_get_html($email['body']);
                         $insert_lead_fields        = array();
