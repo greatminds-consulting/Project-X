@@ -1220,7 +1220,6 @@ body.page-small.show-sidebar #wrapper {
 }
 
 .dropdown-menu>li>a {
-    padding: 8px 16px;
     color: #333333;
 }
 
@@ -6021,8 +6020,8 @@ table.dataTable>tbody>tr.child span.dtr-title {
     color: #4e75ad;
     border-radius: 3px;
     font-size: 11.5px;
-    padding-bottom: 6px;
-    padding-top: 7px;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
 .dt-buttons.btn-group .btn:hover,
@@ -6314,6 +6313,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 
 ul.dt-button-collection.dropdown-menu {
     z-index: 20005;
+    min-width: 160px;
 }
 
 .activity-feed {
@@ -6483,6 +6483,7 @@ li.task.overdue-task .panel-body {
 
 .show_quantity_as_wrapper span {
     font-weight: 500;
+    padding-right: 15px;
 }
 
 ._filter_data .dropdown-menu.height500 {
@@ -6563,8 +6564,8 @@ li.task.overdue-task .panel-body {
 .dataTables_filter input {
     margin-left: 0px !important;
     width: 80px !important;
-    -webkit-transition: width 0.3s ease;
-    transition: width 0.3s ease;
+    -webkit-transition: width 0.3s ease !important;
+    transition: width 0.3s ease !important;
     height: 31px;
 }
 
@@ -7071,7 +7072,9 @@ div.dataTables_wrapper div.dataTables_paginate {
     background: #f9fafc;
     margin-left: -15px;
     margin-right: -15px;
-    margin-top: -15px;
+    /*margin-top: -15px;*/
+    margin-top: 0px;
+
 }
 
 .top-lead-menu .nav-tabs {
@@ -7954,9 +7957,10 @@ textarea[data-task-ae-editor="1"] {
     -webkit-box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     background: #fff;
-    width: calc(100% - 211px);
+    width: calc(100% - 59px);
     z-index: 5;
     border-top: 1px solid #ededed;
+    padding-left: 50px;
 }
 
 .btn-toolbar-container-out {
@@ -8582,17 +8586,24 @@ td[align="center"] {
     line-height: 1;
     color: #555;
     text-align: center;
-    background-color: #eee;
+    background-color: #fbfdff;
     border: 1px solid #ccc;
     float: left;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    border-right: none;
 }
 
-.leads-filter-column .dropdown-menu.open{
+.leads-filter-column .dropdown-menu.open, .accounting-template .form-group .dropdown-menu.open{
     margin-top: 39px;
+}
+.accounting-template .form-group .dropdown-menu li a {
+    padding: 0px 16px;
+}
+.accounting-template .form-group .dropdown-menu li.active>a {
+    background-color: #03a9f4;
 }
 .leads-filter-column .dropdown-menu {
     background-color: #fff;
@@ -8612,11 +8623,157 @@ td[align="center"] {
 #leads-table .hr-panel-heading {
     width: 100%;
 }
-#DataTables_Table_0.table thead tr th {
+#DataTables_Table_0.table thead tr th, #DataTables_Table_1.table thead tr th,
+#DataTables_Table_2.table thead tr th, #DataTables_Table_3.table thead tr th, #DataTables_Table_4.table thead tr th
+#DataTables_Table_5.table thead tr th{
     text-transform: capitalize;
+    padding: 10px;
 }
 div.dataTables_wrapper div.dataTables_filter {
     text-align: right;
     float: right;
     margin-right: -30px;
 }
+#DataTables_Table_0_wrapper .dt-buttons.btn-group .btn {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+#DataTables_Table_0_wrapper select.form-control:not([size]):not([multiple]) {
+    height: calc(.25rem + 2px);
+    width: 75px;
+    -webkit-appearance: menulist-button;
+}
+#DataTables_Table_0_filter .input-group .form-control:not(:first-child){
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.form-control:focus {
+    background-color: transparent;
+}
+#DataTables_Table_0, #DataTables_Table_1{
+    margin-top: 15px!important;
+}
+
+#lead-modal .modal-dialog {
+    width: 900px;
+}
+#lead-modal .modal-header {
+    padding: 15px 25px 14px 25px;
+}
+.lead-wrapper form .lead-view {
+    width: 100%;
+}
+.mtop15 .lead-info-heading{
+    padding: 0;
+}
+
+.lead-info-heading:first-child {
+    margin-left: 0;
+}
+.lead-info-heading h4 {
+    color: #005c86;
+    padding-left: 15px;
+}
+
+.mtop15 p {
+    padding-left: 15px;
+}
+#lead-modal .modal-body {
+    padding: 0px 15px;
+}
+.lead-actions-left .dropdown-menu {
+    margin: 0;
+    margin-top: 5px;
+    padding: 0;
+    border-radius: 10px;
+    z-index: 9000;
+    -webkit-box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.125);
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.125);
+    border-color: #bfcbd9;
+    width: 160px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+}
+.lead-actions-left .dropdown-menu > li:first-child {
+    padding-top: 0;
+}
+.lead-actions-left .dropdown-menu>li>a {
+    padding: 0px 14px;
+}
+
+.lead-wrapper a.font-medium-xs {
+    width: 60px;
+}
+
+.lead-wrapper hr.no-margin{
+    width: 100%;
+    border-color: #f9fafc;
+}
+.lead-wrapper p.font-medium-xs {
+    font-weight: 500;
+}
+.lead-view .mtop15 {
+padding-right: 0px !important;
+}
+a.lead-convert-to-customer {
+    padding: 5px 10px;
+}
+select.form-control:not([size]):not([multiple]) {
+    height: calc(.25rem + 2px);
+    -webkit-appearance: menulist-button;
+}
+.radio input[type=radio]:checked + label:before {
+    border-width: 1px;
+}
+.radio label::after {
+    width: 11px;
+    height: 11px;
+    left: 3.3px;
+    top: 4.1px;
+}
+.radio.radio-primary input[type=radio]:checked + label:before {
+    border-color: #01a9f4;
+}
+div.input-group-addon{
+    padding: 5px 25px 10px 15px;
+    border-right: 1px solid #bfcbd9 !important;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.dropdown-menu {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,.15);
+}
+.datepicker {
+    border-radius: 4px;
+}
+.dropdown-menu > li:last-child, .dropdown-menu > .dropdown-item:last-child {
+    padding-bottom: 0;
+}
+.dropdown-menu > li:first-child, .dropdown-menu > .dropdown-item:first-child {
+    padding-top: 0;
+}
+.border-right .form-group, .border-left .form-group{
+    padding: 0 10px;
+}
+.custom-field-multi-select .form-group .dropdown-menu.open{
+    margin-top: 1px;
+}
+.show_quantity_as_wrapper .mtop10{
+    display: flex;
+    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: right;
+    justify-content: flex-end;
+}
+.show_quantity_as_wrapper .radio label::after {
+    width: 11px;
+    height: 11px;
+    left: 3.3px;
+    top: 3.1px;
+}
+.form-control+.input-group-addon:not(:first-child) {
+     border-left: 0;
+     -webkit-appearance: menulist-button;
+ }

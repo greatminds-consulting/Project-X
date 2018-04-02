@@ -55,7 +55,7 @@
                            </div>
                         </div>
                         <div class="row">
-                          <div class="col-md-6">
+                          <div class="col-md-6 ">
                               <?php $value = (isset($proposal) ? _d($proposal->date) : _d(date('Y-m-d'))) ?>
                               <?php echo render_date_input('date','proposal_date',$value); ?>
                           </div>
@@ -137,7 +137,7 @@
                             </div>
                           </div>
                      </div>
-                     <div class="col-md-6">
+                     <div class="col-md-6 border-left">
                         <div class="row">
                            <div class="col-md-6">
                               <div class="form-group select-placeholder">
@@ -186,7 +186,7 @@
                               <?php $value = (isset($proposal) ? $proposal->state : ''); ?>
                               <?php echo render_input('state','billing_state',$value); ?>
                            </div>
-                           <div class="col-md-6">
+                           <div class="col-md-6" style="padding-left: 0px;">
                               <?php $countries = get_all_countries(); ?>
                               <?php $selected = (isset($proposal) ? $proposal->country : ''); ?>
                               <?php echo render_select('country',$countries,array('country_id',array('short_name'),'iso2'),'billing_country',$selected); ?>
@@ -195,7 +195,7 @@
                               <?php $value = (isset($proposal) ? $proposal->zip : ''); ?>
                               <?php echo render_input('zip','billing_zip',$value); ?>
                            </div>
-                           <div class="col-md-6">
+                           <div class="col-md-6" style="padding-left: 0px;">
                               <?php $value = (isset($proposal) ? $proposal->email : ''); ?>
                               <?php echo render_input('email','proposal_email',$value); ?>
                            </div>
