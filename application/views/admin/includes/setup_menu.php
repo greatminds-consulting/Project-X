@@ -86,11 +86,6 @@
             do_action('after_render_single_setup_menu',$m);
         }
         ?>
-        <?php if(get_option('show_help_on_setup_menu') == 1 && is_admin()){ $total_setup_items++; ?>
-        <li>
-            <a href="<?php echo do_action('help_menu_item_link','https://help.perfexcrm.com'); ?>" target="_blank"><?php echo do_action('help_menu_item_text',_l('setup_help')); ?></a>
-        </li>
-        <?php } ?>
     </ul>
 </div>
 <?php $this->app->set_setup_menu_visibility($total_setup_items); ?>
