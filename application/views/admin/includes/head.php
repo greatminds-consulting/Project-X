@@ -11,6 +11,8 @@
     <title><?php if (isset($title)){ echo $title; } else { echo get_option('companyname'); } ?></title>
     <?php echo app_stylesheet('assets/css','reset.css'); ?>
     <link href='<?php echo base_url('assets/plugins/roboto/roboto.css'); ?>' rel='stylesheet'>
+    <link href="<?php echo base_url('assets/plugins/app-build/vendor.css?v='.get_app_version()); ?>" rel="stylesheet">
+
     <?php if($isRTL === 'true'){ ?>
     <link href="<?php echo base_url('assets/plugins/bootstrap-arabic/css/bootstrap-arabic.min.css'); ?>" rel="stylesheet">
     <?php } ?>

@@ -8574,3 +8574,49 @@ td[align="center"] {
 .header-logo img {
     width: 100px;
 }
+/*===================================*/
+.dataTables_filter .input-group-addon {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.leads-filter-column .dropdown-menu.open{
+    margin-top: 39px;
+}
+.leads-filter-column .dropdown-menu {
+    background-color: #fff;
+}
+.leads-filter-column li.active>a {
+    background-color: #03a9f4;
+}
+.leads-filter-column .dropdown-menu > li:first-child, .leads-filter-column .dropdown-menu > .leads-filter-column .dropdown-item:first-child {
+    padding-top: 0;
+}
+.btn:hover {
+    border: none;
+}
+.dataTables_wrapper .row > div {
+    display: block;
+}
+#leads-table .hr-panel-heading {
+    width: 100%;
+}
+#DataTables_Table_0.table thead tr th {
+    text-transform: capitalize;
+}
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: right;
+    float: right;
+    margin-right: -30px;
+}
