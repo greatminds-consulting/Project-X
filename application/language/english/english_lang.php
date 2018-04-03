@@ -3544,3 +3544,7 @@ $lang['ticket_create_to_contact'] = 'Ticket to contact';
 $lang['showing_billable_tasks_from_project'] = 'Showing billable tasks from project';
 $lang['no_billable_tasks_found'] = 'Billable tasks not found';
 $lang['help_leads_permission_view'] = 'If this permission is not checked, a staff member will be only able to view leads to where is assigned, leads created by the staff member and leads that are marked as public';
+
+$lang['item_name'] = 'Name';
+$lang['item_type'] = 'Type';
+$lang['archived_date'] = 'Deleted Date';

@@ -185,4 +185,12 @@ class Settings extends Admin_controller
             'success' => delete_option($id)
         ));
     }
+
+    public function table()
+    {
+        if (!is_staff_member()) {
+            ajax_access_denied();
+        }
+        $this->app->get_table_data('recycle_bin');
+    }
 }
