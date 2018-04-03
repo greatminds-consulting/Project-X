@@ -39,7 +39,7 @@ function render_custom_fields($belongs_to, $rel_id = false, $where = array(), $i
 
     if (count($fields)) {
         if (!$items_add_edit_preview && !$items_applied) {
-            $fields_html .= '<div class="row">';
+            $fields_html .= '<div class="row expense-drop">';
         }
 
         foreach ($fields as $field) {

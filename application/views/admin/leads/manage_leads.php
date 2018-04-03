@@ -15,13 +15,13 @@
                   </a>
                   <?php } ?>
                   <div class="row">
-                     <div class="col-md-5">
+                     <div class="col-md-8">
                         <a href="#" class="btn btn-default btn-with-tooltip" data-toggle="tooltip" data-title="<?php echo _l('leads_summary'); ?>" data-placement="bottom" onclick="slideToggle('.leads-overview'); return false;"><i class="fa fa-bar-chart"></i></a>
                         <a href="<?php echo admin_url('leads/switch_kanban/'.$switch_kanban); ?>" class="btn btn-default mleft10 hidden-xs">
                         <?php if($switch_kanban == 1){ echo _l('leads_switch_to_kanban');}else{echo _l('switch_to_list_view');}; ?>
                         </a>
                      </div>
-                     <div class="col-md-4 col-xs-12 pull-right leads-search">
+                     <div class="col-md-4 col-xs-12 pull-right leads-search no-padding-right">
                         <?php if($this->session->userdata('leads_kanban_view') == 'true') { ?>
                         <div data-toggle="tooltip" data-placement="bottom" data-title="<?php echo _l('search_by_tags'); ?>">
                         <?php echo render_input('search','','','search',array('data-name'=>'search','onkeyup'=>'leads_kanban();','placeholder'=>_l('leads_search')),array(),'no-margin') ?>

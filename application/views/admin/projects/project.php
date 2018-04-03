@@ -5,7 +5,7 @@
             <?php echo form_open($this->uri->uri_string(),array('id'=>'project_form')); ?>
             <div class="col-md-7">
                 <div class="panel_s">
-                    <div class="panel-body">
+                    <div class="panel-body" id="project-settings-left">
                         <h4 class="no-margin">
                             <?php echo $title; ?>
                         </h4>

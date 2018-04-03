@@ -3147,6 +3147,7 @@ form.dropzone {
     background-color: #fbfdff;
     border: 1px dashed #c0ccda;
     border-radius: 6px;
+    width:100%;
 }
 
 form.dropzone input[type="file"] {
@@ -3316,7 +3317,7 @@ table.dataTable thead .sorting_desc_disabled:after {
 }
 
 table.dataTable thead .sorting:after {
-    opacity: 0.05;
+    opacity: 0.5;
 }
 
 .table thead tr th:first-child {
@@ -4578,7 +4579,7 @@ table.items tr.main td {
 }
 
 #kan-ban .panel-heading-bg {
-    padding: 9px;
+    padding: 6px 9px;
     position: relative;
     border-bottom: 1px solid #e4e5e7;
 }
@@ -8596,7 +8597,8 @@ td[align="center"] {
     border-right: none;
 }
 
-.leads-filter-column .dropdown-menu.open, .accounting-template .form-group .dropdown-menu.open{
+.leads-filter-column .dropdown-menu.open, .accounting-template .form-group .dropdown-menu.open, .ajax-search.bootstrap-select.btn-group .dropdown-menu,
+.expense_tax .form-group .dropdown-menu.open, #project-settings-area .bootstrap-select.btn-group .dropdown-menu, #project-settings-left .bootstrap-select.btn-group .dropdown-menu{
     margin-top: 39px;
 }
 .accounting-template .form-group .dropdown-menu li a {
@@ -8627,7 +8629,6 @@ td[align="center"] {
 #DataTables_Table_2.table thead tr th, #DataTables_Table_3.table thead tr th, #DataTables_Table_4.table thead tr th
 #DataTables_Table_5.table thead tr th{
     text-transform: capitalize;
-    padding: 10px;
 }
 div.dataTables_wrapper div.dataTables_filter {
     text-align: right;
@@ -8638,7 +8639,8 @@ div.dataTables_wrapper div.dataTables_filter {
     padding-bottom: 5px;
     padding-top: 5px;
 }
-#DataTables_Table_0_wrapper select.form-control:not([size]):not([multiple]) {
+#DataTables_Table_0_wrapper select.form-control:not([size]):not([multiple]),
+#DataTables_Table_1_length select.form-control:not([size]):not([multiple]){
     height: calc(.25rem + 2px);
     width: 75px;
     -webkit-appearance: menulist-button;
@@ -8720,7 +8722,6 @@ a.lead-convert-to-customer {
 }
 select.form-control:not([size]):not([multiple]) {
     height: calc(.25rem + 2px);
-    -webkit-appearance: menulist-button;
 }
 .radio input[type=radio]:checked + label:before {
     border-width: 1px;
@@ -8775,5 +8776,71 @@ div.input-group-addon{
 }
 .form-control+.input-group-addon:not(:first-child) {
      border-left: 0;
-     -webkit-appearance: menulist-button;
  }
+.lead-name span.mtop10 {
+    margin-top: 6px;
+}
+.customer-profile-details form {
+    width:100%;
+}
+
+.customer-profile-details .dropup .dropdown-menu {
+    height: 200px;
+}
+.input-group .form-control {
+    width:100%;
+}
+
+.customer-profile-details .nav-tabs ~ .tab-content {
+    overflow: initial;
+}
+
+#expense-form {
+    width:100%;
+}
+
+.panel-body .expense-drop {
+    float: left;
+    width: 100%;
+}
+.credit-drop {
+    width: 100%;
+    display: inline-block;
+}
+.new-addon {
+    padding: 6px 12px !important;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    width: initial;
+    -webkit-appearance:initial !important;
+    border-top-right-radius: 2px;
+    -webkit-border-bottom-right-radius: 2px;
+    -moz-border-radius-bottomright: 2px;
+    border-bottom-right-radius: 2px;
+}
+.credir-note-drop .input-group-addon{
+    -webkit-appearance:initial !important;
+}
+
+.table tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
+#project-settings-left .row.expense-drop .bootstrap-select.btn-group .dropdown-menu{
+    margin-top:0px;
+}
+
+.show_quantity_as_wrapper .radio label::before{
+    bottom: 3.5px;
+}
+
+#DataTables_Table_0.table tbody tr td {
+    padding: 10px;
+}
+
+.new-projects-summary {
+    float: left;
+    width: 100%;
+}
