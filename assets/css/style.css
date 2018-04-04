@@ -8598,7 +8598,8 @@ td[align="center"] {
 }
 
 .leads-filter-column .dropdown-menu.open, .accounting-template .form-group .dropdown-menu.open, .ajax-search.bootstrap-select.btn-group .dropdown-menu,
-.expense_tax .form-group .dropdown-menu.open, #project-settings-area .bootstrap-select.btn-group .dropdown-menu, #project-settings-left .bootstrap-select.btn-group .dropdown-menu{
+.expense_tax .form-group .dropdown-menu.open, #project-settings-area .bootstrap-select.btn-group .dropdown-menu, #project-settings-left .bootstrap-select.btn-group .dropdown-menu,
+#back-tasks-list .form-group .dropdown-menu.open, #back-tasks-list .bootstrap-select.btn-group .dropdown-menu{
     margin-top: 39px;
 }
 .accounting-template .form-group .dropdown-menu li a {

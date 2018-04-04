@@ -76,7 +76,7 @@ $has_permission_create = has_permission('knowledge_base','','create');
                   }
                   $articles = $this->db->get()->result_array();
                   ?>
-                  <div class="kan-ban-content-wrapper">
+                  <div class="kan-ban-content-wrapper" style="min-height: 197px;">
                     <div class="kan-ban-content">
                      <ul class="sortable article-group groups<?php if(!$has_permission_edit){echo 'sortable-disabled'; } ?>" data-group-id="<?php echo $group['groupid']; ?>">
                       <?php foreach($articles as $article) { ?>
