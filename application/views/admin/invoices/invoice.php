@@ -26,6 +26,60 @@
 	    init_ajax_project_search_by_customer_id();
 	    // Maybe items ajax search
 	    init_ajax_search('items','#item_select.ajax-search',undefined,admin_url+'items/search');
+        $("body").on('change', 'select[name="package_id"]', function () {
+            var packageid = $(this).selectpicker('val');
+            if (packageid != '' && packageid !== 'newitem') {
+                requestGetJSON('invoice_items/get_package_by_id/' + packageid).done(function(response) {
+                    if (response) {
+                        $.each(response, function(i, obj) {
+                            clear_item_preview_values();
+
+                            $('.main textarea[name="description"]').val(obj.description);
+                            $('.main textarea[name="long_description"]').val(obj.long_description.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, " "));
+
+                            _set_item_preview_custom_fields_array(obj.custom_fields);
+
+                            $('.main input[name="quantity"]').val(1);
+
+                            var taxSelectedArray = [];
+                            if (obj.taxname && obj.taxrate) {
+                                taxSelectedArray.push(obj.taxname + '|' + obj.taxrate);
+                            }
+                            if (obj.taxname_2 && obj.taxrate_2) {
+                                taxSelectedArray.push(obj.taxname_2 + '|' + obj.taxrate_2);
+                            }
+                            $('.main select.tax').selectpicker('val', taxSelectedArray);
+                            $('.main input[name="unit"]').val(obj.unit);
+
+                            var $currency = $("body").find('.accounting-template select[name="currency"]');
+                            var baseCurency = $currency.attr('data-base');
+                            var selectedCurrency = $currency.find('option:selected').val();
+                            var $rateInputPreview = $('.main input[name="rate"]');
+
+                            if (baseCurency == selectedCurrency) {
+                                $rateInputPreview.val(obj.rate);
+                            } else {
+                                var itemCurrencyRate = obj['rate_currency_' + selectedCurrency];
+                                if (!itemCurrencyRate || parseFloat(itemCurrencyRate) === 0) {
+                                    $rateInputPreview.val(obj.rate);
+                                } else {
+                                    $rateInputPreview.val(itemCurrencyRate);
+                                }
+                            }
+
+                            $(document).trigger({
+                                type: "item-added-to-preview",
+                                item: obj,
+                                item_type: 'item'
+                            });
+                            add_item_to_table(obj,obj.itemid,undefined)
+                        });
+
+                    }
+
+                });
+            }
+        });
 	});
 </script>
 </body>

@@ -248,7 +248,7 @@ class Invoices_model extends CRM_Model
         $cancel_merged_invoices = isset($data['cancel_merged_invoices']);
 
         $tags = isset($data['tags']) ? $data['tags'] : '';
-
+        unset($data['package_id']);
         if (isset($data['save_as_draft'])) {
             $data['status'] = 6;
             unset($data['save_as_draft']);

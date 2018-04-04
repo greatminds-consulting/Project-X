@@ -334,6 +334,7 @@ class Invoices extends Admin_controller
         $data['currencies'] = $this->currencies_model->get();
 
         $data['base_currency'] = $this->currencies_model->get_base_currency();
+        $data['items_packages'] = $this->invoice_items_model->get_packages(true);
 
         $data['staff']             = $this->staff_model->get('', 1);
         $data['title']             = $title;
