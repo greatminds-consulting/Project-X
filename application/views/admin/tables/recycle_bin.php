@@ -5,6 +5,7 @@ $has_permission_delete = has_permission('leads','','delete');
 $custom_fields = get_table_custom_fields('recycle_bin');
 
 $aColumns     = array(
+    'id',
     'item_id',
     'item_name',
     'item_type',
@@ -70,7 +71,7 @@ foreach ($rResult as $aRow) {
         $row[] = (strpos($customFieldColumn, 'date_picker_') !== false ? _d($aRow[$customFieldColumn]) : $aRow[$customFieldColumn]);
     }
 
-    $options = '<a href="'.getCompleteUrl('/setting/archive/restore').'" class="btn btn-success _delete btn-icon remove-archive-restore">Restore</a>';
+    $options = '<a href="'.getCompleteUrl('settings/archiverestore/'.$aRow['id']).'" class="btn btn-success _delete btn-icon remove-archive-restore">Restore</a>';
     $options .= '<a href="'.getCompleteUrl('/setting/archive').'" class="btn btn-danger _delete btn-icon remove-archive-item">Remove Permanently</a>';
 
     $row[] = $options;

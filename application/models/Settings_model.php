@@ -155,4 +155,20 @@ class Settings_model extends CRM_Model
 
         return false;
     }
+
+    public function archiveRestore($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            if ($query->item_type == 'Customer') {
+                $this->db->where('userid', $query->item_id);
+                $this->db->update('tblclients', array('is_delete' => 0));
+            }
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return true;
+        }
+        return false;
+    }
 }

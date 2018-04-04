@@ -193,4 +193,12 @@ class Settings extends Admin_controller
         }
         $this->app->get_table_data('recycle_bin');
     }
+
+    public function archiverestore($id) {
+        $result = $this->settings_model->archiveRestore($id);
+        if ($result) {
+            set_alert('success', _l('restored_archive'));
+        }
+        redirect(admin_url('settings?group=recycle_bin'));
+    }
 }
