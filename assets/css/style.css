@@ -8844,4 +8844,9 @@ div.input-group-addon{
 .new-projects-summary {
     float: left;
     width: 100%;
+     -webkit-appearance: menulist-button;
+ }
+#DataTables_Table_0_info {
+    margin-top: 10px !important;
+    padding-left: 0px !important;
 }

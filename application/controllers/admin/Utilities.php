@@ -88,18 +88,29 @@ class Utilities extends Admin_controller
         $this->load->view('admin/utilities/calendar', $data);
     }
 
-    public function get_calendar_data()
+    public function get_calendar_data($newCalendar = false)
     {
-        if ($this->input->is_ajax_request()) {
-            echo json_encode($this->utilities_model->get_calendar_data(
-                $this->input->post('start'),
-                $this->input->post('end'),
-                '',
-                '',
-                $this->input->post()
-            ));
-            die();
+
+        $response = ($this->utilities_model->get_calendar_data(
+            $this->input->post('start'),
+            $this->input->post('end'),
+            '',
+            '',
+            $this->input->post()
+        ));
+        $return = array();
+        foreach ($response as $res) {
+            $return[] = array(
+                "title" => $res['title'],
+                "class" => "bg-success-lighter",
+                "start" => $res['date']."T00:00:00",
+                "end" => $res['date']."T23:59:59"
+            );
+
         }
+        echo json_encode($return);
+
+
     }
 
     public function view_event($id)
