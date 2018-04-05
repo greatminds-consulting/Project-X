@@ -164,6 +164,9 @@ class Settings_model extends CRM_Model
             if ($query->item_type == 'Customer') {
                 $this->db->where('userid', $query->item_id);
                 $this->db->update('tblclients', array('is_delete' => 0));
+            } if ($query->item_type == 'Project') {
+                $this->db->where('id', $query->item_id);
+                $this->db->update('tblprojects', array('is_delete' => 0));
             }
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');
