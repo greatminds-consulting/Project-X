@@ -22,6 +22,7 @@ class Proposals extends Admin_controller
             access_denied('proposals');
         }
 
+
         $isPipeline = $this->session->userdata('proposals_pipeline') == 'true';
 
         if ($isPipeline && !$this->input->get('status')) {
@@ -268,8 +269,7 @@ class Proposals extends Admin_controller
         }
 
         $proposal = $this->proposals_model->get($id, array(), true);
-
-        if (!$proposal) {
+        if (!$proposal || ($proposal && $proposal->is_delete == 1)) {
             echo _l('proposal_not_found');
             die;
         } else {
