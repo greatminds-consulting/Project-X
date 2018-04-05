@@ -186,6 +186,10 @@ class Settings_model extends CRM_Model
                     $this->db->where('id', $query->item_id);
                     $this->db->update('tblcontracts', array('is_delete' => 0));
                     break;
+                case "Invoice":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblinvoices', array('is_delete' => 0));
+                    break;
             }
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');

@@ -14,6 +14,7 @@ class Settings extends Admin_controller
         $this->load->model('estimates_model');
         $this->load->model('leads_model');
         $this->load->model('contracts_model');
+        $this->load->model('invoices_model');
     }
 
     /* View all settings */
@@ -228,6 +229,9 @@ class Settings extends Admin_controller
                     break;
                 case "Contract":
                     $this->contracts_model->delete($result['item_id']);
+                    break;
+                case "Invoice":
+                    $this->invoices_model->delete($result['item_id']);
                     break;
             }
             set_alert('success', _l('delete_archive'));
