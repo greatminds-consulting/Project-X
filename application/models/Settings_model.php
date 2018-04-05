@@ -180,9 +180,10 @@ class Settings_model extends CRM_Model
         $query = $this->db->get()->row();
         if ($query) {
             $item_id = $query->item_id;
+            $item_type = $query->item_type;
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');
-            return $item_id;
+            return array('item_id' => $item_id, 'item_type' => $item_type);
         }
         return false;
     }

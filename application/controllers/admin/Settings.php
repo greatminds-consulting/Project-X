@@ -9,6 +9,7 @@ class Settings extends Admin_controller
         $this->load->model('payment_modes_model');
         $this->load->model('settings_model');
         $this->load->model('clients_model');
+        $this->load->model('projects_model');
     }
 
     /* View all settings */
@@ -205,7 +206,11 @@ class Settings extends Admin_controller
     public function archivedelete($id) {
         $result = $this->settings_model->archiveDelete($id);
         if ($result) {
-            $this->clients_model->delete($result);
+            if ($result['item_type'] == 'Customer') {
+                $this->clients_model->delete($result['item_id']);
+            } if ($result['item_type'] == 'Project' ) {
+                $this->projects_model->delete($result['item_id']);
+            }
             set_alert('success', _l('delete_archive'));
         }
         redirect(admin_url('settings?group=recycle_bin'));
