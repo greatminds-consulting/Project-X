@@ -91,7 +91,7 @@
                      $hide_project_selector = '';
                      }
                      ?>
-                  <div class="form-group projects-wrapper<?php echo $hide_project_selector; ?>">
+                  <div class="form-group projects-wrapper<?php echo $hide_project_selector; ?> 55555">
                      <label for="project_id"><?php echo _l('project'); ?></label>
                     <div id="project_ajax_search_wrapper">
                      <select name="project_id" id="project_id" class="projects ajax-search" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
@@ -150,7 +150,7 @@
                   <div id="expense_currency">
                      <?php echo render_select('currency',$currencies,array('id','name','symbol'),'expense_currency',$selected,$s_attrs); ?>
                   </div>
-                  <div class="row">
+                  <div class="row expense_tax">
                     <div class="col-md-6">
                         <div class="form-group select-placeholder">
                            <label class="control-label" for="tax"><?php echo _l('tax_1'); ?></label>
@@ -187,7 +187,7 @@
                     </div>
                   </div>
                   <div class="clearfix mtop15"></div>
-                  <div class="row">
+                  <div class="row expense_tax">
                      <div class="col-md-6">
                         <?php $selected = (isset($expense) ? $expense->paymentmode : ''); ?>
                         <?php echo render_select('paymentmode',$payment_modes,array('id','name'),'payment_mode',$selected); ?>
@@ -212,7 +212,7 @@
                      </select>
                   </div>
                   <div class="recurring_custom <?php if((isset($expense) && $expense->custom_recurring != 1) || (!isset($expense))){echo 'hide';} ?>">
-                     <div class="row">
+                     <div class="row expense_tax">
                         <div class="col-md-6">
                            <?php $value = (isset($expense) && $expense->custom_recurring == 1 ? $expense->repeat_every : 1); ?>
                            <?php echo render_input('repeat_every_custom','',$value,'number',array('min'=>1)); ?>

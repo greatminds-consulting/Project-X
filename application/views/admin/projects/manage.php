@@ -53,7 +53,7 @@
                   }
                   ?>
                 </div>
-                <div class="_filters _hidden_inputs">
+                <div class="_filters _hidden_inputs new-projects-summary">
                   <?php
                   echo form_hidden('my_projects');
                   foreach($statuses as $status){

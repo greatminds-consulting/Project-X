@@ -46,7 +46,7 @@
      </select>
    </div>
  </div>
- <div class="row">
+ <div class="row credit-drop">
    <div class="col-md-12">
     <hr class="hr-10" />
     <a href="#" class="edit_shipping_billing_info" data-toggle="modal" data-target="#billing_and_shipping_details"><i class="fa fa-pencil-square-o"></i></a>
@@ -106,7 +106,7 @@
                    </div>
                  </div>
                  <div class="row">
-                   <div class="col-md-6">
+                   <div class="col-md-6 credir-note-drop">
                     <?php $value = (isset($credit_note) ? _d($credit_note->date) : _d(date('Y-m-d'))); ?>
                     <?php echo render_date_input('date','credit_note_date',$value); ?>
                   </div>
@@ -163,7 +163,7 @@
             <div class="form-group">
              <label for="number"><?php echo _l('credit_note_number'); ?></label>
              <div class="input-group">
-              <span class="input-group-addon">
+              <span class="input-group-addon new-addon">
                 <?php if(isset($credit_note)){ ?>
                 <a href="#" onclick="return false;" data-toggle="popover" data-container='._transaction_form' data-html="true" data-content="<label class='control-label'><?php echo _l('credit_note_prefix'); ?></label><div class='input-group'><input name='s_prefix' type='text' class='form-control' value='<?php echo $credit_note->prefix; ?>'></div><button type='button' onclick='save_sales_number_settings(this); return false;' data-url='<?php echo admin_url('credit_notes/update_number_settings/'.$credit_note->id); ?>' class='btn btn-info btn-block mtop15'><?php echo _l('submit'); ?></button>"><i class="fa fa-cog"></i></a>
                 <?php } ?>

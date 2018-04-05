@@ -47,6 +47,7 @@
 <script src="/assets/plugins/jquery-ios-list/jquery.ioslist.min.js" type="text/javascript"></script>
 <script src="/assets/plugins/jquery-actual/jquery.actual.min.js"></script>
 <script src="/assets/plugins/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+<script src="/assets/js/scripts.js"></script>
 <?php echo app_script('assets/js','pages.js'); ?>
 <?php echo app_script('assets/js','main.js'); ?>
 <?php

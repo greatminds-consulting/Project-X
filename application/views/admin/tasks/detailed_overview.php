@@ -4,7 +4,7 @@
       <div class="row">
          <div class="col-md-12">
             <div class="panel_s">
-               <div class="panel-body">
+               <div class="panel-body" id="back-tasks-list">
                   <?php if(!$this->input->get('project_id')){ ?>
                   <a href="<?php echo admin_url('tasks'); ?>" class="btn btn-default pull-left"><?php echo _l('back_to_tasks_list'); ?></a>
                   <?php } else { ?>

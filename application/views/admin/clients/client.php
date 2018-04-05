@@ -76,7 +76,7 @@
                   <div class="clearfix"></div>
                   <?php } ?>
                   <div>
-                     <div class="tab-content">
+                     <div class="tab-content customer-profile-details">
                         <?php $this->load->view('admin/clients/groups/'.$group); ?>
                      </div>
                   </div>
