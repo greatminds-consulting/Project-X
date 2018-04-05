@@ -64,6 +64,7 @@
                     <?php echo render_custom_fields('items'); ?>
                 </div>
                 <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group'); ?>
+                <?php echo render_select('package_id',$items_packages,array('id','name'),'item_package'); ?>
             </div>
         </div>
     </div>
@@ -84,6 +85,7 @@
         init_item_js();
      });
   }
+
 // Items add/edit
 function manage_invoice_items(form) {
     var data = $(form).serialize();
@@ -147,6 +149,7 @@ function init_item_js() {
             $('#sales_item_modal').modal('show');
         }
     });
+
 
     // Items modal show action
     $("body").on('show.bs.modal', '#sales_item_modal', function (event) {
