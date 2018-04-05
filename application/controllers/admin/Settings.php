@@ -12,6 +12,7 @@ class Settings extends Admin_controller
         $this->load->model('projects_model');
         $this->load->model('proposals_model');
         $this->load->model('estimates_model');
+        $this->load->model('leads_model');
     }
 
     /* View all settings */
@@ -216,6 +217,8 @@ class Settings extends Admin_controller
                 $this->proposals_model->delete($result['item_id']);
             }if ($result['item_type'] == 'Estimate' ) {
                 $this->estimates_model->delete($result['item_id']);
+            }if ($result['item_type'] == 'Lead' ) {
+                $this->leads_model->delete($result['item_id']);
             }
             set_alert('success', _l('delete_archive'));
         }
