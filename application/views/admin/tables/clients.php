@@ -18,7 +18,7 @@ $aColumns = array(
 
 $sIndexColumn = "userid";
 $sTable       = 'tblclients';
-$where   = array();
+$where   = array(' AND (tblclients.is_delete is null or tblclients.is_delete = 0)');
 // Add blank where all filter can be stored
 $filter  = array();
 

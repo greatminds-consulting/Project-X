@@ -210,7 +210,7 @@ class Estimates extends Admin_controller
             die('No estimate found');
         }
         $estimate = $this->estimates_model->get($id);
-        if (!$estimate || (!has_permission('estimates', '', 'view') && $estimate->addedfrom != get_staff_user_id())) {
+        if (!$estimate || (!has_permission('estimates', '', 'view') && $estimate->addedfrom != get_staff_user_id())  || ($estimate && $estimate->is_delete == 1)) {
             echo _l('estimate_not_found');
             die;
         }

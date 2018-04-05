@@ -81,6 +81,12 @@ class Clients extends Admin_controller
             }
         }
 
+        if ($id) {
+            $client = $this->clients_model->get($id);
+            if (!$client || ($client && $client->is_delete ==1)) {
+                blank_page('Customer Not Found');
+            }
+        }
         if ($this->input->post() && !$this->input->is_ajax_request()) {
             if ($id == '') {
                 if (!has_permission('customers', '', 'create')) {

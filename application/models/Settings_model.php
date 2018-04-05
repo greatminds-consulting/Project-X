@@ -155,4 +155,59 @@ class Settings_model extends CRM_Model
 
         return false;
     }
+
+    public function archiveRestore($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            switch ($query->item_type) {
+                case "Customer":
+                    $this->db->where('userid', $query->item_id);
+                    $this->db->update('tblclients', array('is_delete' => 0));
+                    break;
+                case "Project":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblprojects', array('is_delete' => 0));
+                    break;
+                case "Proposal":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblproposals', array('is_delete' => 0));
+                    break;
+                case "Estimate":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblestimates', array('is_delete' => 0));
+                    break;
+                case "Lead":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblleads', array('is_delete' => 0));
+                    break;
+                case "Contract":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblcontracts', array('is_delete' => 0));
+                    break;
+                case "Invoice":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblinvoices', array('is_delete' => 0));
+                    break;
+            }
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return true;
+        }
+        return false;
+    }
+    public function archiveDelete($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            $item_id = $query->item_id;
+            $item_type = $query->item_type;
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return array('item_id' => $item_id, 'item_type' => $item_type);
+        }
+        return false;
+    }
 }

@@ -826,60 +826,80 @@ class Proposals_model extends CRM_Model
      * @param  mixed $id proposal id
      * @return boolean
      */
-    public function delete($id)
-    {
-        $this->db->where('id', $id);
-        $this->db->delete('tblproposals');
-        if ($this->db->affected_rows() > 0) {
-            $this->db->where('proposalid', $id);
-            $this->db->delete('tblproposalcomments');
-            // Get related tasks
-            $this->db->where('rel_type', 'proposal');
-            $this->db->where('rel_id', $id);
+    public function delete($id) {
 
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
+        $this->db->from('tblproposals');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            $this->db->where('id', $id);
+            $this->db->delete('tblproposals');
+            if ($this->db->affected_rows() > 0) {
+                $this->db->where('proposalid', $id);
+                $this->db->delete('tblproposalcomments');
+                // Get related tasks
+                $this->db->where('rel_type', 'proposal');
+                $this->db->where('rel_id', $id);
+
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+
+                $attachments = $this->get_attachments($id);
+                foreach ($attachments as $attachment) {
+                    $this->delete_attachment($attachment['id']);
+                }
+
+                $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="proposal" AND rel_id="'.$id.'")');
+                $this->db->where('fieldto', 'items');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'proposal');
+                $this->db->delete('tblitems_in');
+
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'proposal');
+                $this->db->delete('tblitemstax');
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'proposal');
+                $this->db->delete('tbltags_in');
+
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'proposal');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('rel_type', 'proposal');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblreminders');
+
+                $this->db->where('rel_type', 'proposal');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblviewstracking');
+
+                logActivity('Proposal Deleted [ProposalID:' . $id . ']');
+
+                return true;
             }
-
-            $attachments = $this->get_attachments($id);
-            foreach ($attachments as $attachment) {
-                $this->delete_attachment($attachment['id']);
+        } else {
+            $this->db->where('id',$id);
+            $this->db->update('tblproposals',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = $query->subject;
+                $recycleData['item_type'] = 'Proposal';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
             }
-
-            $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="proposal" AND rel_id="'.$id.'")');
-            $this->db->where('fieldto', 'items');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'proposal');
-            $this->db->delete('tblitems_in');
-
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'proposal');
-            $this->db->delete('tblitemstax');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'proposal');
-            $this->db->delete('tbltags_in');
-
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'proposal');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $this->db->where('rel_type', 'proposal');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblreminders');
-
-            $this->db->where('rel_type', 'proposal');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblviewstracking');
-
-            logActivity('Proposal Deleted [ProposalID:' . $id . ']');
-
-            return true;
+            return false;
         }
 
         return false;

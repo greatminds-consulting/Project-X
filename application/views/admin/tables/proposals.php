@@ -18,7 +18,7 @@ $aColumns     = array(
 $sIndexColumn = "id";
 $sTable       = 'tblproposals';
 
-$where = array();
+$where = array(' AND (tblproposals.is_delete is null or tblproposals.is_delete = 0)');
 $filter = array();
 
 if ($this->ci->input->post('leads_related')) {

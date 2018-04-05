@@ -8,6 +8,13 @@ class Settings extends Admin_controller
         parent::__construct();
         $this->load->model('payment_modes_model');
         $this->load->model('settings_model');
+        $this->load->model('clients_model');
+        $this->load->model('projects_model');
+        $this->load->model('proposals_model');
+        $this->load->model('estimates_model');
+        $this->load->model('leads_model');
+        $this->load->model('contracts_model');
+        $this->load->model('invoices_model');
     }
 
     /* View all settings */
@@ -184,5 +191,51 @@ class Settings extends Admin_controller
         echo json_encode(array(
             'success' => delete_option($id)
         ));
+    }
+
+    public function table()
+    {
+        if (!is_staff_member()) {
+            ajax_access_denied();
+        }
+        $this->app->get_table_data('recycle_bin');
+    }
+
+    public function archiverestore($id) {
+        $result = $this->settings_model->archiveRestore($id);
+        if ($result) {
+            set_alert('success', _l('restored_archive'));
+        }
+        redirect(admin_url('settings?group=recycle_bin'));
+    }
+    public function archivedelete($id) {
+        $result = $this->settings_model->archiveDelete($id);
+        if ($result) {
+            switch ($result['item_type']) {
+                case "Customer":
+                    $this->clients_model->delete($result['item_id']);
+                    break;
+                case "Project":
+                    $this->projects_model->delete($result['item_id']);
+                    break;
+                case "Proposal":
+                    $this->proposals_model->delete($result['item_id']);
+                    break;
+                case "Estimate":
+                    $this->estimates_model->delete($result['item_id']);
+                    break;
+                case "Lead":
+                    $this->leads_model->delete($result['item_id']);
+                    break;
+                case "Contract":
+                    $this->contracts_model->delete($result['item_id']);
+                    break;
+                case "Invoice":
+                    $this->invoices_model->delete($result['item_id']);
+                    break;
+            }
+            set_alert('success', _l('delete_archive'));
+        }
+        redirect(admin_url('settings?group=recycle_bin'));
     }
 }

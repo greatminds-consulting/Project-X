@@ -6,6 +6,8 @@ $lang['id']                   = 'ID';
 $lang['name']                 = 'Name';
 $lang['options']              = 'Options';
 $lang['submit']               = 'Save';
+$lang['restored_archive']      = 'Restored Archive';
+$lang['delete_archive']        = 'Deleted Archive';
 $lang['added_successfully']    = '%s added successfully.';
 $lang['updated_successfully']  = '%s updated successfully.';
 $lang['edit']                 = 'Edit %s';
@@ -2131,6 +2133,7 @@ $lang['home_announcements'] = 'Announcements';
 # Settings
 $lang['settings_leads_kanban_limit'] = 'Limit leads kan ban rows per status';
 $lang['settings_group_misc'] = 'Misc';
+$lang['settings_group_recycle_bin'] = 'Recycle Bin';
 $lang['show_projects_on_calendar'] = 'Projects';
 $lang['settings_media_max_file_size_upload'] = 'Max file size upload in Media (MB)';
 $lang['settings_client_staff_add_edit_delete_task_comments_first_hour'] = 'Allow customer/staff to add/edit task comments only in the first hour (administrators not applied)';
@@ -3547,3 +3550,7 @@ $lang['ticket_create_to_contact'] = 'Ticket to contact';
 $lang['showing_billable_tasks_from_project'] = 'Showing billable tasks from project';
 $lang['no_billable_tasks_found'] = 'Billable tasks not found';
 $lang['help_leads_permission_view'] = 'If this permission is not checked, a staff member will be only able to view leads to where is assigned, leads created by the staff member and leads that are marked as public';
+
+$lang['item_name'] = 'Name';
+$lang['item_type'] = 'Type';
+$lang['archived_date'] = 'Deleted Date';
