@@ -233,6 +233,7 @@ body.menu-pin .overlay .overlay-brand {
   line-height: 23px;
 }
 .header .search-link {
+  border: none;
   display: inline-block;
   margin-left: 15px;
   color: #575757;

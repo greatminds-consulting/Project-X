@@ -5619,6 +5619,7 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 
 .started-timers-top {
+    margin-left: 200px;
     max-height: 600px;
     overflow-y: scroll;
 }
@@ -8849,4 +8850,8 @@ div.input-group-addon{
 #DataTables_Table_0_info {
     margin-top: 10px !important;
     padding-left: 0px !important;
+}
+.dropdown-toggle::after
+{
+    border-top: 0em solid;
 }
