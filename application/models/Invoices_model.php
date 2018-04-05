@@ -783,6 +783,7 @@ class Invoices_model extends CRM_Model
         }
 
         unset($data['removed_items']);
+        unset($data['package_id']);
 
         $this->db->where('id', $id);
         $this->db->update('tblinvoices', $data);

@@ -253,8 +253,6 @@
 
                        _set_item_preview_custom_fields_array(obj.custom_fields);
 
-                       $('.main input[name="quantity"]').val(1);
-
                        var taxSelectedArray = [];
                        if (obj.taxname && obj.taxrate) {
                            taxSelectedArray.push(obj.taxname + '|' + obj.taxrate);
@@ -262,24 +260,7 @@
                        if (obj.taxname_2 && obj.taxrate_2) {
                            taxSelectedArray.push(obj.taxname_2 + '|' + obj.taxrate_2);
                        }
-                       $('.main select.tax').selectpicker('val', taxSelectedArray);
-                       $('.main input[name="unit"]').val(obj.unit);
-
-                       var $currency = $("body").find('.accounting-template select[name="currency"]');
-                       var baseCurency = $currency.attr('data-base');
-                       var selectedCurrency = $currency.find('option:selected').val();
-                       var $rateInputPreview = $('.main input[name="rate"]');
-
-                       if (baseCurency == selectedCurrency) {
-                           $rateInputPreview.val(obj.rate);
-                       } else {
-                           var itemCurrencyRate = obj['rate_currency_' + selectedCurrency];
-                           if (!itemCurrencyRate || parseFloat(itemCurrencyRate) === 0) {
-                               $rateInputPreview.val(obj.rate);
-                           } else {
-                               $rateInputPreview.val(itemCurrencyRate);
-                           }
-                       }
+                       obj.taxname = taxSelectedArray;
 
                        $(document).trigger({
                            type: "item-added-to-preview",
