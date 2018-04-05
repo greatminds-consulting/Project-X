@@ -106,7 +106,7 @@
 <!-- END CORE TEMPLATE JS -->
 <!-- BEGIN PAGE LEVEL JS -->
 <script src="<?php echo base_url('assets/js/calendar.js'); ?>"></script>
-<script src="<?php echo base_url('assets/js/scripts.js'); ?>"></script>
+
 <!-- END PAGE LEVEL JS -->
 </body>
 </html>
