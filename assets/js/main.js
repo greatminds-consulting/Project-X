@@ -2789,7 +2789,7 @@ function get_dt_export_buttons(table) {
                 table_buttons_options.push({
                     text: b.text(),
                     className: 'btn btn-default-dt-options',
-                    action: function(e, dt, node, config) {console.log('here');
+                    action: function(e, dt, node, config) {
                         b.click();
                     }
                 });
