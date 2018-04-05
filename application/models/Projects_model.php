@@ -2206,89 +2206,108 @@ class Projects_model extends CRM_Model
         return false;
     }
 
-    public function delete($project_id)
-    {
-        $project_name = get_project_name_by_id($project_id);
+    public function delete($project_id) {
 
-        $this->db->where('id', $project_id);
-        $this->db->delete('tblprojects');
-        if ($this->db->affected_rows() > 0) {
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblprojectmembers');
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblprojectnotes');
+        $this->db->from('tblprojects');
+        $this->db->where('id',$project_id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            $project_name = get_project_name_by_id($project_id);
 
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblmilestones');
+            $this->db->where('id', $project_id);
+            $this->db->delete('tblprojects');
+            if ($this->db->affected_rows() > 0) {
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblprojectmembers');
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblprojectnotes');
 
-            // Delete the custom field values
-            $this->db->where('relid', $project_id);
-            $this->db->where('fieldto', 'projects');
-            $this->db->delete('tblcustomfieldsvalues');
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblmilestones');
 
-            $this->db->where('rel_id', $project_id);
-            $this->db->where('rel_type', 'project');
-            $this->db->delete('tbltags_in');
+                // Delete the custom field values
+                $this->db->where('relid', $project_id);
+                $this->db->where('fieldto', 'projects');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('rel_id', $project_id);
+                $this->db->where('rel_type', 'project');
+                $this->db->delete('tbltags_in');
 
 
 
-            $this->db->where('project_id', $project_id);
-            $discussions = $this->db->get('tblprojectdiscussions')->result_array();
-            foreach ($discussions as $discussion) {
-                $discussion_comments = $this->get_discussion_comments($discussion['id'], 'regular');
-                foreach ($discussion_comments as $comment) {
-                    $this->delete_discussion_comment_attachment($comment['file_name'], $discussion['id']);
+                $this->db->where('project_id', $project_id);
+                $discussions = $this->db->get('tblprojectdiscussions')->result_array();
+                foreach ($discussions as $discussion) {
+                    $discussion_comments = $this->get_discussion_comments($discussion['id'], 'regular');
+                    foreach ($discussion_comments as $comment) {
+                        $this->delete_discussion_comment_attachment($comment['file_name'], $discussion['id']);
+                    }
+                    $this->db->where('discussion_id', $discussion['id']);
+                    $this->db->delete('tblprojectdiscussioncomments');
                 }
-                $this->db->where('discussion_id', $discussion['id']);
-                $this->db->delete('tblprojectdiscussioncomments');
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblprojectdiscussions');
+                $files = $this->get_files($project_id);
+                foreach ($files as $file) {
+                    $this->remove_file($file['id']);
+                }
+                $tasks = $this->get_tasks($project_id);
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id'], false);
+                }
+
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblprojectactivity');
+
+                $this->db->where('project_id', $project_id);
+                $this->db->update('tblexpenses', array(
+                    'project_id' => 0,
+                ));
+
+                $this->db->where('project_id', $project_id);
+                $this->db->update('tblinvoices', array(
+                    'project_id' => 0,
+                ));
+
+                $this->db->where('project_id', $project_id);
+                $this->db->update('tblcreditnotes', array(
+                    'project_id' => 0,
+                ));
+
+                $this->db->where('project_id', $project_id);
+                $this->db->update('tblestimates', array(
+                    'project_id' => 0,
+                ));
+
+                $this->db->where('project_id', $project_id);
+                $this->db->update('tbltickets', array(
+                    'project_id' => 0,
+                ));
+
+                $this->db->where('project_id', $project_id);
+                $this->db->delete('tblpinnedprojects');
+
+                logActivity('Project Deleted [ID: ' . $project_id . ', Name: ' . $project_name . ']');
+
+                return true;
             }
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblprojectdiscussions');
-            $files = $this->get_files($project_id);
-            foreach ($files as $file) {
-                $this->remove_file($file['id']);
+        } else {
+            $this->db->where('id',$project_id);
+            $this->db->update('tblprojects',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $project_id;
+                $recycleData['item_name'] = $query->name;
+                $recycleData['item_type'] = 'Project';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
             }
-            $tasks = $this->get_tasks($project_id);
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id'], false);
-            }
-
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblprojectactivity');
-
-            $this->db->where('project_id', $project_id);
-            $this->db->update('tblexpenses', array(
-                'project_id' => 0,
-            ));
-
-            $this->db->where('project_id', $project_id);
-            $this->db->update('tblinvoices', array(
-                'project_id' => 0,
-            ));
-
-            $this->db->where('project_id', $project_id);
-            $this->db->update('tblcreditnotes', array(
-                'project_id' => 0,
-            ));
-
-            $this->db->where('project_id', $project_id);
-            $this->db->update('tblestimates', array(
-                'project_id' => 0,
-            ));
-
-            $this->db->where('project_id', $project_id);
-            $this->db->update('tbltickets', array(
-                'project_id' => 0,
-            ));
-
-            $this->db->where('project_id', $project_id);
-            $this->db->delete('tblpinnedprojects');
-
-            logActivity('Project Deleted [ID: ' . $project_id . ', Name: ' . $project_name . ']');
-
-            return true;
+            return false;
         }
-
         return false;
     }
 
