@@ -132,6 +132,7 @@ class Proposals_model extends CRM_Model
         $data['datecreated'] = date('Y-m-d H:i:s');
         $data['addedfrom']   = get_staff_user_id();
         $data['hash']        = app_generate_hash();
+        unset($data['package_id']);
 
         if (empty($data['rel_type'])) {
             unset($data['rel_type']);

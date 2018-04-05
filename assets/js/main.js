@@ -5765,7 +5765,6 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
         var cf_has_required = false;
 
         if (custom_fields.length > 0) {
-
             $.each(custom_fields, function() {
 
                 var cf = $(this).clone();
@@ -5807,7 +5806,10 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
                     }
                     cf_html = cf.html();
                 } else if (cf_field.is('select')) {
-
+                    var selectednew = cf_field.value.split(',');
+                    selected = selected.map(function(e) {
+                        return e.trim();
+                    });
                     if ($(this).attr('data-custom-field-required') == '1') {
                         cf_has_required = true;
                     }
