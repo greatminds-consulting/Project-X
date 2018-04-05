@@ -302,8 +302,9 @@ class Leads_model extends CRM_Model
             unset($data['custom_fields']);
         }
         $assigned_fields = array();
+        $assignList = array();
         if (isset($data['assigned'])) {
-            $assigned_fields = $data['assigned'];
+            $assignList = $assigned_fields = $data['assigned'];
             unset($data['assigned']);
         }
         if (isset($assigned_fields)) {
@@ -320,11 +321,14 @@ class Leads_model extends CRM_Model
                     unset($assigned_fields[$key]);
                 }
             }
-            foreach($assigned_fields as $staffs)
+            $this->db->where('lead_id', $id);
+            $this->db->delete('tblleadstaffs');
+            foreach($assignList as $staffs)
             {
                 $datastaff['staff_id']=$staffs;
                 $this->db->insert('tblleadstaffs', $datastaff);
             }
+
         }
 
         if (!defined('API')) {

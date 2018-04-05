@@ -174,6 +174,7 @@ class Proposals extends Admin_controller
             $data['ajaxItems'] = true;
         }
         $data['items_groups'] = $this->invoice_items_model->get_groups();
+        $data['items_packages'] = $this->invoice_items_model->get_packages(true);
 
         $data['statuses']   = $this->proposals_model->get_statuses();
         $data['staff']      = $this->staff_model->get('', 1);

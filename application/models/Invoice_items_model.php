@@ -12,7 +12,7 @@ class Invoice_items_model extends CRM_Model
      * @param  mixed $id
      * @return mixed - array if not passed id, object if id passed
      */
-    public function get($id = '')
+    public function get($id = '', $package_id = '')
     {
         $columns = $this->db->list_fields('tblitems');
         $rateCurrencyColumns = '';
@@ -34,6 +34,9 @@ class Invoice_items_model extends CRM_Model
             $this->db->where('tblitems.id', $id);
 
             return $this->db->get()->row();
+        }
+        if ($package_id) {
+            $this->db->where('tblitems.package_id', $package_id);
         }
 
         return $this->db->get()->result_array();
@@ -225,6 +228,18 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get('tblitems_groups')->result_array();
     }
 
+    public function get_packages($hasItemsOnly = false)
+    {
+        $this->db->order_by('name', 'asc');
+        $this->db->select('tblitems_packages.id, tblitems_packages.name');
+        if ($hasItemsOnly) {
+            $this->db->join('tblitems t1', 'tblitems_packages.id = t1.package_id', 'inner');
+            $this->db->group_by('tblitems_packages.id');
+        }
+
+        return $this->db->get('tblitems_packages')->result_array();
+    }
+
     public function add_group($data)
     {
         $this->db->insert('tblitems_groups', $data);
@@ -233,12 +248,34 @@ class Invoice_items_model extends CRM_Model
         return $this->db->insert_id();
     }
 
+    public function add_package($data)
+    {
+        $this->db->insert('tblitems_packages', $data);
+        logActivity('Items Package Created [Name: ' . $data['name'] . ']');
+
+        return $this->db->insert_id();
+    }
+
+
     public function edit_group($data, $id)
     {
         $this->db->where('id', $id);
         $this->db->update('tblitems_groups', $data);
         if ($this->db->affected_rows() > 0) {
             logActivity('Items Group Updated [Name: ' . $data['name'] . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function edit_package($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('tblitems_packages', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Items Package Updated [Name: ' . $data['name'] . ']');
 
             return true;
         }
@@ -261,6 +298,28 @@ class Invoice_items_model extends CRM_Model
             $this->db->delete('tblitems_groups');
 
             logActivity('Item Group Deleted [Name: ' . $group->name . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function delete_package($id)
+    {
+        $this->db->where('id', $id);
+        $package = $this->db->get('tblitems_packages')->row();
+
+        if ($package) {
+            $this->db->where('package_id', $id);
+            $this->db->update('tblitems', array(
+                'package_id' => 0
+            ));
+
+            $this->db->where('id', $id);
+            $this->db->delete('tblitems_packages');
+
+            logActivity('Item Package Deleted [Name: ' . $package->name . ']');
 
             return true;
         }
