@@ -161,21 +161,31 @@ class Settings_model extends CRM_Model
         $this->db->where('id',$id);
         $query = $this->db->get()->row();
         if ($query) {
-            if ($query->item_type == 'Customer') {
-                $this->db->where('userid', $query->item_id);
-                $this->db->update('tblclients', array('is_delete' => 0));
-            } if ($query->item_type == 'Project') {
-                $this->db->where('id', $query->item_id);
-                $this->db->update('tblprojects', array('is_delete' => 0));
-            } if ($query->item_type == 'Proposal') {
-                $this->db->where('id', $query->item_id);
-                $this->db->update('tblproposals', array('is_delete' => 0));
-            }if ($query->item_type == 'Estimate') {
-                $this->db->where('id', $query->item_id);
-                $this->db->update('tblestimates', array('is_delete' => 0));
-            }if ($query->item_type == 'Lead') {
-                $this->db->where('id', $query->item_id);
-                $this->db->update('tblleads', array('is_delete' => 0));
+            switch ($query->item_type) {
+                case "Customer":
+                    $this->db->where('userid', $query->item_id);
+                    $this->db->update('tblclients', array('is_delete' => 0));
+                    break;
+                case "Project":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblprojects', array('is_delete' => 0));
+                    break;
+                case "Proposal":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblproposals', array('is_delete' => 0));
+                    break;
+                case "Estimate":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblestimates', array('is_delete' => 0));
+                    break;
+                case "Lead":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblleads', array('is_delete' => 0));
+                    break;
+                case "Contract":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblcontracts', array('is_delete' => 0));
+                    break;
             }
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');

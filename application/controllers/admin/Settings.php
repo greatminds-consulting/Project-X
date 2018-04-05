@@ -13,6 +13,7 @@ class Settings extends Admin_controller
         $this->load->model('proposals_model');
         $this->load->model('estimates_model');
         $this->load->model('leads_model');
+        $this->load->model('contracts_model');
     }
 
     /* View all settings */
@@ -209,16 +210,25 @@ class Settings extends Admin_controller
     public function archivedelete($id) {
         $result = $this->settings_model->archiveDelete($id);
         if ($result) {
-            if ($result['item_type'] == 'Customer') {
-                $this->clients_model->delete($result['item_id']);
-            } if ($result['item_type'] == 'Project' ) {
-                $this->projects_model->delete($result['item_id']);
-            }if ($result['item_type'] == 'Proposal' ) {
-                $this->proposals_model->delete($result['item_id']);
-            }if ($result['item_type'] == 'Estimate' ) {
-                $this->estimates_model->delete($result['item_id']);
-            }if ($result['item_type'] == 'Lead' ) {
-                $this->leads_model->delete($result['item_id']);
+            switch ($result['item_type']) {
+                case "Customer":
+                    $this->clients_model->delete($result['item_id']);
+                    break;
+                case "Project":
+                    $this->projects_model->delete($result['item_id']);
+                    break;
+                case "Proposal":
+                    $this->proposals_model->delete($result['item_id']);
+                    break;
+                case "Estimate":
+                    $this->estimates_model->delete($result['item_id']);
+                    break;
+                case "Lead":
+                    $this->leads_model->delete($result['item_id']);
+                    break;
+                case "Contract":
+                    $this->contracts_model->delete($result['item_id']);
+                    break;
             }
             set_alert('success', _l('delete_archive'));
         }
