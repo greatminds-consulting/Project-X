@@ -170,6 +170,9 @@ class Settings_model extends CRM_Model
             } if ($query->item_type == 'Proposal') {
                 $this->db->where('id', $query->item_id);
                 $this->db->update('tblproposals', array('is_delete' => 0));
+            }if ($query->item_type == 'Estimate') {
+                $this->db->where('id', $query->item_id);
+                $this->db->update('tblestimates', array('is_delete' => 0));
             }
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');
