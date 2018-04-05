@@ -171,4 +171,16 @@ class Settings_model extends CRM_Model
         }
         return false;
     }
+    public function archiveDelete($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            $item_id = $query->item_id;
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return $item_id;
+        }
+        return false;
+    }
 }

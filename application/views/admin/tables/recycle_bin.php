@@ -72,7 +72,7 @@ foreach ($rResult as $aRow) {
     }
 
     $options = '<a href="'.getCompleteUrl('settings/archiverestore/'.$aRow['id']).'" class="btn btn-success _delete btn-icon remove-archive-restore">Restore</a>';
-    $options .= '<a href="'.getCompleteUrl('/setting/archive').'" class="btn btn-danger _delete btn-icon remove-archive-item">Remove Permanently</a>';
+    $options .= '<a href="'.getCompleteUrl('settings/archivedelete/'.$aRow['id']).'" class="btn btn-danger _delete btn-icon remove-archive-item">Remove Permanently</a>';
 
     $row[] = $options;
 

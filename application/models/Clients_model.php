@@ -32,7 +32,7 @@ class Clients_model extends CRM_Model
             $this->db->where('tblclients.userid', $id);
             $client = $this->db->get('tblclients')->row();
 
-            if (get_option('company_requires_vat_number_field') == 0) {
+            if (get_option('company_requires_vat_number_field') == 0 && $client) {
                 $client->vat = null;
             }
 

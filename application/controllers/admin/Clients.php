@@ -83,7 +83,7 @@ class Clients extends Admin_controller
 
         if ($id) {
             $client = $this->clients_model->get($id);
-            if ($client && $client->is_delete ==1) {
+            if (!$client || ($client && $client->is_delete ==1)) {
                 blank_page('Customer Not Found');
             }
         }

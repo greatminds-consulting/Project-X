@@ -7,6 +7,7 @@ $lang['name']                 = 'Name';
 $lang['options']              = 'Options';
 $lang['submit']               = 'Save';
 $lang['restored_archive']      = 'Restored Archive';
+$lang['delete_archive']        = 'Deleted Archive';
 $lang['added_successfully']    = '%s added successfully.';
 $lang['updated_successfully']  = '%s updated successfully.';
 $lang['edit']                 = 'Edit %s';

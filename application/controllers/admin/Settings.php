@@ -8,6 +8,7 @@ class Settings extends Admin_controller
         parent::__construct();
         $this->load->model('payment_modes_model');
         $this->load->model('settings_model');
+        $this->load->model('clients_model');
     }
 
     /* View all settings */
@@ -198,6 +199,14 @@ class Settings extends Admin_controller
         $result = $this->settings_model->archiveRestore($id);
         if ($result) {
             set_alert('success', _l('restored_archive'));
+        }
+        redirect(admin_url('settings?group=recycle_bin'));
+    }
+    public function archivedelete($id) {
+        $result = $this->settings_model->archiveDelete($id);
+        if ($result) {
+            $this->clients_model->delete($result);
+            set_alert('success', _l('delete_archive'));
         }
         redirect(admin_url('settings?group=recycle_bin'));
     }
