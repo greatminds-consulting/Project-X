@@ -94,6 +94,11 @@
           'name'=>'misc',
           'lang'=>_l('settings_group_misc'),
           'order'=>16,
+          ),
+          array(
+              'name'=>'recycle_bin',
+              'lang'=>_l('settings_group_recycle_bin'),
+              'order'=>17,
           )
         );
 

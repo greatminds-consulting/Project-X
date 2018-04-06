@@ -11,6 +11,7 @@ class Migration_Version_205 extends CI_Migration
     public function up() {
 
         // Venues Area - alteration
+
         $this->db->query("CREATE TABLE `tblitems_packages` (
               `id` INT(11) NOT NULL AUTO_INCREMENT,
               `name` VARCHAR(50) NOT NULL,

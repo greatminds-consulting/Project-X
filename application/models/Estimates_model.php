@@ -957,91 +957,111 @@ class Estimates_model extends CRM_Model
                 return false;
             }
         }
-        $estimate = $this->get($id);
-        if (!is_null($estimate->invoiceid)) {
-            return array(
-                'is_invoiced_estimate_delete_error' => true,
-            );
-        }
-        do_action('before_estimate_deleted', $id);
-        $this->db->where('id', $id);
-        $this->db->delete('tblestimates');
-        if ($this->db->affected_rows() > 0) {
-            if (get_option('estimate_number_decrement_on_delete') == 1) {
-                $current_next_estimate_number = get_option('next_estimate_number');
-                if ($current_next_estimate_number > 1) {
-                    // Decrement next estimate number to
-                    $this->db->where('name', 'next_estimate_number');
-                    $this->db->set('value', 'value-1', false);
-                    $this->db->update('tbloptions');
+        $this->db->from('tblestimates');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+                $estimate = $this->get($id);
+                if (!is_null($estimate->invoiceid)) {
+                    return array(
+                        'is_invoiced_estimate_delete_error' => true,
+                    );
                 }
+                do_action('before_estimate_deleted', $id);
+                $this->db->where('id', $id);
+                $this->db->delete('tblestimates');
+                if ($this->db->affected_rows() > 0) {
+                if (get_option('estimate_number_decrement_on_delete') == 1) {
+                    $current_next_estimate_number = get_option('next_estimate_number');
+                    if ($current_next_estimate_number > 1) {
+                        // Decrement next estimate number to
+                        $this->db->where('name', 'next_estimate_number');
+                        $this->db->set('value', 'value-1', false);
+                        $this->db->update('tbloptions');
+                    }
+                }
+                if (total_rows('tblproposals', array(
+                    'estimate_id' => $id,
+                )) > 0) {
+                    $this->db->where('estimate_id', $id);
+                    $estimate = $this->db->get('tblproposals')->row();
+                    $this->db->where('id', $estimate->id);
+                    $this->db->update('tblproposals', array(
+                        'estimate_id' => null,
+                        'date_converted' => null,
+                    ));
+                }
+
+                $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="estimate" AND rel_id="'.$id.'")');
+                $this->db->where('fieldto', 'items');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'estimate');
+                $this->db->delete('tblnotes');
+
+                $this->db->where('rel_type', 'estimate');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblviewstracking');
+
+                $this->db->where('rel_type', 'estimate');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tbltags_in');
+
+                $this->db->where('rel_type', 'estimate');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblreminders');
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'estimate');
+                $this->db->delete('tblitems_in');
+
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'estimate');
+                $this->db->delete('tblitemstax');
+
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'estimate');
+                $this->db->delete('tblsalesactivity');
+
+
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'estimate');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $attachments = $this->get_attachments($id);
+                foreach ($attachments as $attachment) {
+                    $this->delete_attachment($attachment['id']);
+                }
+
+                // Get related tasks
+                $this->db->where('rel_type', 'estimate');
+                $this->db->where('rel_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+
+                return true;
             }
-            if (total_rows('tblproposals', array(
-                'estimate_id' => $id,
-            )) > 0) {
-                $this->db->where('estimate_id', $id);
-                $estimate = $this->db->get('tblproposals')->row();
-                $this->db->where('id', $estimate->id);
-                $this->db->update('tblproposals', array(
-                    'estimate_id' => null,
-                    'date_converted' => null,
-                ));
+        } else {
+            $this->db->where('id',$id);
+            $this->db->update('tblestimates',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = format_estimate_number($id);
+                $recycleData['item_type'] = 'Estimate';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
             }
-
-            $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="estimate" AND rel_id="'.$id.'")');
-            $this->db->where('fieldto', 'items');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'estimate');
-            $this->db->delete('tblnotes');
-
-            $this->db->where('rel_type', 'estimate');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblviewstracking');
-
-            $this->db->where('rel_type', 'estimate');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tbltags_in');
-
-            $this->db->where('rel_type', 'estimate');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblreminders');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'estimate');
-            $this->db->delete('tblitems_in');
-
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'estimate');
-            $this->db->delete('tblitemstax');
-
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'estimate');
-            $this->db->delete('tblsalesactivity');
-
-
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'estimate');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $attachments = $this->get_attachments($id);
-            foreach ($attachments as $attachment) {
-                $this->delete_attachment($attachment['id']);
-            }
-
-            // Get related tasks
-            $this->db->where('rel_type', 'estimate');
-            $this->db->where('rel_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
-            }
-
-            return true;
+            return false;
         }
 
         return false;

@@ -155,4 +155,89 @@ class Settings_model extends CRM_Model
 
         return false;
     }
+
+    public function archiveRestore($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            switch ($query->item_type) {
+                case "Customer":
+                    $this->db->where('userid', $query->item_id);
+                    $this->db->update('tblclients', array('is_delete' => 0));
+                    break;
+                case "Project":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblprojects', array('is_delete' => 0));
+                    break;
+                case "Proposal":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblproposals', array('is_delete' => 0));
+                    break;
+                case "Estimate":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblestimates', array('is_delete' => 0));
+                    break;
+                case "Lead":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblleads', array('is_delete' => 0));
+                    break;
+                case "Contract":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblcontracts', array('is_delete' => 0));
+                    break;
+                case "Invoice":
+                    $this->db->where('id', $query->item_id);
+                    $this->db->update('tblinvoices', array('is_delete' => 0));
+                    break;
+            }
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return true;
+        }
+        return false;
+    }
+    public function archiveDelete($id) {
+        $this->db->from('tblrecyclebin');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query) {
+            $item_id = $query->item_id;
+            $item_type = $query->item_type;
+            switch ($item_type) {
+                case "Customer":
+                    $this->load->model('clients_model');
+                    $status = $this->clients_model->delete($item_id);
+                    break;
+                case "Project":
+                    $this->load->model('projects_model');
+                    $status = $this->projects_model->delete($item_id);
+                    break;
+                case "Proposal":
+                    $this->load->model('proposals_model');
+                    $status = $this->proposals_model->delete($item_id);
+                    break;
+                case "Estimate":
+                    $this->load->model('estimates_model');
+                    $status = $this->estimates_model->delete($item_id);
+                    break;
+                case "Lead":
+                    $this->load->model('leads_model');
+                    $status = $this->leads_model->delete($item_id);
+                    break;
+                case "Contract":
+                    $this->load->model('contracts_model');
+                    $status = $this->contracts_model->delete($item_id);
+                    break;
+                case "Invoice":
+                    $this->load->model('invoices_model');
+                    $status = $this->invoices_model->delete($item_id);
+                    break;
+            }
+            $this->db->where('id', $id);
+            $this->db->delete('tblrecyclebin');
+            return $status;
+        }
+        return false;
+    }
 }
