@@ -10,7 +10,7 @@
     'use strict';
 
     $(document).ready(function() {
-
+        var dashboard = $('#base').val();
         var selectedEvent;
         $.ajax({
             type: "POST",
@@ -23,9 +23,16 @@
             success: function(response) {
             if(response)
                 {
+                    if(dashboard==1)
+                    {
+                        var viewType="month";
+                    }
+                    else{
+                        var viewType="week";
+                    }
                     $('#myCalendar').pagescalendar({
                         events: response,
-                        view:"week",
+                        view:viewType,
                         onViewRenderComplete: function() {
                             //You can Do a Simple AJAX here and update
                         },

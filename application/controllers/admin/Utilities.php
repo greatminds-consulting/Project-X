@@ -90,7 +90,6 @@ class Utilities extends Admin_controller
 
     public function get_calendar_data($newCalendar = false)
     {
-
         $response = ($this->utilities_model->get_calendar_data(
             $this->input->post('start'),
             $this->input->post('end'),
@@ -106,11 +105,8 @@ class Utilities extends Admin_controller
                 "start" => $res['date']."T00:00:00",
                 "end" => $res['date']."T23:59:59"
             );
-
-        }
+         }
         echo json_encode($return);
-
-
     }
 
     public function view_event($id)

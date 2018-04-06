@@ -5,7 +5,9 @@
     <div class="widget-dragger"></div>
     <div class="dt-loader hide"></div>
     <?php $this->load->view('admin/utilities/calendar_filters'); ?>
-    <div id="calendar"></div>
+       <input type="hidden" id="base" value="1">
+    <div id="myCalendar"></div>
+
   </div>
 </div>
 <div class="clearfix"></div>

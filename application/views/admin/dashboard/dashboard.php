@@ -4,7 +4,7 @@
     <div class="screen-options-btn">
         <?php echo _l('dashboard_options'); ?>
     </div>
-    <div class="content">
+    <div class="content content-height">
         <div class="row">
 
             <?php include_once(APPPATH . 'views/admin/includes/alerts.php'); ?>
@@ -13,7 +13,7 @@
 
             <div class="clearfix"></div>
 
-            <div class="col-md-12 mtop30" data-container="top-12">
+            <div class="col-md-12" data-container="top-12">
                 <?php render_dashboard_widgets('top-12'); ?>
             </div>
 
@@ -59,5 +59,19 @@
 <?php init_tail(); ?>
 <?php $this->load->view('admin/utilities/calendar_template'); ?>
 <?php $this->load->view('admin/dashboard/dashboard_js'); ?>
+<!-- BEGIN VENDOR JS -->
+<!--<script src="--><?php //echo base_url('assets/plugins/jquery/jquery-1.11.1.min.js'); ?><!--"></script>-->
+<script src="<?php echo base_url('assets/plugins/select2/js/select2.full.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/plugins/interactjs/interact.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/plugins/moment/moment-with-locales.min.js'); ?>"></script>
+<!-- END VENDOR JS -->
+<!-- BEGIN CORE TEMPLATE JS -->
+<script src="<?php echo base_url('assets/pages/js/pages.min.js'); ?>"></script>
+<script src="<?php echo base_url('assets/pages/js/pages.calendar.js'); ?>"></script>
+<!-- END CORE TEMPLATE JS -->
+<!-- BEGIN PAGE LEVEL JS -->
+<script src="<?php echo base_url('assets/js/calendar.js'); ?>"></script>
+
+<!-- END PAGE LEVEL JS -->
 </body>
 </html>

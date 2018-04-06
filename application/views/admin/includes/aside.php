@@ -233,7 +233,7 @@ foreach($quickActions as $key => $item){
         </div>
     </div>
     <div class="page-content-wrapper">
-        <div class="content">
+        <div class="content new-content">
 
             <div class="overlay hide" data-pages="search">
                 <!-- BEGIN Overlay Content !-->
