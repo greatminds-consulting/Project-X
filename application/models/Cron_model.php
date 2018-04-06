@@ -64,6 +64,7 @@ class Cron_model extends CRM_Model
             $this->auto_import_imap_tickets();
             $this->check_leads_email_integration();
             $this->delete_activity_log();
+            $this->delete_archive_log();
 
             /**
              * Finally send any emails in the email queue - if enabled and any
@@ -1626,5 +1627,21 @@ class Cron_model extends CRM_Model
         $body = preg_replace('/\n/', '<br>', $body);
 
         return $body;
+    }
+
+    public function delete_archive_log() {
+        $older_then_months = get_option('delete_archive_period');
+
+        if ($older_then_months == 0) {
+            return;
+        }
+        $results = $this->db->query('SELECT id,item_id,item_type FROM tblrecyclebin WHERE dateadded < DATE_SUB(NOW(), INTERVAL '.$older_then_months.' MONTH);')->result_array();
+
+        if ($results) {
+            foreach ($results as $item) {
+                $this->load->model('settings_model');
+                $this->settings_model->archiveDelete($item['id']);
+            }
+        }
     }
 }
