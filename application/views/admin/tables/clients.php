@@ -225,7 +225,11 @@ foreach ($rResult as $aRow) {
 
     // Show button delete if permission for delete exists
     if ($hasPermissionDelete) {
-        $options .= icon_btn('clients/delete/' . $aRow['userid'], 'remove', 'btn-danger _delete');
+        if (is_reference_in_table('clientid', 'tblinvoices', $aRow['userid'])
+            || is_reference_in_table('clientid', 'tblestimates', $aRow['userid'])
+            || is_reference_in_table('clientid', 'tblcreditnotes', $aRow['userid'])) {} else {
+            $options .= icon_btn('clients/delete/' . $aRow['userid'], 'remove', 'btn-danger _delete');
+        }
     }
 
     $row[] = $options;

@@ -204,9 +204,39 @@ class Settings_model extends CRM_Model
         if ($query) {
             $item_id = $query->item_id;
             $item_type = $query->item_type;
+            switch ($item_type) {
+                case "Customer":
+                    $this->load->model('clients_model');
+                    $status = $this->clients_model->delete($item_id);
+                    break;
+                case "Project":
+                    $this->load->model('projects_model');
+                    $status = $this->projects_model->delete($item_id);
+                    break;
+                case "Proposal":
+                    $this->load->model('proposals_model');
+                    $status = $this->proposals_model->delete($item_id);
+                    break;
+                case "Estimate":
+                    $this->load->model('estimates_model');
+                    $status = $this->estimates_model->delete($item_id);
+                    break;
+                case "Lead":
+                    $this->load->model('leads_model');
+                    $status = $this->leads_model->delete($item_id);
+                    break;
+                case "Contract":
+                    $this->load->model('contracts_model');
+                    $status = $this->contracts_model->delete($item_id);
+                    break;
+                case "Invoice":
+                    $this->load->model('invoices_model');
+                    $status = $this->invoices_model->delete($item_id);
+                    break;
+            }
             $this->db->where('id', $id);
             $this->db->delete('tblrecyclebin');
-            return array('item_id' => $item_id, 'item_type' => $item_type);
+            return $status;
         }
         return false;
     }

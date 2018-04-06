@@ -211,30 +211,7 @@ class Settings extends Admin_controller
     public function archivedelete($id) {
         $result = $this->settings_model->archiveDelete($id);
         if ($result) {
-            switch ($result['item_type']) {
-                case "Customer":
-                    $this->clients_model->delete($result['item_id']);
-                    break;
-                case "Project":
-                    $this->projects_model->delete($result['item_id']);
-                    break;
-                case "Proposal":
-                    $this->proposals_model->delete($result['item_id']);
-                    break;
-                case "Estimate":
-                    $this->estimates_model->delete($result['item_id']);
-                    break;
-                case "Lead":
-                    $this->leads_model->delete($result['item_id']);
-                    break;
-                case "Contract":
-                    $this->contracts_model->delete($result['item_id']);
-                    break;
-                case "Invoice":
-                    $this->invoices_model->delete($result['item_id']);
-                    break;
-            }
-            set_alert('success', _l('delete_archive'));
+                set_alert('success', _l('delete_archive'));
         }
         redirect(admin_url('settings?group=recycle_bin'));
     }
