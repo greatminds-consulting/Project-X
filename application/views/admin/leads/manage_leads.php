@@ -234,7 +234,7 @@
                            <?php
                               $table_data = array();
                               $_table_data = array(
-                                '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="leads"><label></label></div>',
+                                '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="leads"><label for="mass_select_all"></label></div>',
                                 '#',
                                 _l('leads_dt_name'),
                                 _l('lead_company'),
@@ -282,3 +282,5 @@
 </script>
 </body>
 </html>
+
+
