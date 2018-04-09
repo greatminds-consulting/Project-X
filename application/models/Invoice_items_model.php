@@ -24,11 +24,12 @@ class Invoice_items_model extends CRM_Model
         $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,
             t1.taxrate as taxrate,t1.id as taxid,t1.name as taxname,
             t2.taxrate as taxrate_2,t2.id as taxid_2,t2.name as taxname_2,
-            description,long_description,group_id,tblitems_groups.name as group_name,unit');
+            description,long_description,group_id,tblitems_groups.name as group_name,package_id,tblitems_packages.name as package_name,unit');
         $this->db->from('tblitems');
         $this->db->join('tbltaxes t1', 't1.id = tblitems.tax', 'left');
         $this->db->join('tbltaxes t2', 't2.id = tblitems.tax2', 'left');
         $this->db->join('tblitems_groups', 'tblitems_groups.id = tblitems.group_id', 'left');
+        $this->db->join('tblitems_packages', 'tblitems_packages.id = tblitems.package_id', 'left');
         $this->db->order_by('description', 'asc');
         if (is_numeric($id)) {
             $this->db->where('tblitems.id', $id);

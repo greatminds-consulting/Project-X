@@ -181,6 +181,7 @@ function init_item_js() {
                 $('select[name="tax"]').selectpicker('val', response.taxid).change();
                 $('select[name="tax2"]').selectpicker('val', response.taxid_2).change();
                 $itemModal.find('#group_id').selectpicker('val', response.group_id);
+                $itemModal.find('#package_id').selectpicker('val', response.package_id);
                 $.each(response, function (column, value) {
                     if (column.indexOf('rate_currency_') > -1) {
                         $itemModal.find('input[name="' + column + '"]').val(value);
