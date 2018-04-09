@@ -242,7 +242,7 @@
     // Maybe items ajax search
     init_ajax_search('items','#item_select.ajax-search',undefined,admin_url+'items/search');
    $("body").on('change', 'select[name="package_id"]', function () {
-       if ($('.estimate-items-table tr').length > 1) {
+       if ($('.estimate-items-table tr').length > 2) {
            var r = confirm("<?php echo _l('package_confirm_action_prompt'); ?>");
            if (r == false) {
                $(this).selectpicker('val', packageid);
