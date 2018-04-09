@@ -10,7 +10,9 @@
            <div class="_buttons">
             <a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>
             <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#groups"><?php echo _l('item_groups'); ?></a>
-            <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#packages"><?php echo _l('item_packages'); ?></a>
+               <?php if(has_permission('item_package','','create')){ ?>
+                    <a href="#" class="btn btn-info pull-left mleft5" data-toggle="modal" data-target="#packages"><?php echo _l('item_packages'); ?></a>
+               <?php }?>
           </div>
           <div class="clearfix"></div>
           <hr class="hr-panel-heading" />
@@ -106,7 +108,7 @@
                 </h4>
             </div>
             <div class="modal-body">
-                <?php if(has_permission('items','','create')){ ?>
+                <?php if(has_permission('item_package','','create')){ ?>
                     <div class="input-group">
                         <input type="text" name="item_package_name" id="item_package_name" class="form-control" placeholder="<?php echo _l('item_package_name'); ?>">
           <span class="input-group-btn">
@@ -139,8 +141,8 @@
                                         </div>
                                     </td>
                                     <td align="right">
-                                        <?php if(has_permission('items','','edit')){ ?><button type="button" class="btn btn-default btn-icon edit-item-package"><i class="fa fa-pencil-square-o"></i></button><?php } ?>
-                                        <?php if(has_permission('items','','delete')){ ?><a href="<?php echo admin_url('invoice_items/delete_package/'.$package['id']); ?>" class="btn btn-danger btn-icon delete-item-group _delete"><i class="fa fa-remove"></i></a><?php } ?></td>
+                                        <?php if(has_permission('item_package','','edit')){ ?><button type="button" class="btn btn-default btn-icon edit-item-package"><i class="fa fa-pencil-square-o"></i></button><?php } ?>
+                                        <?php if(has_permission('item_package','','delete')){ ?><a href="<?php echo admin_url('invoice_items/delete_package/'.$package['id']); ?>" class="btn btn-danger btn-icon delete-item-group _delete"><i class="fa fa-remove"></i></a><?php } ?></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
