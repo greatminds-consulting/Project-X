@@ -14,7 +14,7 @@ $table_data = array(
 );
 
 if(isset($bulk_actions)){
-    array_unshift($table_data,'<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="tasks"><label></label></div>');
+    array_unshift($table_data,'<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="tasks"><label for="mass_select_all"></label></div>');
 }
 
 $custom_fields = get_custom_fields('tasks', array(

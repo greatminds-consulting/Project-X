@@ -41,7 +41,7 @@
       </div>
       <?php } ?>
       <?php echo form_open_multipart($this->uri->uri_string(),array('class'=>'staff-form','autocomplete'=>'off')); ?>
-      <div class="col-md-<?php if(!isset($member)){echo '8 col-md-offset-2';} else {echo '5';} ?>" id="small-table">
+      <div class="col-md-<?php if(!isset($member)){echo '12 col-md-offset-2';} else {echo '12';} ?>" id="small-table">
          <div class="panel_s">
             <div class="panel-body">
                <ul class="nav nav-tabs" role="tablist">
@@ -294,8 +294,8 @@
                                        }
                                        ?>
                                     <div class="checkbox">
-                                       <input type="checkbox" data-can-view <?php echo $statement; ?> name="view[]" value="<?php echo $permission['permissionid']; ?>">
-                                       <label></label>
+                                       <input type="checkbox" data-can-view <?php echo $statement; ?> name="view[]" id="memberview_<?php echo $permission['permissionid']; ?>"value="<?php echo $permission['permissionid']; ?>">
+                                       <label for="memberview_<?php echo $permission['permissionid']; ?>"></label>
                                     </div>
                                     <?php } ?>
                                  </td>
@@ -309,8 +309,8 @@
                                        }
                                        ?>
                                     <div class="checkbox">
-                                       <input type="checkbox" <?php echo $statement; ?> data-shortname="<?php echo $permission['shortname']; ?>" data-can-view-own name="view_own[]" value="<?php echo $permission['permissionid']; ?>">
-                                       <label></label>
+                                       <input type="checkbox" <?php echo $statement; ?> data-shortname="<?php echo $permission['shortname']; ?>" data-can-view-own name="view_own[]" value="<?php echo $permission['permissionid']; ?>" id="memberown_<?php echo $permission['permissionid']; ?>">
+                                       <label for="memberown_<?php echo $permission['permissionid']; ?>"></label>
                                     </div>
                                     <?php } else if($permission['shortname'] == 'customers'){
                                        echo '<i class="fa fa-question-circle mtop5" data-toggle="tooltip" data-title="'._l('permission_customers_based_on_admins').'"></i>';
@@ -332,8 +332,8 @@
                                        }
                                        ?>
                                     <div class="checkbox">
-                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-create <?php echo $statement; ?> name="create[]" value="<?php echo $permission['permissionid']; ?>">
-                                       <label></label>
+                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-create <?php echo $statement; ?> name="create[]" value="<?php echo $permission['permissionid']; ?>" id="membercreate_<?php echo $permission['permissionid']; ?>">
+                                       <label for="membercreate_<?php echo $permission['permissionid']; ?>"></label>
                                     </div>
                                     <?php } ?>
                                      <?php
@@ -352,8 +352,8 @@
                                        }
                                        ?>
                                     <div class="checkbox">
-                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-edit <?php echo $statement; ?> name="edit[]" value="<?php echo $permission['permissionid']; ?>">
-                                       <label></label>
+                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-edit <?php echo $statement; ?> name="edit[]" value="<?php echo $permission['permissionid']; ?>" id="memberedit_<?php echo $permission['permissionid']; ?>">
+                                       <label for="memberedit_<?php echo $permission['permissionid']; ?>"></label>
                                     </div>
                                     <?php } ?>
                                      <?php
@@ -373,8 +373,8 @@
                                        }
                                        ?>
                                     <div class="checkbox checkbox-danger">
-                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-delete <?php echo $statement; ?> name="delete[]" value="<?php echo $permission['permissionid']; ?>">
-                                       <label></label>
+                                       <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-delete <?php echo $statement; ?> name="delete[]" value="<?php echo $permission['permissionid']; ?>" id="memberdelete_<?php echo $permission['permissionid']; ?>">
+                                       <label for="memberdelete_<?php echo $permission['permissionid']; ?>"></label>
                                     </div>
                                     <?php } ?>
                                  </td>
@@ -560,6 +560,7 @@
       </div>
       <?php } ?>
    </div>
+</div>
    <div class="btn-bottom-pusher"></div>
 </div>
 <?php init_tail(); ?>

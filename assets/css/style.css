@@ -8949,3 +8949,6 @@ body.dashboard {
 .content-height{
     padding-top: 30px!important;
 }
+.overlay .overlay-close {
+    z-index: 1000;
+}

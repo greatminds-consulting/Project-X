@@ -66,7 +66,7 @@ function app_stylesheet($path, $filename)
         $filename = 'my_'.$filename;
     }
 
-    if (get_option('use_minified_files') == 1) {
+    if (get_option('use_minified_files') == 10) {
         $original_file_name = $filename;
         $_temp = explode('.', $filename);
         $last = count($_temp) -1;
@@ -111,7 +111,7 @@ function app_script($path, $filename)
 {
     $CI = &get_instance();
 
-    if (get_option('use_minified_files') == 1) {
+    if (get_option('use_minified_files') == 10) {
         $original_file_name = $filename;
         $_temp = explode('.', $filename);
         $last = count($_temp) -1;
@@ -318,12 +318,14 @@ function app_external_form_header($form)
  * Init admin head
  * @param  boolean $aside should include aside
  */
+
+
 function init_head($aside = true)
 {
     $CI =& get_instance();
     $CI->load->view('admin/includes/head');
    // $CI->load->view('admin/includes/header', array('startedTimers'=>$CI->misc_model->get_staff_started_timers()));
-    $CI->load->view('admin/includes/setup_menu');
+   // $CI->load->view('admin/includes/setup_menu');
     if ($aside == true) {
         $CI->load->view('admin/includes/aside');
     }

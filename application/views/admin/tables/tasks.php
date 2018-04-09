@@ -63,7 +63,7 @@ foreach ($rResult as $aRow) {
     $row = array();
 
     if ($bulkActions) {
-        $row[] = '<div class="checkbox"><input type="checkbox" value="'.$aRow['id'].'"><label></label></div>';
+        $row[] = '<div class="checkbox"><input type="checkbox"  id="tasks_'.$aRow['id'].'"  value="'.$aRow['id'].'"><label for="tasks_'.$aRow['id'].'"></label></div>';
     }
 
     $outputName = '<a href="'.admin_url('tasks/view/'.$aRow['id']).'" class="display-block main-tasks-table-href-name'.(!empty($aRow['rel_id']) ? ' mbot5' : '').'" onclick="init_task_modal(' . $aRow['id'] . '); return false;">' . $aRow['name'] . '</a>';

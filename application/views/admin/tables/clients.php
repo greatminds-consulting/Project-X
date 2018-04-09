@@ -164,7 +164,7 @@ foreach ($rResult as $aRow) {
     $row = array();
 
     // Bulk actions
-    $row[] = '<div class="checkbox"><input type="checkbox" value="' . $aRow['userid'] . '"><label></label></div>';
+    $row[] = '<div class="checkbox"><input type="checkbox" id="client_'.$aRow['userid'].'" value="' . $aRow['userid'] . '"><label for="client_'.$aRow['userid'].'"></label></div>';
     // User id
     $row[] = $aRow['userid'];
 

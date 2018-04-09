@@ -99,14 +99,14 @@ $result  = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, $where, ar
     'zip'
 ),"GROUP by id");
 
-
 $output  = $result['output'];
 $rResult = $result['rResult'];
+
 
 foreach ($rResult as $aRow) {
     $row = array();
 
-    $row[] = '<div class="checkbox"><input type="checkbox" value="'.$aRow['id'].'"><label></label></div>';
+    $row[] = '<div class="checkbox"><input type="checkbox"  id="client_'.$aRow['id'].'"  value="'.$aRow['id'].'"><label for ="client_'.$aRow['id'].'" ></label></div>';
 
     $row[] =  '<a href="'.admin_url('leads/index/'.$aRow['id']).'" onclick="init_lead('.$aRow['id'].');return false;">'. $aRow['id'] . '</a>';
 
@@ -175,7 +175,7 @@ foreach ($rResult as $aRow) {
     $row[] = $options;
     $row['DT_RowId'] = 'lead_'.$aRow['id'];
 
-    if ($aRow['assigned'] == get_staff_user_id()) {
+    if ($aRow['assignees'] == get_staff_user_id()) {
         $row['DT_RowClass'] = 'alert-info';
     }
 //print_r($row);

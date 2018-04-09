@@ -2790,7 +2790,12 @@ function get_dt_export_buttons(table) {
                     text: b.text(),
                     className: 'btn btn-default-dt-options',
                     action: function(e, dt, node, config) {
-                        b.click();
+                        if (b.data('target')) {
+                            $(b.data('target')).modal('show');
+                        } else {
+                            b.click();
+                        }
+
                     }
                 });
             }

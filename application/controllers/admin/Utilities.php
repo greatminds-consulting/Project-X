@@ -103,7 +103,8 @@ class Utilities extends Admin_controller
                 "title" => $res['title'],
                 "class" => "bg-success-lighter",
                 "start" => $res['date']."T00:00:00",
-                "end" => $res['date']."T23:59:59"
+                "end" => $res['date']."T23:59:59",
+                "readOnly" => true
             );
          }
         echo json_encode($return);

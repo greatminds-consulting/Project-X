@@ -269,28 +269,31 @@ class Reports_model extends CRM_Model
         foreach ($staff as $member) {
             array_push($chart['labels'], $member['firstname'] . ' ' . $member['lastname']);
             if (!isset($to_date) && !isset($from_date)) {
-
-                $this->db->where('CASE WHEN assigned=0 THEN addedfrom='.$member['staffid'].' ELSE assigned='.$member['staffid'].' END
-                    AND status=1','',false);
-                $total_rows_converted = $this->db->count_all_results('tblleads');
-
+                $this->db->select('tblleads.*,tblleadstaffs.staff_id as assigned');
+                $this->db->from('tblleads');
+                $this->db->where('CASE WHEN tblleadstaffs.staff_id=0 THEN tblleads.addedfrom='.$member['staffid'].' ELSE tblleadstaffs.staff_id='.$member['staffid'].' END
+                    AND tblleads.status=1 AND tblleads.id= tblleadstaffs.lead_id','',false);
+                $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
+                $total_rows_converted = $this->db->count_all_results();
                 $total_rows_created   = total_rows('tblleads', array(
                     'addedfrom' => $member['staffid']
                 ));
+                $this->db->select('*');
+                $this->db->from('tblleads');
+                $this->db->where('CASE WHEN tblleadstaffs.staff_id=0 THEN tblleads.addedfrom='.$member['staffid'].' ELSE tblleadstaffs.staff_id='.get_staff_user_id().' END
+                    AND lost=1 AND tblleads.id= tblleadstaffs.lead_id','',false);
+                $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
+                $total_rows_lost      = $this->db->count_all_results();
 
-                $this->db->where('CASE WHEN assigned=0 THEN addedfrom='.$member['staffid'].' ELSE assigned='.get_staff_user_id().' END
-                    AND lost=1','',false);
-                $total_rows_lost      = $this->db->count_all_results('tblleads');
-
-            } else {
-                $sql                  = "SELECT COUNT(tblleads.id) as total FROM tblleads WHERE DATE(last_status_change) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND status = 1 AND CASE WHEN assigned=0 THEN addedfrom=".$member['staffid']." ELSE assigned=".$member['staffid']." END";
+          }
+              else {
+                $sql                  = "SELECT COUNT(tblleads.id) as total FROM tblleads  join tblleadstaffs on tblleads.id= tblleadstaffs.lead_id WHERE tblleads.DATE(last_status_change) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND tblleads.status = 1 AND CASE WHEN tblleadstaffs.staff_id=0 THEN tblleads.addedfrom=".$member['staffid']." ELSE tblleadstaffs.staff_id=".$member['staffid']." END";
                 $total_rows_converted = $this->db->query($sql)->row()->total;
 
-                $sql                = "SELECT COUNT(tblleads.id) as total FROM tblleads WHERE DATE(dateadded) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND addedfrom=" . $member['staffid'] . "";
+                $sql                = "SELECT COUNT(tblleads.id) as total FROM tblleads join tblleadstaffs on tblleads.id= tblleadstaffs.lead_id WHERE tblleads.DATE(dateadded) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND tblleads.addedfrom=" . $member['staffid'] . "";
                 $total_rows_created = $this->db->query($sql)->row()->total;
 
-                $sql = "SELECT COUNT(tblleads.id) as total FROM tblleads WHERE DATE(last_status_change) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND lost = 1 AND CASE WHEN assigned=0 THEN addedfrom=".$member['staffid']." ELSE assigned=".$member['staffid']." END";
-
+                $sql = "SELECT COUNT(tblleads.id) as total FROM tblleads join tblleadstaffs on tblleads.id= tblleadstaffs.lead_id  WHERE tblleads.DATE(last_status_change) BETWEEN '" . $from_date . "' AND '" . $to_date . "' AND lost = 1 AND CASE WHEN tblleadstaffs.staff_id=0 THEN tblleads.addedfrom=".$member['staffid']." ELSE tblleadstaffs.staff_id=".$member['staffid']." END";
                 $total_rows_lost = $this->db->query($sql)->row()->total;
             }
 

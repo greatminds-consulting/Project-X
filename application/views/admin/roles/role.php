@@ -67,8 +67,8 @@
                                              }
                                              ?>
                                              <div class="checkbox">
-                                                <input type="checkbox" data-can-view <?php echo $statement; ?> name="view[]" value="<?php echo $permission['permissionid']; ?>">
-                                                <label></label>
+                                                <input type="checkbox" data-can-view <?php echo $statement; ?> name="view[]" id="<?php echo $permission['permissionid']; ?>" value="<?php echo $permission['permissionid']; ?>">
+                                                <label for="<?php echo $permission['permissionid']; ?>"></label>
                                             </div>
                                             <?php } ?>
                                         </td>
@@ -88,8 +88,8 @@
                                             }
                                             ?>
                                             <div class="checkbox">
-                                               <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" <?php echo $statement; ?> name="view_own[]" value="<?php echo $permission['permissionid']; ?>" data-can-view-own>
-                                               <label></label>
+                                               <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" <?php echo $statement; ?> name="view_own[]" id="<?php echo $permission['permissionid']; ?>" value="<?php echo $permission['permissionid']; ?>" data-can-view-own>
+                                               <label for="<?php echo $permission['permissionid']; ?>"></label>
                                            </div>
                                            <?php } else if($permission['shortname'] == 'customers'){
                                               echo '<i class="fa fa-question-circle mtop15" data-toggle="tooltip" data-title="'._l('permission_customers_based_on_admins').'"></i>';
@@ -112,8 +112,8 @@
                                                 }
                                                 ?>
                                                 <div class="checkbox">
-                                                    <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-create <?php echo $statement; ?> name="create[]" value="<?php echo $permission['permissionid']; ?>">
-                                                    <label></label>
+                                                    <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-create <?php echo $statement; ?> id="<?php echo $permission['permissionid']; ?>" name="create[]" id="create_<?php echo $permission['permissionid']; ?>" value="<?php echo $permission['permissionid']; ?>">
+                                                    <label for="create_<?php echo $permission['permissionid']; ?>"></label>
                                                 </div>
                                                 <?php } ?>
                                             </td>
@@ -127,8 +127,8 @@
                                             }
                                             ?>
                                             <div class="checkbox">
-                                                <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-edit <?php echo $statement; ?> name="edit[]" value="<?php echo $permission['permissionid']; ?>">
-                                                <label></label>
+                                                <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-edit <?php echo $statement; ?> id="edit_<?php echo $permission['permissionid']; ?>" name="edit[]" value="<?php echo $permission['permissionid']; ?>">
+                                                <label for="edit_<?php echo $permission['permissionid']; ?>"></label>
                                             </div>
                                             <?php } ?>
                                         </td>
@@ -142,8 +142,8 @@
                                                     }
                                                     ?>
                                                     <div class="checkbox checkbox-danger">
-                                                        <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-delete <?php echo $statement; ?> name="delete[]" value="<?php echo $permission['permissionid']; ?>">
-                                                        <label></label>
+                                                        <input type="checkbox" data-shortname="<?php echo $permission['shortname']; ?>" data-can-delete <?php echo $statement; ?> name="delete[]" id="delete_<?php echo $permission['permissionid']; ?>" value="<?php echo $permission['permissionid']; ?>">
+                                                        <label for="delete_<?php echo $permission['permissionid']; ?>"></label>
                                                     </div>
                                                     <?php } ?>
                                                 </td>
@@ -159,6 +159,7 @@
                     </div>
                 </div>
             </div>
+</div>
             <?php init_tail(); ?>
             <script>
                 $(function(){
