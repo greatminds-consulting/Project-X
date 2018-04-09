@@ -32,7 +32,7 @@ class Clients_model extends CRM_Model
             $this->db->where('tblclients.userid', $id);
             $client = $this->db->get('tblclients')->row();
 
-            if (get_option('company_requires_vat_number_field') == 0) {
+            if (get_option('company_requires_vat_number_field') == 0 && $client) {
                 $client->vat = null;
             }
 
@@ -702,112 +702,132 @@ class Clients_model extends CRM_Model
      * @return boolean
      * Delete client, also deleting rows from, dismissed client announcements, ticket replies, tickets, autologin, user notes
      */
-    public function delete($id)
-    {
-        $affectedRows = 0;
+    public function delete($id) {
 
-        if (is_reference_in_table('clientid', 'tblinvoices', $id)
-            || is_reference_in_table('clientid', 'tblestimates', $id)
-            || is_reference_in_table('clientid', 'tblcreditnotes', $id)) {
-            return array(
-                'referenced' => true,
-            );
-        }
+        $this->db->from('tblclients');
+        $this->db->where('userid',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            $affectedRows = 0;
 
-        do_action('before_client_deleted', $id);
+            if (is_reference_in_table('clientid', 'tblinvoices', $id)
+                || is_reference_in_table('clientid', 'tblestimates', $id)
+                || is_reference_in_table('clientid', 'tblcreditnotes', $id)) {
+                return array(
+                    'referenced' => true,
+                );
+            }
 
-        $this->db->where('userid', $id);
-        $this->db->delete('tblclients');
-        if ($this->db->affected_rows() > 0) {
-            $affectedRows++;
+            do_action('before_client_deleted', $id);
 
-            // Delete all tickets start here
             $this->db->where('userid', $id);
-            $tickets = $this->db->get('tbltickets')->result_array();
-            $this->load->model('tickets_model');
-            foreach ($tickets as $ticket) {
-                $this->tickets_model->delete($ticket['ticketid']);
+            $this->db->delete('tblclients');
+            if ($this->db->affected_rows() > 0) {
+                $affectedRows++;
+
+                // Delete all tickets start here
+                $this->db->where('userid', $id);
+                $tickets = $this->db->get('tbltickets')->result_array();
+                $this->load->model('tickets_model');
+                foreach ($tickets as $ticket) {
+                    $this->tickets_model->delete($ticket['ticketid']);
+                }
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'customer');
+                $this->db->delete('tblnotes');
+
+                // Delete all user contacts
+                $this->db->where('userid', $id);
+                $contacts = $this->db->get('tblcontacts')->result_array();
+                foreach ($contacts as $contact) {
+                    $this->delete_contact($contact['id']);
+                }
+                // Get all client contracts
+                $this->load->model('contracts_model');
+                $this->db->where('client', $id);
+                $contracts = $this->db->get('tblcontracts')->result_array();
+                foreach ($contracts as $contract) {
+                    $this->contracts_model->delete($contract['id']);
+                }
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'customers');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                // Get customer related tasks
+                $this->db->where('rel_type', 'customer');
+                $this->db->where('rel_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+                $this->db->where('rel_type', 'customer');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblreminders');
+
+                $this->db->where('customer_id', $id);
+                $this->db->delete('tblcustomeradmins');
+
+                $this->db->where('customer_id', $id);
+                $this->db->delete('tblvault');
+
+                $this->db->where('customer_id', $id);
+                $this->db->delete('tblcustomergroups_in');
+
+                // Delete all projects
+                $this->load->model('projects_model');
+                $this->db->where('clientid', $id);
+                $projects = $this->db->get('tblprojects')->result_array();
+                foreach ($projects as $project) {
+                    $this->projects_model->delete($project['id']);
+                }
+                $this->load->model('proposals_model');
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'customer');
+                $proposals = $this->db->get('tblproposals')->result_array();
+                foreach ($proposals as $proposal) {
+                    $this->proposals_model->delete($proposal['id']);
+                }
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'customer');
+                $attachments = $this->db->get('tblfiles')->result_array();
+                foreach ($attachments as $attachment) {
+                    $this->delete_attachment($attachment['id']);
+                }
+
+                $this->db->where('clientid', $id);
+                $expenses = $this->db->get('tblexpenses')->result_array();
+
+                $this->load->model('expenses_model');
+                foreach ($expenses as $expense) {
+                    $this->expenses_model->delete($expense['id']);
+                }
             }
+            if ($affectedRows > 0) {
+                do_action('after_client_deleted', $id);
+                logActivity('Client Deleted [' . $id . ']');
 
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'customer');
-            $this->db->delete('tblnotes');
-
-            // Delete all user contacts
-            $this->db->where('userid', $id);
-            $contacts = $this->db->get('tblcontacts')->result_array();
-            foreach ($contacts as $contact) {
-                $this->delete_contact($contact['id']);
+                return true;
             }
-            // Get all client contracts
-            $this->load->model('contracts_model');
-            $this->db->where('client', $id);
-            $contracts = $this->db->get('tblcontracts')->result_array();
-            foreach ($contracts as $contract) {
-                $this->contracts_model->delete($contract['id']);
+        } else {
+            $data['is_delete'] = 1;
+            $this->db->where('userid',$id);
+            $this->db->update('tblclients',$data);
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = $query->company;
+                $recycleData['item_type'] = 'Customer';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
             }
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'customers');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            // Get customer related tasks
-            $this->db->where('rel_type', 'customer');
-            $this->db->where('rel_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
-            }
-            $this->db->where('rel_type', 'customer');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblreminders');
-
-            $this->db->where('customer_id', $id);
-            $this->db->delete('tblcustomeradmins');
-
-            $this->db->where('customer_id', $id);
-            $this->db->delete('tblvault');
-
-            $this->db->where('customer_id', $id);
-            $this->db->delete('tblcustomergroups_in');
-
-            // Delete all projects
-            $this->load->model('projects_model');
-            $this->db->where('clientid', $id);
-            $projects = $this->db->get('tblprojects')->result_array();
-            foreach ($projects as $project) {
-                $this->projects_model->delete($project['id']);
-            }
-            $this->load->model('proposals_model');
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'customer');
-            $proposals = $this->db->get('tblproposals')->result_array();
-            foreach ($proposals as $proposal) {
-                $this->proposals_model->delete($proposal['id']);
-            }
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'customer');
-            $attachments = $this->db->get('tblfiles')->result_array();
-            foreach ($attachments as $attachment) {
-                $this->delete_attachment($attachment['id']);
-            }
-
-            $this->db->where('clientid', $id);
-            $expenses = $this->db->get('tblexpenses')->result_array();
-
-            $this->load->model('expenses_model');
-            foreach ($expenses as $expense) {
-                $this->expenses_model->delete($expense['id']);
-            }
+            return false;
         }
-        if ($affectedRows > 0) {
-            do_action('after_client_deleted', $id);
-            logActivity('Client Deleted [' . $id . ']');
-
-            return true;
-        }
-
         return false;
     }
 

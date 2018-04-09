@@ -64,6 +64,7 @@ class Cron_model extends CRM_Model
             $this->auto_import_imap_tickets();
             $this->check_leads_email_integration();
             $this->delete_activity_log();
+            $this->delete_archive_log();
 
             /**
              * Finally send any emails in the email queue - if enabled and any
@@ -1287,8 +1288,14 @@ class Cron_model extends CRM_Model
 
                     $this->db->insert('tblleads', $lead_data);
                     $insert_id = $this->db->insert_id();
+
+                    $data_staff['lead_id'] = $insert_id;
+                    $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                    $data_staff['staff_id'] = $mail->responsible;
+                    $this->db->insert('tblleadstaffs', $data_staff);
+
                     if ($insert_id) {
-                        $this->leads_model->lead_assigned_member_notification($insert_id, $mail->responsible, true);
+                        $this->leads_model->lead_assigned_member_notification($insert_id, array($mail->responsible), true);
                         $this->load->helper('simple_html_dom');
                         $html                      = str_get_html($email['body']);
                         $insert_lead_fields        = array();
@@ -1620,5 +1627,21 @@ class Cron_model extends CRM_Model
         $body = preg_replace('/\n/', '<br>', $body);
 
         return $body;
+    }
+
+    public function delete_archive_log() {
+        $older_then_months = get_option('delete_archive_period');
+
+        if ($older_then_months == 0) {
+            return;
+        }
+        $results = $this->db->query('SELECT id,item_id,item_type FROM tblrecyclebin WHERE dateadded < DATE_SUB(NOW(), INTERVAL '.$older_then_months.' MONTH);')->result_array();
+
+        if ($results) {
+            foreach ($results as $item) {
+                $this->load->model('settings_model');
+                $this->settings_model->archiveDelete($item['id']);
+            }
+        }
     }
 }

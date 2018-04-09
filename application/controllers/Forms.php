@@ -213,12 +213,15 @@ class Forms extends CRM_Controller
                     $regular_fields['source']       = $form->lead_source;
                     $regular_fields['addedfrom']    = 0;
                     $regular_fields['lastcontact']  = null;
-                    $regular_fields['assigned']     = $form->responsible;
                     $regular_fields['dateadded']    = date('Y-m-d H:i:s');
                     $regular_fields['from_form_id'] = $form->id;
                     $regular_fields['is_public'] = $form->mark_public;
                     $this->db->insert('tblleads', $regular_fields);
                     $lead_id = $this->db->insert_id();
+                    $data_staff['lead_id']=$lead_id;
+                    $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                    $data_staff['staff_id'] = $form->responsible;;
+                    $this->db->insert('tblleadstaffs', $data_staff);
 
                     do_action('lead_created', array(
                         'lead_id' => $lead_id,
@@ -239,7 +242,7 @@ class Forms extends CRM_Controller
                             $custom_fields_build['leads'][$cf_id] = $cf['value'];
                         }
 
-                        $this->leads_model->lead_assigned_member_notification($lead_id, $form->responsible, true);
+                        $this->leads_model->lead_assigned_member_notification($lead_id, array($form->responsible), true);
                         handle_custom_fields_post($lead_id, $custom_fields_build);
                         handle_lead_attachments($lead_id, 'file-input', $form->name);
 

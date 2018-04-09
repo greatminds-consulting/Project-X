@@ -64,6 +64,7 @@
                     <?php echo render_custom_fields('items'); ?>
                 </div>
                 <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group'); ?>
+                <?php echo render_select('package_id',$items_packages,array('id','name'),'item_package'); ?>
             </div>
         </div>
     </div>
@@ -84,6 +85,7 @@
         init_item_js();
      });
   }
+
 // Items add/edit
 function manage_invoice_items(form) {
     var data = $(form).serialize();
@@ -148,6 +150,7 @@ function init_item_js() {
         }
     });
 
+
     // Items modal show action
     $("body").on('show.bs.modal', '#sales_item_modal', function (event) {
 
@@ -178,6 +181,7 @@ function init_item_js() {
                 $('select[name="tax"]').selectpicker('val', response.taxid).change();
                 $('select[name="tax2"]').selectpicker('val', response.taxid_2).change();
                 $itemModal.find('#group_id').selectpicker('val', response.group_id);
+                $itemModal.find('#package_id').selectpicker('val', response.package_id);
                 $.each(response, function (column, value) {
                     if (column.indexOf('rate_currency_') > -1) {
                         $itemModal.find('input[name="' + column + '"]').val(value);
