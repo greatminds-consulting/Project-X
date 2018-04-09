@@ -2538,6 +2538,7 @@ $lang['client_password_changed']          = 'Your password has been changed';
 $lang['total_leads_deleted'] = 'Total leads deleted: %s';
 $lang['total_clients_deleted'] = 'Total customers deleted: %s';
 $lang['confirm_action_prompt'] = 'Are you sure you want to perform this action?';
+$lang['package_confirm_action_prompt'] = 'Selecting a different package will clear all items added, are you sure you want to continue?';
 $lang['mass_delete'] = 'Mass Delete';
 $lang['email_protocol'] = 'Email Protocol';
 $lang['add_edit_members'] = 'Add/Edit Members';
