@@ -34,6 +34,18 @@
         <hr />
         <?php echo render_select('settings[default_staff_role]',$roles,array('roleid','name'),'settings_general_default_staff_role',get_option('default_staff_role'),array(),array('data-toggle'=>'tooltip','title'=>'settings_general_default_staff_role_tooltip')); ?>
         <hr />
+        <?php
+
+        for($i=0; $i<12; $i++) {
+            $delete_archive_period[$i] =
+                array(
+                    'id' => $i+1,
+                    'name' => ($i+1).' Months'
+                );
+
+        }
+        echo render_select('settings[delete_archive_period]',$delete_archive_period,array('id','name'),'settings_general_delete_recycle_bin_period',get_option('delete_archive_period'),array(),array('data-toggle'=>'tooltip','title'=>'settings_general_delete_recycle_bin_period_tooltip')); ?>
+        <hr />
         <?php echo render_input('settings[delete_activity_log_older_then]','delete_activity_log_older_then',get_option('delete_activity_log_older_then'),'number'); ?>
         <hr />
         <?php echo render_yes_no_option('show_setup_menu_item_only_on_hover','show_setup_menu_item_only_on_hover'); ?>

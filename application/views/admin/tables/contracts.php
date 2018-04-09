@@ -32,7 +32,7 @@ foreach ($custom_fields as $key => $field) {
     array_push($join, 'LEFT JOIN tblcustomfieldsvalues as ctable_'.$key . ' ON tblcontracts.id = ctable_'.$key . '.relid AND ctable_'.$key . '.fieldto="'.$field['fieldto'].'" AND ctable_'.$key . '.fieldid='.$field['id']);
 }
 
-$where = array();
+$where = array(' AND (tblcontracts.is_delete is null or tblcontracts.is_delete = 0)');
 $filter = array();
 
 if ($this->ci->input->post('exclude_trashed_contracts')) {

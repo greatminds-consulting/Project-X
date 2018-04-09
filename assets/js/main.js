@@ -120,7 +120,12 @@ $(window).on("load resize", function(e) {
 });
 
 $(function() {
-
+    if ($('.table-recycle_bin').length > 0) {
+        var not_sortable_items;
+        not_sortable_items = [($('.table-recycle_bin').find('th').length - 1)];
+        initDataTable('.table-recycle_bin', admin_url+'settings/table', not_sortable_items, not_sortable_items,'undefined',[0,'ASC']);
+        app_show_table_export_button = 'hide';
+    }
     // Add notifications indicator on document title
     if (total_unread_notifications > 0) {
         document.title = '(' + total_unread_notifications + ') ' + doc_initial_title;

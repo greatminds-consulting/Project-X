@@ -122,7 +122,7 @@ class Projects extends Admin_controller
             close_setup_menu();
             $project = $this->projects_model->get($id);
 
-            if (!$project) {
+            if (!$project || ($project && $project->is_delete ==1)) {
                 blank_page(_l('project_not_found'));
             }
 

@@ -173,7 +173,7 @@
                                 </div>
                                 <div class="clearfix"></div>
                                 <?php if(has_permission('customers','','view') || have_assigned_customers()) {
-                                    $where_summary = '';
+                                    $where_summary = ' AND (is_delete is null or is_delete = 0)';
                                     if(!has_permission('customers','','view')){
                                         $where_summary = ' AND userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id='.get_staff_user_id().')';
                                     }
