@@ -402,7 +402,7 @@
             </div>
              <?php if ($items_packages) {?>
                      <div class="form-group no-mbot items-wrapper select-placeholder">
-                         <?php echo render_select('package_id',$items_packages,array('id','name'),''); ?>
+                         <?php echo render_select('package_id',$items_packages,array('id','name'),'','',array('data-none-selected-text' => 'Select a Package')); ?>
                      </div>
              <?php }?>
          </div>

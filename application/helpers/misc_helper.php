@@ -466,6 +466,13 @@ function get_permission_conditions()
             'create' => true,
             'delete' => true,
         ),
+        'item_package' => array(
+            'view' => true,
+            'view_own' => true,
+            'edit' => true,
+            'create' => true,
+            'delete' => true,
+        )
     ));
 }
 

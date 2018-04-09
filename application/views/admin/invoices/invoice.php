@@ -27,7 +27,18 @@
 	    // Maybe items ajax search
 	    init_ajax_search('items','#item_select.ajax-search',undefined,admin_url+'items/search');
         $("body").on('change', 'select[name="package_id"]', function () {
-            var packageid = $(this).selectpicker('val');
+            if ($('.invoice-items-table tr').length > 2) {
+                var r = confirm("<?php echo _l('package_confirm_action_prompt'); ?>");
+                if (r == false) {
+                    $(this).selectpicker('val', packageid);
+                    return false;
+                } else {
+                    $.each( $('.invoice-items-table tr'), function( key, value ) {
+                        $(value).find('a.btn-danger').click()
+                    });
+                }
+            }
+            packageid = $(this).selectpicker('val');
             if (packageid != '' && packageid !== 'newitem') {
                 requestGetJSON('invoice_items/get_package_by_id/' + packageid).done(function(response) {
                     if (response) {
