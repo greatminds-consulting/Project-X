@@ -91,6 +91,9 @@ foreach ($rResult as $aRow) {
                 ));
         }
     }
+    if ( is_admin()) {
+        $options .= '<a href="' . admin_url('staff/impersonate/' . $aRow['staffid']) . '" class="impersonate_user"><img src="/img/mask-icon.png"></a>';
+    }
     $row[]              = $options;
     $output['aaData'][] = $row;
 }

@@ -617,4 +617,24 @@ class Authentication_model extends CRM_Model
 
         return $code;
     }
+
+    public function impersonate($id) {
+        $this->db->where('staffid', $id);
+        $user = $this->db->get('tblstaff')->row();
+        if ($user) {
+            do_action('before_staff_login', array(
+                'email' => $user->email,
+                'userid' => $user->staffid,
+            ));
+            $user_data = array(
+                'staff_user_id' => $user->staffid,
+                'staff_logged_in' => true,
+            );
+
+            $this->session->set_userdata($user_data);
+            $this->update_login_info($user->staffid, true);
+            return true;
+        }
+       return false;
+    }
 }
