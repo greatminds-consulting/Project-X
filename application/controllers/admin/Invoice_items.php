@@ -164,6 +164,7 @@ class Invoice_items extends Admin_controller
     {
         if ($this->input->is_ajax_request()) {
             $item                   = $this->invoice_items_model->get($id);
+            $item->item_packages = $this->invoice_items_model->get_item_packages($id, true);
             $item->long_description = nl2br($item->long_description);
             $item->custom_fields_html = render_custom_fields('items',$id,array(),array('items_pr'=>true));
             $item->custom_fields = array();
@@ -178,7 +179,6 @@ class Invoice_items extends Admin_controller
                 $custom_field['value'] = $val;
                 $item->custom_fields[] = $custom_field;
             }
-
             echo json_encode($item);
         }
     }
