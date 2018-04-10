@@ -400,6 +400,11 @@
                   <?php } ?>
                </select>
             </div>
+             <?php if ($items_packages) {?>
+                     <div class="form-group no-mbot items-wrapper select-placeholder">
+                         <?php echo render_select('package_id',$items_packages,array('id','name'),'','',array('data-none-selected-text' => 'Select a Package')); ?>
+                     </div>
+             <?php }?>
          </div>
          <?php if(!isset($invoice_from_project) && isset($billable_tasks)){
           ?>

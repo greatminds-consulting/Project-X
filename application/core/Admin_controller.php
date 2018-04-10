@@ -56,9 +56,9 @@ class Admin_controller extends CRM_Controller
         if (!$is_ajax_request) {
             if (ENVIRONMENT == 'production' && is_admin()) {
                 if ($this->config->item('encryption_key') === '') {
-                    die('<h1>Encryption key not sent in application/config/config.php</h1>For more info visit <a href="http://www.perfexcrm.com/knowledgebase/encryption-key/">Encryption key explained</a> FAQ3');
+                    die('<h1>Encryption key not sent in application/config/config.php</h1>');
                 } elseif (strlen($this->config->item('encryption_key')) != 32) {
-                    die('<h1>Encryption key length should be 32 charachters</h1>For more info visit <a href="https://help.perfexcrm.com/encryption-key-explained/">Encryption key explained</a>');
+                    die('<h1>Encryption key length should be 32 charachters</h1>');
                 }
             }
             _maybe_system_setup_warnings();

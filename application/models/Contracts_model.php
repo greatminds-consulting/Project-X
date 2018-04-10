@@ -234,33 +234,53 @@ class Contracts_model extends CRM_Model
      */
     public function delete($id)
     {
-        do_action('before_contract_deleted', $id);
-        $this->db->where('id', $id);
-        $this->db->delete('tblcontracts');
-        if ($this->db->affected_rows() > 0) {
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'contracts');
-            $this->db->delete('tblcustomfieldsvalues');
+        $this->db->from('tblcontracts');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            do_action('before_contract_deleted', $id);
+            $this->db->where('id', $id);
+            $this->db->delete('tblcontracts');
+            if ($this->db->affected_rows() > 0) {
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'contracts');
+                $this->db->delete('tblcustomfieldsvalues');
 
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'contract');
-            $attachments = $this->db->get('tblfiles')->result_array();
-            foreach ($attachments as $attachment) {
-                $this->delete_contract_attachment($attachment['id']);
-            }
-            $this->db->where('contractid', $id);
-            $this->db->delete('tblcontractrenewals');
-            // Get related tasks
-            $this->db->where('rel_type', 'contract');
-            $this->db->where('rel_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
-            }
-            logActivity('Contract Deleted [' . $id . ']');
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'contract');
+                $attachments = $this->db->get('tblfiles')->result_array();
+                foreach ($attachments as $attachment) {
+                    $this->delete_contract_attachment($attachment['id']);
+                }
+                $this->db->where('contractid', $id);
+                $this->db->delete('tblcontractrenewals');
+                // Get related tasks
+                $this->db->where('rel_type', 'contract');
+                $this->db->where('rel_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+                logActivity('Contract Deleted [' . $id . ']');
 
-            return true;
+                return true;
+            }
+        } else {
+            $this->db->where('id',$id);
+            $this->db->update('tblcontracts',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = $query->subject;
+                $recycleData['item_type'] = 'Contract';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         return false;

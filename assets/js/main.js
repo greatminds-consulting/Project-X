@@ -120,7 +120,12 @@ $(window).on("load resize", function(e) {
 });
 
 $(function() {
-
+    if ($('.table-recycle_bin').length > 0) {
+        var not_sortable_items;
+        not_sortable_items = [($('.table-recycle_bin').find('th').length - 1)];
+        initDataTable('.table-recycle_bin', admin_url+'settings/table', not_sortable_items, not_sortable_items,'undefined',[0,'ASC']);
+        app_show_table_export_button = 'hide';
+    }
     // Add notifications indicator on document title
     if (total_unread_notifications > 0) {
         document.title = '(' + total_unread_notifications + ') ' + doc_initial_title;
@@ -5765,7 +5770,6 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
         var cf_has_required = false;
 
         if (custom_fields.length > 0) {
-
             $.each(custom_fields, function() {
 
                 var cf = $(this).clone();
@@ -5807,7 +5811,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
                     }
                     cf_html = cf.html();
                 } else if (cf_field.is('select')) {
-
+                    
                     if ($(this).attr('data-custom-field-required') == '1') {
                         cf_has_required = true;
                     }

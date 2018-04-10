@@ -258,7 +258,7 @@ function _is_cron_setup_required()
                 echo '<div class="col-md-12">';
                 echo '<div class="alert alert-danger">';
                 echo 'You are using some features that requires cron job setup to work properly.';
-                echo '<br />Please follow the cron <a href="https://help.perfexcrm.com/setup-cron-job/" target="_blank">setup guide</a> in order all features to work well.';
+                echo '<br />Please follow the cron setup guide in order all features to work well.';
                 echo '<br /><br /><br />';
                 echo '<p class="bold">You are using the following features that CRON Job setup is required:</p>';
                 $i = 1;

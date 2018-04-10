@@ -70,7 +70,7 @@ function strbefore($string, $substring)
  * @param  string  $domain
  * @return boolean
  */
-function is_connected($domain = 'www.perfexcrm.com')
+function is_connected($domain = 'app.navarravenues.com.au')
 {
     $connected = @fsockopen($domain, 80);
     //website, port  (try 80 or 443)

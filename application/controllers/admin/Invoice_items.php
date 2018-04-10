@@ -16,8 +16,9 @@ class Invoice_items extends Admin_controller
         }
 
         $this->load->model('taxes_model');
-        $data['taxes']        = $this->taxes_model->get();
-        $data['items_groups'] = $this->invoice_items_model->get_groups();
+        $data['taxes']          = $this->taxes_model->get();
+        $data['items_groups']   = $this->invoice_items_model->get_groups();
+        $data['items_packages'] = $this->invoice_items_model->get_packages();
 
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
@@ -86,11 +87,27 @@ class Invoice_items extends Admin_controller
         }
     }
 
+    public function add_package()
+    {
+        if ($this->input->post() && has_permission('items', '', 'create')) {
+            $this->invoice_items_model->add_package($this->input->post());
+            set_alert('success', _l('added_successfully', _l('new_item_package')));
+        }
+    }
+
     public function update_group($id)
     {
         if ($this->input->post() && has_permission('items', '', 'edit')) {
             $this->invoice_items_model->edit_group($this->input->post(), $id);
             set_alert('success', _l('updated_successfully', _l('item_group')));
+        }
+    }
+
+    public function update_package($id)
+    {
+        if ($this->input->post() && has_permission('items', '', 'edit')) {
+            $this->invoice_items_model->edit_package($this->input->post(), $id);
+            set_alert('success', _l('updated_successfully', _l('item_package')));
         }
     }
 
@@ -102,6 +119,16 @@ class Invoice_items extends Admin_controller
             }
         }
         redirect(admin_url('invoice_items?groups_modal=true'));
+    }
+
+    public function delete_package($id)
+    {
+        if (has_permission('items', '', 'delete')) {
+            if ($this->invoice_items_model->delete_package($id)) {
+                set_alert('success', _l('deleted', _l('item_package')));
+            }
+        }
+        redirect(admin_url('invoice_items?packages_modal=true'));
     }
 
     /* Delete item*/
@@ -153,6 +180,34 @@ class Invoice_items extends Admin_controller
             }
 
             echo json_encode($item);
+        }
+    }
+
+    /* Get item by id / ajax */
+    public function get_package_by_id($id)
+    {
+        if ($this->input->is_ajax_request()) {
+            $items                   = $this->invoice_items_model->get('', $id);
+            $return = array();
+            foreach ($items as $item) {
+                $item['long_description'] = nl2br($item['long_description']);
+                $item['custom_fields_html'] = render_custom_fields('items',$item['itemid'],array(),array('items_pr'=>true));
+                $item['custom_fields'] = array();
+
+                $cf = get_custom_fields('items');
+
+                foreach($cf as $custom_field) {
+                    $val = get_custom_field_value($item['itemid'],$custom_field['id'],'items_pr');
+                    if($custom_field['type'] == 'textarea') {
+                        $val = clear_textarea_breaks($val);
+                    }
+                    $custom_field['value'] = $val;
+                    $item['custom_fields'][] = $custom_field;
+                }
+                $return[] = $item;
+            }
+
+            echo json_encode($return);
         }
     }
 }

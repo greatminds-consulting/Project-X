@@ -248,7 +248,7 @@ class Invoices_model extends CRM_Model
         $cancel_merged_invoices = isset($data['cancel_merged_invoices']);
 
         $tags = isset($data['tags']) ? $data['tags'] : '';
-
+        unset($data['package_id']);
         if (isset($data['save_as_draft'])) {
             $data['status'] = 6;
             unset($data['save_as_draft']);
@@ -783,6 +783,7 @@ class Invoices_model extends CRM_Model
         }
 
         unset($data['removed_items']);
+        unset($data['package_id']);
 
         $this->db->where('id', $id);
         $this->db->update('tblinvoices', $data);
@@ -1039,142 +1040,162 @@ class Invoices_model extends CRM_Model
                 return false;
             }
         }
-        $number = format_invoice_number($id);
+        $this->db->from('tblinvoices');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            $number = format_invoice_number($id);
 
-        do_action('before_invoice_deleted', $id);
-        $this->db->where('id', $id);
-        $this->db->delete('tblinvoices');
-        if ($this->db->affected_rows() > 0) {
-            if (get_option('invoice_number_decrement_on_delete') == 1 && $merge == false) {
-                $current_next_invoice_number = get_option('next_invoice_number');
-                if ($current_next_invoice_number > 1) {
-                    // Decrement next invoice number to
-                    $this->db->where('name', 'next_invoice_number');
-                    $this->db->set('value', 'value-1', false);
-                    $this->db->update('tbloptions');
+            do_action('before_invoice_deleted', $id);
+            $this->db->where('id', $id);
+            $this->db->delete('tblinvoices');
+            if ($this->db->affected_rows() > 0) {
+                if (get_option('invoice_number_decrement_on_delete') == 1 && $merge == false) {
+                    $current_next_invoice_number = get_option('next_invoice_number');
+                    if ($current_next_invoice_number > 1) {
+                        // Decrement next invoice number to
+                        $this->db->where('name', 'next_invoice_number');
+                        $this->db->set('value', 'value-1', false);
+                        $this->db->update('tbloptions');
+                    }
                 }
-            }
-            if ($merge == false) {
-                $this->db->where('invoiceid', $id);
-                $this->db->update('tblexpenses', array(
-                    'invoiceid' => null,
-                ));
-
-                $this->db->where('invoice_id', $id);
-                $this->db->update('tblproposals', array(
-                    'invoice_id' => null,
-                    'date_converted' => null,
-                ));
-
-                $this->db->where('invoice_id', $id);
-                $this->db->update('tblstafftasks', array(
-                    'invoice_id' => null,
-                    'billed' => 0,
-                ));
-
-                // if is converted from estimate set the estimate invoice to null
-                if (total_rows('tblestimates', array(
-                    'invoiceid' => $id,
-                )) > 0) {
+                if ($merge == false) {
                     $this->db->where('invoiceid', $id);
-                    $estimate = $this->db->get('tblestimates')->row();
-                    $this->db->where('id', $estimate->id);
-                    $this->db->update('tblestimates', array(
+                    $this->db->update('tblexpenses', array(
                         'invoiceid' => null,
-                        'invoiced_date' => null,
                     ));
-                    $this->load->model('estimates_model');
-                    $this->estimates_model->log_estimate_activity($estimate->id, 'not_estimate_invoice_deleted');
+
+                    $this->db->where('invoice_id', $id);
+                    $this->db->update('tblproposals', array(
+                        'invoice_id' => null,
+                        'date_converted' => null,
+                    ));
+
+                    $this->db->where('invoice_id', $id);
+                    $this->db->update('tblstafftasks', array(
+                        'invoice_id' => null,
+                        'billed' => 0,
+                    ));
+
+                    // if is converted from estimate set the estimate invoice to null
+                    if (total_rows('tblestimates', array(
+                        'invoiceid' => $id,
+                    )) > 0) {
+                        $this->db->where('invoiceid', $id);
+                        $estimate = $this->db->get('tblestimates')->row();
+                        $this->db->where('id', $estimate->id);
+                        $this->db->update('tblestimates', array(
+                            'invoiceid' => null,
+                            'invoiced_date' => null,
+                        ));
+                        $this->load->model('estimates_model');
+                        $this->estimates_model->log_estimate_activity($estimate->id, 'not_estimate_invoice_deleted');
+                    }
                 }
-            }
 
-            $this->db->select('id');
-            $this->db->where('id IN (SELECT credit_id FROM tblcredits WHERE invoice_id='.$id.')');
-            $linked_credit_notes = $this->db->get('tblcreditnotes')->result_array();
+                $this->db->select('id');
+                $this->db->where('id IN (SELECT credit_id FROM tblcredits WHERE invoice_id='.$id.')');
+                $linked_credit_notes = $this->db->get('tblcreditnotes')->result_array();
 
-            $this->db->where('invoice_id', $id);
-            $this->db->delete('tblcredits');
+                $this->db->where('invoice_id', $id);
+                $this->db->delete('tblcredits');
 
-            $this->load->model('credit_notes_model');
-            foreach ($linked_credit_notes as $credit_note) {
-                $this->credit_notes_model->update_credit_note_status($credit_note['id']);
-            }
+                $this->load->model('credit_notes_model');
+                foreach ($linked_credit_notes as $credit_note) {
+                    $this->credit_notes_model->update_credit_note_status($credit_note['id']);
+                }
 
-            $this->db->where('rel_type', 'invoice');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tbltags_in');
+                $this->db->where('rel_type', 'invoice');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tbltags_in');
 
-            $this->db->where('rel_type', 'invoice');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblreminders');
+                $this->db->where('rel_type', 'invoice');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblreminders');
 
-            $this->db->where('rel_type', 'invoice');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblviewstracking');
+                $this->db->where('rel_type', 'invoice');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblviewstracking');
 
-            $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="invoice" AND rel_id="'.$id.'")');
-            $this->db->where('fieldto', 'items');
-            $this->db->delete('tblcustomfieldsvalues');
+                $this->db->where('relid IN (SELECT id from tblitems_in WHERE rel_type="invoice" AND rel_id="'.$id.'")');
+                $this->db->where('fieldto', 'items');
+                $this->db->delete('tblcustomfieldsvalues');
 
-            $items = get_items_by_type('invoice', $id);
+                $items = get_items_by_type('invoice', $id);
 
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'invoice');
-            $this->db->delete('tblitems_in');
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'invoice');
+                $this->db->delete('tblitems_in');
 
-            foreach ($items as $item) {
-                $this->db->where('item_id', $item['id']);
-                $this->db->delete('tblitemsrelated');
-            }
+                foreach ($items as $item) {
+                    $this->db->where('item_id', $item['id']);
+                    $this->db->delete('tblitemsrelated');
+                }
 
-            $this->db->where('invoiceid', $id);
-            $this->db->delete('tblinvoicepaymentrecords');
+                $this->db->where('invoiceid', $id);
+                $this->db->delete('tblinvoicepaymentrecords');
 
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'invoice');
-            $this->db->delete('tblsalesactivity');
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'invoice');
+                $this->db->delete('tblsalesactivity');
 
-            $this->db->where('is_recurring_from', $id);
-            $this->db->update('tblinvoices', array(
-                'is_recurring_from' => null,
-            ));
-
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'invoice');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'invoice');
-            $this->db->delete('tblitemstax');
-
-            // Get billed tasks for this invoice and set to unbilled
-            $this->db->where('invoice_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->db->where('id', $task['id']);
-                $this->db->update('tblstafftasks', array(
-                    'invoice_id' => null,
-                    'billed' => 0,
+                $this->db->where('is_recurring_from', $id);
+                $this->db->update('tblinvoices', array(
+                    'is_recurring_from' => null,
                 ));
-            }
 
-            $attachments = $this->get_attachments($id);
-            foreach ($attachments as $attachment) {
-                $this->delete_attachment($attachment['id']);
-            }
-            // Get related tasks
-            $this->db->where('rel_type', 'invoice');
-            $this->db->where('rel_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
-            }
-            if ($merge == false) {
-                logActivity('Invoice Deleted ['.$number.']');
-            }
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'invoice');
+                $this->db->delete('tblcustomfieldsvalues');
 
-            return true;
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'invoice');
+                $this->db->delete('tblitemstax');
+
+                // Get billed tasks for this invoice and set to unbilled
+                $this->db->where('invoice_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->db->where('id', $task['id']);
+                    $this->db->update('tblstafftasks', array(
+                        'invoice_id' => null,
+                        'billed' => 0,
+                    ));
+                }
+
+                $attachments = $this->get_attachments($id);
+                foreach ($attachments as $attachment) {
+                    $this->delete_attachment($attachment['id']);
+                }
+                // Get related tasks
+                $this->db->where('rel_type', 'invoice');
+                $this->db->where('rel_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+                if ($merge == false) {
+                    logActivity('Invoice Deleted ['.$number.']');
+                }
+
+                return true;
+            }
+        } else {
+            $this->db->where('id',$id);
+            $this->db->update('tblinvoices',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = format_invoice_number($id);
+                $recycleData['item_type'] = 'Invoice';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
 
         return false;
