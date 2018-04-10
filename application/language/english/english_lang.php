@@ -3557,3 +3557,6 @@ $lang['help_leads_permission_view'] = 'If this permission is not checked, a staf
 $lang['item_name'] = 'Name';
 $lang['item_type'] = 'Type';
 $lang['archived_date'] = 'Deleted Date';
+
+$lang['something_went_wrong'] = 'You are not authorized to perform this action.';
+$lang['impersonate_user'] = 'Impersonated staff user.';
