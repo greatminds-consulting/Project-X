@@ -16,7 +16,9 @@ class Leads_model extends CRM_Model
     {
         $this->db->select('*,tblleads.name, tblleads.id,tblleadsstatus.name as status_name,tblleadssources.name as source_name');
         $this->db->join('tblleadsstatus', 'tblleadsstatus.id=tblleads.status', 'left');
+        $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
         $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
+        $this->db->group_by('tblleads.id');
 
         $this->db->where($where);
         if (is_numeric($id)) {
@@ -99,7 +101,13 @@ class Leads_model extends CRM_Model
         $this->db->from('tblstaff');
         $query = $this->db->get();
         return  $query->result_array();
-
+    }
+    public function get_venues()
+    {
+        $this->db->select('id,name,email');
+        $this->db->from('tblvenues');
+        $query = $this->db->get();
+        return  $query->result_array();
     }
     public function get_assignedstaff($id)
     {
