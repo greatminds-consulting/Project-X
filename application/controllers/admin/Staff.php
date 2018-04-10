@@ -336,4 +336,19 @@ class Staff extends Admin_controller
             die;
         }
     }
+
+    function impersonate($id) {
+        if (is_staff_logged_in() && is_admin(get_staff_user_id())) {
+            $this->load->model('Authentication_model');
+            if ($this->Authentication_model->impersonate($id)) {
+                set_alert('success', _l('impersonate_user'));
+            } else {
+                set_alert('warning', _l('something_went_wrong'));
+            }
+        } else {
+            set_alert('warning', _l('something_went_wrong'));
+        }
+
+        redirect(admin_url('/'));
+    }
 }
