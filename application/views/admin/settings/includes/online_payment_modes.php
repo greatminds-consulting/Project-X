@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs" role="tablist">
+<ul class="nav nav-tabs opt-tabs" role="tablist">
  <li role="presentation" class="active">
   <a href="#payment_modes_general" aria-controls="payment_modes_general" role="tab" data-toggle="tab"><?php echo _l('settings_group_general'); ?></a>
 </li>
@@ -10,7 +10,7 @@ foreach($payment_gateways as $gateway){
   </li>
   <?php } ?>
 </ul>
-<div class="tab-content mtop30">
+<div class="tab-content payment_modes mtop30">
  <div role="tabpanel" class="tab-pane active" id="payment_modes_general">
   <?php render_yes_no_option('notification_when_customer_pay_invoice','notification_when_customer_pay_invoice'); ?>
   <hr />

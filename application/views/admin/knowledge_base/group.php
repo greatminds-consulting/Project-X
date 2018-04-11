@@ -9,9 +9,9 @@
                     <span class="add-title"><?php echo _l('new_group'); ?></span>
                 </h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pickers-new-grp">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 ">
                         <div id="additional"></div>
                         <?php echo render_input('name','kb_group_add_edit_name'); ?>
                         <?php echo render_color_picker('color',_l('kb_group_color')); ?>

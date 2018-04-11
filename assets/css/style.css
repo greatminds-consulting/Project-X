@@ -1649,9 +1649,7 @@ li a i.menu-icon {
     transition: all 0.4s ease 0s;
     position: relative;
     min-height: 100%;
-    padding-left: 50px;
-    padding-bottom: 50px;
-
+    padding: 0px 15px 50px 85px;
 }
 
 ul.customer-profile-tabs {
@@ -7969,11 +7967,11 @@ textarea[data-task-ae-editor="1"] {
     -webkit-box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     background: #fff;
-    width: calc(100% - 70px);
+    width:100%;
     z-index: 5;
     border-top: 1px solid #ededed;
     padding-left: 50px;
-    margin-left: -70px;
+    margin-left: -105px;
 }
 
 .btn-toolbar-container-out {
@@ -8610,8 +8608,8 @@ td[align="center"] {
     border-right: none;
 }
 
-.leads-filter-column .dropdown-menu.open, .accounting-template .form-group .dropdown-menu.open, .ajax-search.bootstrap-select.btn-group .dropdown-menu,
-.expense_tax .form-group .dropdown-menu.open, #project-settings-area .bootstrap-select.btn-group .dropdown-menu, #project-settings-left .bootstrap-select.btn-group .dropdown-menu,
+.accounting-template .form-group .dropdown-menu.open, .ajax-search.bootstrap-select.btn-group .dropdown-menu,
+.expense_tax .form-group .dropdown-menu.open, #project-settings-left .bootstrap-select.btn-group .dropdown-menu,
 #back-tasks-list .form-group .dropdown-menu.open, #back-tasks-list .bootstrap-select.btn-group .dropdown-menu{
     margin-top: 39px;
 }
@@ -8843,7 +8841,9 @@ div.input-group-addon{
 }
 
 .table tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
-#project-settings-left .row.expense-drop .bootstrap-select.btn-group .dropdown-menu{
+#project-settings-left .row.expense-drop .bootstrap-select.btn-group .dropdown-menu,
+.linux #project-settings-left .bootstrap-select.btn-group .dropdown-menu,
+#back-tasks-list .bootstrap-select.btn-group .dropdown-menu {
     margin-top:0px;
 }
 
@@ -9035,14 +9035,15 @@ form.staff-form, form.add_areas {
     width: 5%;
 }
 
-.over-hide {
+.over-hide, #small-table .panel-body .tab-content {
     overflow: initial !important;
 }
 
 .dropdown-form .form-group .dropdown-menu.open, .items-wrapper.form-group .dropdown-menu.open,
 .f_client_id .form-group .dropdown-menu.open, .no-shadow .form-group .dropdown-menu.open,
 .invoice .form-group .dropdown-menu.open, .invoice .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
-.credit-note .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu{
+.credit-note .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
+.ticket .ajax-search.bootstrap-select.btn-group .dropdown-menu{
     margin-top: 0;
 }
 .table tbody tr td .show-tick.bootstrap-select.btn-group .dropdown-menu{
@@ -9062,7 +9063,7 @@ form.staff-form, form.add_areas {
 
 
 
-.client_password_set_wrapper .input-group-addon {
+.client_password_set_wrapper .input-group-addon, .pickers-new-grp .input-group-addon{
     padding: 8px 12px;
     font-size: 14px;
     font-weight: 400;
@@ -9132,4 +9133,106 @@ form.staff-form, form.add_areas {
 #groups .table tbody tr td div.group_edit .input-group{
     display: inline-flex;
     width: 100%;
+}
+
+.attachments_area .attachment {
+    width: 100%;
+}
+
+.attachments_area .input-group-btn {
+    width: 10%;
+}
+.attachments_area .input-group-btn .btn.add_more_attachments.p8-half {
+    padding: 6px;
+
+}
+.btn-toolbar-container-out {
+    margin-left: -55px;
+    width: 100%;
+}
+.page-container {
+    padding-left: 0;
+}
+
+#wrapper .content .row:first-child {
+    width: 100%;
+    padding: 0px;
+}
+
+.page-container .page-content-wrapper .content {
+    padding-bottom: 0;
+}
+
+.payment_modes .radio label::after {
+    width: 11px;
+    height: 11px;
+    top: 4.1px;
+    left: 3px;
+}
+.payment_modes .radio label::before {
+    width: 17px;
+    height: 17px;
+}
+
+#general .radio label::after {
+    width: 11px;
+    height: 11px;
+    top: 4.1px;
+    left: 3px;
+}
+/*#payment_modes_general .radio label[for="y_opt_1_notification_when_customer_pay_invoice"]::after {*/
+    /*width: 11px;*/
+    /*height: 11px;*/
+    /*top: 4.1px;*/
+/*}*/
+/*#payment_modes_general .radio label[for="y_opt_2_notification_when_customer_pay_invoice"]::before {*/
+    /*width: 17px;*/
+    /*height: 17px;*/
+/*}*/
+
+ul.opt-tabs {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    width: 100%;
+}
+ul.opt-tabs.nav-tabs>li>a {
+    padding: 12px 5px 12px 5px;
+}
+
+.settings-tag-input div.input-group-addon {
+    padding: 5px 25px 5px 15px;
+    border-left: 1px solid #bfcbd9 !important;
+    border-right: none !important;
+}
+
+.settings-tag-input .input-group-addon .btn {
+    padding: 0px 15px 1px 5px !important;
+
+}
+
+.settings-tag-input .form-control+.input-group-addon:not(:first-child) {
+    padding: 5px 30px 5px 10px;
+    border-left: none !important;
+    border-right: 1px solid #bfcbd9 !important;
+}
+.field-new-grp .input-group .input-group-addon{
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-left: 1px solid #bfcbd9;
+    border-right: none;
+    width: 9%;
+}
+
+.time-sheets-drop .ajax-search.bootstrap-select.btn-group .dropdown-menu {
+    margin-top: 0px;
 }

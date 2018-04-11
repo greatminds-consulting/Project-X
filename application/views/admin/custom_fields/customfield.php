@@ -92,7 +92,7 @@
                             </div>
                             <?php $value = (isset($custom_field) ? $custom_field->field_order : ''); ?>
                             <?php echo render_input('field_order','custom_field_add_edit_order',$value,'number'); ?>
-                            <div class="form-group">
+                            <div class="form-group field-new-grp">
                                 <label for="bs_column"><?php echo _l('custom_field_column'); ?></label>
                                 <div class="input-group">
                                     <span class="input-group-addon">col-md-</span>

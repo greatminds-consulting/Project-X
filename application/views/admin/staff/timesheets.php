@@ -31,7 +31,7 @@
           <canvas id="timesheetsChart" style="max-height:400px;" width="350" height="350"></canvas>
           <hr />
           <div class="clearfix"></div>
-          <div class="row">
+          <div class="row time-sheets-drop">
            <div class="col-md-3">
            <div class="select-placeholder">
               <select name="range" id="range" class="selectpicker" data-width="100%">
