@@ -206,13 +206,13 @@ class Settings extends Admin_controller
         if ($result) {
             set_alert('success', _l('restored_archive'));
         }
-        redirect(admin_url('settings?group=recycle_bin'));
+        redirect(admin_url('utilities/recyclebin'));
     }
     public function archivedelete($id) {
         $result = $this->settings_model->archiveDelete($id);
         if ($result) {
                 set_alert('success', _l('delete_archive'));
         }
-        redirect(admin_url('settings?group=recycle_bin'));
+        redirect(admin_url('utilities/recyclebin'));
     }
 }

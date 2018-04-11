@@ -616,4 +616,13 @@ class Utilities extends Admin_controller
         }
         redirect(admin_url('utilities/setup_menu'));
     }
+
+    public function recyclebin() {
+        if ($this->input->is_ajax_request()) {
+            $this->app->get_table_data('recycle_bin');
+        }
+        $data['title']      = _l('Recycle Bin');
+        $this->load->view('admin/utilities/recycle_bin', $data);
+    }
+
 }
