@@ -1,12 +1,12 @@
-<div class="mtop40">
-	<div class="col-md-4 col-md-offset-4 text-center">
+<div class="mtop40" id="login-wrap">
+	<div class="col-md-12 text-center">
 		<h1 class="text-uppercase mbot20">
 			<?php
 				echo  _l(get_option('allow_registration') == 1 ? 'clients_login_heading_register': 'clients_login_heading_no_register');
 			?>
 		</h1>
 	</div>
-	<div class="col-md-4 col-md-offset-4">
+	<div class="col-md-12">
 		<?php echo form_open($this->uri->uri_string(),array('class'=>'login-form')); ?>
 		    <div class="panel_s">
             <div class="panel-body">

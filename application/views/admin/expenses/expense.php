@@ -151,7 +151,7 @@
                      <?php echo render_select('currency',$currencies,array('id','name','symbol'),'expense_currency',$selected,$s_attrs); ?>
                   </div>
                   <div class="row expense_tax">
-                    <div class="col-md-6">
+                    <div class="col-md-6 tax-1">
                         <div class="form-group select-placeholder">
                            <label class="control-label" for="tax"><?php echo _l('tax_1'); ?></label>
                            <select class="selectpicker display-block" data-width="100%" name="tax" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">

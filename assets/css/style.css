@@ -1650,6 +1650,8 @@ li a i.menu-icon {
     position: relative;
     min-height: 100%;
     padding-left: 50px;
+    padding-bottom: 50px;
+
 }
 
 ul.customer-profile-tabs {
@@ -7967,10 +7969,11 @@ textarea[data-task-ae-editor="1"] {
     -webkit-box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     box-shadow: 0 -4px 1px -4px rgba(0, 0, 0, .1);
     background: #fff;
-    width: calc(100% - 59px);
+    width: calc(100% - 70px);
     z-index: 5;
     border-top: 1px solid #ededed;
     padding-left: 50px;
+    margin-left: -70px;
 }
 
 .btn-toolbar-container-out {
@@ -8726,7 +8729,7 @@ div.dataTables_wrapper div.dataTables_filter {
     font-weight: 500;
 }
 .lead-view .mtop15 {
-padding-right: 0px !important;
+    padding-right: 0px !important;
 }
 a.lead-convert-to-customer {
     padding: 5px 10px;
@@ -8786,8 +8789,8 @@ div.input-group-addon{
     top: 3.1px;
 }
 .form-control+.input-group-addon:not(:first-child) {
-     border-left: 0;
- }
+    border-left: 0;
+}
 .lead-name span.mtop10 {
     margin-top: 6px;
 }
@@ -8808,6 +8811,7 @@ div.input-group-addon{
 
 #expense-form {
     width:100%;
+    padding-bottom: 50px;
 }
 
 .panel-body .expense-drop {
@@ -8854,8 +8858,8 @@ div.input-group-addon{
 .new-projects-summary {
     float: left;
     width: 100%;
-     -webkit-appearance: menulist-button;
- }
+    -webkit-appearance: menulist-button;
+}
 #DataTables_Table_0_info {
     margin-top: 10px !important;
     padding-left: 0px !important;
@@ -8951,4 +8955,181 @@ body.dashboard {
 }
 .overlay .overlay-close {
     z-index: 1000;
+}
+form.staff-form, form.add_areas {
+    width: 100%;
+}
+#tab_staff_profile .input-group-addon {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-left: none;
+    width: 8%;
+}
+
+.administrator-wrap {
+    width: 100%;
+    float: left;
+}
+
+.page-container .page-content-wrapper .content:only-child {
+    padding-top: 40px;
+}
+.modal.fade .modal-dialog {
+    transform: translate(0,0%);
+}
+/*#ticket_status .modal.fade .modal-dialog {*/
+/*-webkit-transform: translate(0,-25%);*/
+/*-o-transform: translate(0,-25%);*/
+/*transform: translate(0,-25%);*/
+/*}*/
+
+#ticket_status .input-group-addon, #status .input-group-addon {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-left: none;
+    width: 8%;
+}
+
+.ui-widget-shadow {
+    display:none !important;
+}
+.picker ul.nav-tabs {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.pickers .input-group-addon{
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-left: none;
+    width: 5%;
+}
+
+.over-hide {
+    overflow: initial !important;
+}
+
+.dropdown-form .form-group .dropdown-menu.open, .items-wrapper.form-group .dropdown-menu.open,
+.f_client_id .form-group .dropdown-menu.open, .no-shadow .form-group .dropdown-menu.open,
+.invoice .form-group .dropdown-menu.open, .invoice .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
+.credit-note .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu{
+    margin-top: 0;
+}
+.table tbody tr td .show-tick.bootstrap-select.btn-group .dropdown-menu{
+    margin-top: 39px;
+}
+
+#contact.modal .modal-header {
+    text-align: center;
+    border-bottom: 0;
+    padding: 15px;
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 15px;
+}
+
+
+
+.client_password_set_wrapper .input-group-addon {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-left: none;
+    width: 9%;
+}
+
+.invoice .form-group.i-number .input-group-addon{
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-right: none;
+    width: 9%;
+}
+
+.invoice .input-group.date .input-group-addon  {
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    text-align: center;
+    background-color: #fbfdff;
+    border: 1px solid #ccc;
+    float: left;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-right: 1px solid #bfcbd9;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-left: none;
+    width: 14%;
+}
+.page-proposals-admin .table tbody tr td.custom_field .bootstrap-select.btn-group .dropdown-menu,
+.expense .expense_tax .form-group .dropdown-menu.open,
+.page-contracts-admin .ajax-search.bootstrap-select.btn-group .dropdown-menu {
+    margin-top: 0px;
+}
+
+.expense .expense_tax .tax-1 .form-group .dropdown-menu.open,
+#sales_item_modal .modal-body .tax-1.form-group .dropdown-menu.open{
+    margin-top: 39px;
+}
+
+#groups .modal-body .input-group span.input-group-btn,
+#packages .modal-body .input-group span.input-group-btn{
+    width: 25%;
+}
+#groups .table tbody tr td div.group_edit .input-group{
+    display: inline-flex;
+    width: 100%;
 }

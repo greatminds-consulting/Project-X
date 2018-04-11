@@ -21,7 +21,7 @@
          <?php echo form_open($this->uri->uri_string(),array('id'=>'proposal-form','class'=>'_transaction_form proposal-form')); ?>
          <div class="col-md-12">
             <div class="panel_s">
-               <div class="panel-body">
+               <div class="panel-body dropdown-form">
                   <div class="row">
                      <?php if(isset($proposal)){ ?>
                      <div class="col-md-12">

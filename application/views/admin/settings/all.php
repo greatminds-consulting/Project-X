@@ -12,7 +12,7 @@
  <?php } ?>
  <div class="col-md-3">
   <div class="panel_s">
-   <div class="panel-body">
+   <div class="panel-body picker">
     <ul class="nav navbar-pills nav-tabs nav-stacked">
       <?php $settings_groups = array(
         array(

@@ -36,7 +36,7 @@
                         ?>
                         <div class="row">
                             <div class="col-md-6">
-                             <div class="form-group">
+                             <div class="form-group tax-1">
                                 <label class="control-label" for="tax"><?php echo _l('tax_1'); ?></label>
                                 <select class="selectpicker display-block" data-width="100%" name="tax" data-none-selected-text="<?php echo _l('no_tax'); ?>">
                                     <option value=""></option>

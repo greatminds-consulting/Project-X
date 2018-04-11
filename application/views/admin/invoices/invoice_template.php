@@ -172,7 +172,7 @@
                $data_original_number = isset($invoice) ? $invoice->number : 'false';
 
                ?>
-            <div class="form-group">
+            <div class="form-group i-number">
                <label for="number"><?php echo _l('invoice_add_edit_number'); ?></label>
                <div class="input-group">
                   <span class="input-group-addon">

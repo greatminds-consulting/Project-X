@@ -54,7 +54,7 @@
         <div class="input-group">
           <input type="text" name="item_group_name" id="item_group_name" class="form-control" placeholder="<?php echo _l('item_group_name'); ?>">
           <span class="input-group-btn">
-            <button class="btn btn-info p9" type="button" id="new-item-group-insert"><?php echo _l('new_item_group'); ?></button>
+            <button class="btn btn-info p6" type="button" id="new-item-group-insert"><?php echo _l('new_item_group'); ?></button>
           </span>
         </div>
         <hr />
@@ -112,7 +112,7 @@
                     <div class="input-group">
                         <input type="text" name="item_package_name" id="item_package_name" class="form-control" placeholder="<?php echo _l('item_package_name'); ?>">
           <span class="input-group-btn">
-            <button class="btn btn-info p9" type="button" id="new-item-package-insert"><?php echo _l('new_item_package'); ?></button>
+            <button class="btn btn-info p6" type="button" id="new-item-package-insert"><?php echo _l('new_item_package'); ?></button>
           </span>
                     </div>
                     <hr />

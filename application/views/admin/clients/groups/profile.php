@@ -45,7 +45,7 @@
          <?php do_action('after_customer_admins_tab',$client); ?>
          <?php } ?>
       </ul>
-      <div class="tab-content">
+      <div class="tab-content over-hide">
          <?php do_action('after_custom_profile_tab_content',isset($client) ? $client : false); ?>
          <?php if($customer_custom_fields) { ?>
          <div role="tabpanel" class="tab-pane <?php if($this->input->get('tab') == 'custom_fields'){echo ' active';}; ?>" id="custom_fields">

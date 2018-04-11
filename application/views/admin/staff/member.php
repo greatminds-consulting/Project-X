@@ -41,7 +41,7 @@
       </div>
       <?php } ?>
       <?php echo form_open_multipart($this->uri->uri_string(),array('class'=>'staff-form','autocomplete'=>'off')); ?>
-      <div class="col-md-<?php if(!isset($member)){echo '12 col-md-offset-2';} else {echo '12';} ?>" id="small-table">
+      <div class="col-md-<?php if(!isset($member)){echo '8 col-md-offset-2';} else {echo '12';} ?>" id="small-table">
          <div class="panel_s">
             <div class="panel-body">
                <ul class="nav nav-tabs" role="tablist">
@@ -181,7 +181,7 @@
                      <?php $rel_id = (isset($member) ? $member->staffid : false); ?>
                      <?php echo render_custom_fields('staff',$rel_id); ?>
                      <?php if (is_admin()){ ?>
-                     <div class="row">
+                     <div class="row administrator-wrap">
                         <div class="col-md-12">
                            <hr />
                            <div class="checkbox checkbox-primary">

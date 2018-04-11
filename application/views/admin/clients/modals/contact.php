@@ -116,7 +116,7 @@
                 ?>
                 <?php foreach($customer_permissions as $permission){ ?>
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo $permission['name']; ?></span>
                         </div>
@@ -134,7 +134,7 @@
                 <p class="bold"><?php echo _l('email_notifications'); ?><?php if(is_sms_trigger_active()){echo '/SMS';} ?></p>
                 <div id="contact_email_notifications">
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo _l('invoice'); ?></span>
                         </div>
@@ -147,7 +147,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo _l('estimate'); ?></span>
                         </div>
@@ -160,7 +160,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo _l('credit_note'); ?></span>
                         </div>
@@ -174,7 +174,7 @@
                 </div>
 
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo _l('project'); ?></span>
                         </div>
@@ -187,7 +187,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><i class="fa fa-question-circle" data-toggle="tooltip" data-title="<?php echo _l('only_project_tasks'); ?>"></i> <?php echo _l('task'); ?></span>
                         </div>
@@ -200,7 +200,7 @@
                     </div>
                 </div>
                  <div class="col-md-6 row">
-                    <div class="row">
+                    <div class="col-md-12">
                         <div class="col-md-6 mtop10 border-right">
                             <span><?php echo _l('contract'); ?></span>
                         </div>
