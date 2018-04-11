@@ -64,7 +64,7 @@
                     <?php echo render_custom_fields('items'); ?>
                 </div>
                 <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group'); ?>
-                <?php echo render_select('package_id',$items_packages,array('id','name'),'item_package'); ?>
+                <?php echo render_select('package_id[]',$items_packages,array('id','name'),'item_package','',array('multiple'=>true),array(),'','item_packages',false); ?>
             </div>
         </div>
     </div>
@@ -181,7 +181,7 @@ function init_item_js() {
                 $('select[name="tax"]').selectpicker('val', response.taxid).change();
                 $('select[name="tax2"]').selectpicker('val', response.taxid_2).change();
                 $itemModal.find('#group_id').selectpicker('val', response.group_id);
-                $itemModal.find('#package_id').selectpicker('val', response.package_id);
+                $itemModal.find('.item_packages').selectpicker('val', response.item_packages);
                 $.each(response, function (column, value) {
                     if (column.indexOf('rate_currency_') > -1) {
                         $itemModal.find('input[name="' + column + '"]').val(value);

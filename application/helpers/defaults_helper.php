@@ -45,6 +45,10 @@ function get_sql_select_area_amenities_full_names()
 {
     return '(SELECT GROUP_CONCAT(NAME SEPARATOR ",") FROM tblvenueareaamenities JOIN `tblvenueamenities` ON tblvenueamenities.id = tblvenueareaamenities.amenity_id WHERE tblvenueareaamenities.area_id = tblvenueareas.id)';
 }
+function get_sql_select_item_packages_names()
+{
+    return '(SELECT GROUP_CONCAT(NAME SEPARATOR ",") FROM tblitems_packages_map JOIN `tblitems_packages` ON tblitems_packages.id = tblitems_packages_map.`package_id` WHERE `tblitems_packages_map`.item_id = tblitems.id)';
+}
 
 function get_sql_select_task_total_checklist_items(){
     return '(SELECT COUNT(id) FROM tbltaskchecklists WHERE taskid=tblstafftasks.id) as total_checklist_items';
