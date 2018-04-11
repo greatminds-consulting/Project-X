@@ -9,7 +9,7 @@ $aColumns     = array(
     't2.taxrate as taxrate_2',
     'unit',
     'tblitems_groups.name',
-    'tblitems_packages.name',
+    get_sql_select_item_packages_names().' as packages',
     );
 $sIndexColumn = "id";
 $sTable       = 'tblitems';
@@ -18,7 +18,6 @@ $join             = array(
     'LEFT JOIN tbltaxes t1 ON t1.id = tblitems.tax',
     'LEFT JOIN tbltaxes t2 ON t2.id = tblitems.tax2',
     'LEFT JOIN tblitems_groups ON tblitems_groups.id = tblitems.group_id',
-    'LEFT JOIN tblitems_packages ON tblitems_packages.id = tblitems.package_id',
     );
 $additionalSelect = array(
     'tblitems.id',
@@ -47,7 +46,6 @@ if (count($custom_fields) > 4) {
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, array(), $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];
-
 foreach ($rResult as $aRow) {
     $row = array();
     for ($i = 0; $i < count($aColumns); $i++) {
