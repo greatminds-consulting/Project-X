@@ -10,13 +10,10 @@
   <title>
     <?php echo get_option('companyname'); ?> - Authentication
   </title>
-
-    <?php echo app_stylesheet('assets/css','pages.css'); ?>
-    <?php echo app_stylesheet('assets/plugins/pace','pace-theme-flash.css'); ?>
+  <?php echo app_stylesheet('assets/css','reset.css'); ?>
   <!-- Bootstrap -->
   <link href="<?php echo base_url('assets/plugins/bootstrap/css/bootstrap.min.css'); ?>" rel="stylesheet">
-    <link href="<?php echo base_url('assets/plugins/font-awesome/css/font-awesome.css'); ?>" rel="stylesheet">
-    <?php if(is_rtl()){ ?>
+  <?php if(is_rtl()){ ?>
   <link href="<?php echo base_url('assets/plugins/bootstrap-arabic/css/bootstrap-arabic.min.css'); ?>" rel="stylesheet">
   <?php } ?>
   <link href='<?php echo base_url('assets/plugins/roboto/roboto.css'); ?>' rel='stylesheet'>
@@ -29,6 +26,4 @@
   <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet">
   <?php } ?>
   <?php render_custom_styles(array('general','buttons')); ?>
-    <?php echo app_stylesheet('assets/css','corporate.css'); ?>
-    <!-- Bootstrap -->
 </head>
