@@ -18,7 +18,7 @@ class Migration_Version_208 extends CI_Migration
                 if($item['id'] == 'utilities') {
                     $menu['aside_menu_active'][$key]['children'][] = array(
                         'name' => 'Recycle Bin',
-                        'url'=> 'settings?group=recycle_bin',
+                        'url'=> 'utilities/recyclebin',
                         'permission' => '',
                         'icon' => '',
                         'id' => 'recycle_bin'
