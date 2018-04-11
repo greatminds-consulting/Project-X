@@ -16,7 +16,9 @@ class Leads_model extends CRM_Model
     {
         $this->db->select('*,tblleads.name, tblleads.id,tblleadsstatus.name as status_name,tblleadssources.name as source_name');
         $this->db->join('tblleadsstatus', 'tblleadsstatus.id=tblleads.status', 'left');
+        $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
         $this->db->join('tblleadssources', 'tblleadssources.id=tblleads.source', 'left');
+        $this->db->group_by('tblleads.id');
 
         $this->db->where($where);
         if (is_numeric($id)) {
@@ -99,7 +101,13 @@ class Leads_model extends CRM_Model
         $this->db->from('tblstaff');
         $query = $this->db->get();
         return  $query->result_array();
-
+    }
+    public function get_venues()
+    {
+        $this->db->select('id,name,email');
+        $this->db->from('tblvenues');
+        $query = $this->db->get();
+        return  $query->result_array();
     }
     public function get_assignedstaff($id)
     {
@@ -411,67 +419,88 @@ class Leads_model extends CRM_Model
      */
     public function delete($id)
     {
-        $affectedRows = 0;
+        $this->db->from('tblleads');
+        $this->db->where('id',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
+            $affectedRows = 0;
 
-        do_action('before_lead_deleted', $id);
+            do_action('before_lead_deleted', $id);
 
-        $this->db->where('id', $id);
-        $this->db->delete('tblleads');
-        if ($this->db->affected_rows() > 0) {
-            $this->db->where('lead_id', $id);
-            $this->db->delete('tblleadstaffs');
+            $this->db->where('id', $id);
+            $this->db->delete('tblleads');
+            if ($this->db->affected_rows() > 0) {
+                $this->db->where('lead_id', $id);
+                $this->db->delete('tblleadstaffs');
 
-            logActivity('Lead Deleted [Deleted by: ' . get_staff_full_name() . ', LeadID: ' . $id . ']');
 
-            $attachments = $this->get_lead_attachments($id);
-            foreach ($attachments as $attachment) {
-                $this->delete_lead_attachment($attachment['id']);
+                logActivity('Lead Deleted [Deleted by: ' . get_staff_full_name() . ', LeadID: ' . $id . ']');
+
+                $attachments = $this->get_lead_attachments($id);
+                foreach ($attachments as $attachment) {
+                    $this->delete_lead_attachment($attachment['id']);
+                }
+
+                // Delete the custom field values
+                $this->db->where('relid', $id);
+                $this->db->where('fieldto', 'leads');
+                $this->db->delete('tblcustomfieldsvalues');
+
+                $this->db->where('leadid', $id);
+                $this->db->delete('tblleadactivitylog');
+
+                $this->db->where('leadid', $id);
+                $this->db->delete('tblleadsemailintegrationemails');
+
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'lead');
+                $this->db->delete('tblnotes');
+
+                $this->db->where('rel_type', 'lead');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblreminders');
+
+                $this->db->where('rel_type', 'lead');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tbltags_in');
+
+                $this->load->model('proposals_model');
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'lead');
+                $proposals = $this->db->get('tblproposals')->result_array();
+
+                foreach ($proposals as $proposal) {
+                    $this->proposals_model->delete($proposal['id']);
+                }
+
+                // Get related tasks
+                $this->db->where('rel_type', 'lead');
+                $this->db->where('rel_id', $id);
+                $tasks = $this->db->get('tblstafftasks')->result_array();
+                foreach ($tasks as $task) {
+                    $this->tasks_model->delete_task($task['id']);
+                }
+
+                $affectedRows++;
             }
-
-            // Delete the custom field values
-            $this->db->where('relid', $id);
-            $this->db->where('fieldto', 'leads');
-            $this->db->delete('tblcustomfieldsvalues');
-
-            $this->db->where('leadid', $id);
-            $this->db->delete('tblleadactivitylog');
-
-            $this->db->where('leadid', $id);
-            $this->db->delete('tblleadsemailintegrationemails');
-
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'lead');
-            $this->db->delete('tblnotes');
-
-            $this->db->where('rel_type', 'lead');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblreminders');
-
-            $this->db->where('rel_type', 'lead');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tbltags_in');
-
-            $this->load->model('proposals_model');
-            $this->db->where('rel_id', $id);
-            $this->db->where('rel_type', 'lead');
-            $proposals = $this->db->get('tblproposals')->result_array();
-
-            foreach ($proposals as $proposal) {
-                $this->proposals_model->delete($proposal['id']);
+            if ($affectedRows > 0) {
+                return true;
             }
-
-            // Get related tasks
-            $this->db->where('rel_type', 'lead');
-            $this->db->where('rel_id', $id);
-            $tasks = $this->db->get('tblstafftasks')->result_array();
-            foreach ($tasks as $task) {
-                $this->tasks_model->delete_task($task['id']);
+        } else {
+            $this->db->where('id',$id);
+            $this->db->update('tblleads',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = $query->name;
+                $recycleData['item_type'] = 'Lead';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
             }
-
-            $affectedRows++;
-        }
-        if ($affectedRows > 0) {
-            return true;
+            return false;
         }
 
         return false;

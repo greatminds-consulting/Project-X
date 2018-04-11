@@ -47,9 +47,9 @@
                 <div class="col-md-12">
                   <h4 class="no-margin"><?php echo _l('projects_summary'); ?></h4>
                   <?php
-                  $_where = '';
+                  $_where = '(tblprojects.is_delete is null or tblprojects.is_delete = 0)';
                   if(!has_permission('projects','','view')){
-                    $_where = 'id IN (SELECT project_id FROM tblprojectmembers WHERE staff_id='.get_staff_user_id().')';
+                    $_where = ' AND id IN (SELECT project_id FROM tblprojectmembers WHERE staff_id='.get_staff_user_id().')';
                   }
                   ?>
                 </div>

@@ -1,6 +1,6 @@
 <div class="panel-body mtop10">
    <div class="row">
-      <div class="col-md-4">
+      <div class="<?php if ($items_packages) {?>col-md-3<?php } else {?>col-md-4<?php }?>">
          <div class="form-group no-mbot items-wrapper select-placeholder">
             <select name="item_select" class="selectpicker no-margin<?php if($ajaxItems == true){echo ' ajax-search';} ?>" data-width="100%" id="item_select" data-none-selected-text="<?php echo _l('add_item'); ?>" data-live-search="true">
                <option value=""></option>
@@ -17,8 +17,18 @@
                <?php } ?>
             </select>
          </div>
+
       </div>
-      <div class="col-md-8 text-right show_quantity_as_wrapper">
+       <?php if ($items_packages) {?>
+       <div class="col-md-3">
+           <div class="form-group no-mbot items-wrapper select-placeholder">
+               <?php echo render_select('package_id',$items_packages,array('id','name'),'','',array('data-none-selected-text' => 'Select a Package')); ?>
+
+           </div>
+
+       </div>
+       <?php }?>
+      <div class="<?php if ($items_packages) {?>col-md-6<?php } else {?>col-md-8<?php }?> text-right show_quantity_as_wrapper">
          <div class="mtop10">
             <span><?php echo _l('show_quantity_as'); ?></span>
             <div class="radio radio-primary radio-inline">
@@ -105,7 +115,7 @@
                        $new_item = true;
                      }
                      ?>
-                  <button type="button" onclick="add_item_to_table('undefined','undefined',<?php echo $new_item; ?>); return false;" class="btn pull-right btn-info"><i class="fa fa-check"></i></button>
+                  <button type="button" onclick="add_item_to_table('undefined','undefined',<?php echo $new_item; ?>); return false;" class="btn pull-right btn-info update-invoice"><i class="fa fa-check"></i></button>
                </td>
             </tr>
             <?php if (isset($estimate) || isset($add_items)) {

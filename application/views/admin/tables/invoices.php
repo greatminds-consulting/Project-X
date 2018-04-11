@@ -35,7 +35,7 @@ foreach ($custom_fields as $key => $field) {
     array_push($join, 'LEFT JOIN tblcustomfieldsvalues as ctable_'.$key . ' ON tblinvoices.id = ctable_'.$key . '.relid AND ctable_'.$key . '.fieldto="'.$field['fieldto'].'" AND ctable_'.$key . '.fieldid='.$field['id']);
 }
 
-$where = array();
+$where = array(' AND (tblinvoices.is_delete is null or tblinvoices.is_delete = 0)');
 $filter = array();
 
 if ($this->ci->input->post('not_sent')) {

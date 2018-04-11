@@ -590,6 +590,13 @@ function icon_btn($url = '', $type = '', $class = 'btn-default', $attributes = a
     return '<a href="' . $_url . '" class="btn ' . $class . ' btn-icon" ' . $_attributes . '><i class="fa fa-' . $type . '"></i></a>';
 }
 
+function getCompleteUrl($url) {
+    if (_startsWith($url, 'http')) {
+        return $url;
+    } elseif ($url !== '#') {
+        return admin_url($url);
+    }
+}
 /**
  * Strip tags
  * @param  string $html string to strip tags
