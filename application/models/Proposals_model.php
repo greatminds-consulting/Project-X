@@ -258,6 +258,14 @@ class Proposals_model extends CRM_Model
             }
         }
 
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             if (handle_custom_fields_post($id, $custom_fields)) {
@@ -311,6 +319,14 @@ class Proposals_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblproposals', $data);
+        $this->db->where('type_id', $id);
+        $this->db->where('type', 'Proposal');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Proposal', 'venue_id' => $venue_id));
+            }
+        }
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
             $proposal_now = $this->get($id);

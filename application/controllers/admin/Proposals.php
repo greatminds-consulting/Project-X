@@ -183,6 +183,7 @@ class Proposals extends Admin_controller
         $data['currencies'] = $this->currencies_model->get();
         $data['base_currency'] = $this->currencies_model->get_base_currency();
         $data['venues'] = $this->venues_model->getvenues();
+        $data['proposal_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Proposal');
 
         $data['title']      = $title;
         $this->load->view('admin/proposals/proposal', $data);

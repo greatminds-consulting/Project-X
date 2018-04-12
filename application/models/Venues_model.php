@@ -396,4 +396,15 @@ class Venues_model extends CRM_Model
         return  $data;
     }
 
+    public function get_type_details_from_venue_map($type_id , $type) {
+        $this->db->select('tblvenues_in.venue_id');
+        $this->db->where('type_id', $type_id);
+        $this->db->where('type', $type);
+        $results = $this->db->get('tblvenues_in')->result_array();
+        $return = array();
+        foreach ($results as $result) {
+            $return[] = $result['venue_id'];
+        }
+        return $return;
+    }
 }
