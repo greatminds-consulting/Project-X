@@ -30,7 +30,7 @@ $join             = array(
     'JOIN tblclients ON tblclients.userid = tblprojects.clientid'
 );
 
-$where  = array();
+$where  = array(' AND (tblprojects.is_delete is null or tblprojects.is_delete = 0)');
 $filter = array();
 
 if ($clientid != '') {

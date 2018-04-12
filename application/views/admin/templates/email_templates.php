@@ -34,9 +34,7 @@
                                         <tbody>
                                             <?php foreach($proposals as $proposal_template){ ?>
                                             <tr>
-
                                                 <td width="70%" class="<?php if($proposal_template['active'] == 0){echo 'text-throught';} ?>">
-
                                                     <a href="<?php echo admin_url('templates/template/'.$proposal_template['templateid']); ?>"><?php echo $proposal_template['name']; ?></a>
                                                     <?php if(ENVIRONMENT !== 'production'){ ?>
                                                     <br/><small><?php echo $proposal_template['slug']; ?></small>
@@ -84,7 +82,6 @@
                                                 </td>
                                             </tr>
                                         <?php } ?>
-
                                         </tbody>
                                     </table>
                                 </div>

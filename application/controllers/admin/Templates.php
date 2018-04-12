@@ -15,11 +15,9 @@ class Templates extends Admin_controller {
         $data['proposals'] = $this->templates_model->get(array(
             'type' => 'proposals'
         ));
-
         $data['contracts'] = $this->templates_model->get(array(
             'type' => 'contracts'
         ));
-
         $data['title']     = _l('templates');
         $data['hasPermissionEdit'] = has_permission('templates','','edit');
         $this->load->view('admin/templates/email_templates', $data);
@@ -49,7 +47,7 @@ class Templates extends Admin_controller {
         $this->templates_model->add_template($data);
         redirect(admin_url('templates'));
     }
-    
+
     /* Edit template */
     public function template($id) {
         if (!has_permission('templates', '', 'view')) {

@@ -91,6 +91,9 @@ foreach ($rResult as $aRow) {
                 ));
         }
     }
+    if ( is_admin()) {
+        $options .=  icon_btn('staff/impersonate/' . $aRow['staffid'], 'user-secret', 'btn-warning');
+    }
     $row[]              = $options;
     $output['aaData'][] = $row;
 }

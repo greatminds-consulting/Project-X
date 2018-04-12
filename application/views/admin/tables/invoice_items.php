@@ -9,6 +9,7 @@ $aColumns     = array(
     't2.taxrate as taxrate_2',
     'unit',
     'tblitems_groups.name',
+    get_sql_select_item_packages_names().' as packages',
     );
 $sIndexColumn = "id";
 $sTable       = 'tblitems';
@@ -45,7 +46,6 @@ if (count($custom_fields) > 4) {
 $result           = data_tables_init($aColumns, $sIndexColumn, $sTable, $join, array(), $additionalSelect);
 $output           = $result['output'];
 $rResult          = $result['rResult'];
-
 foreach ($rResult as $aRow) {
     $row = array();
     for ($i = 0; $i < count($aColumns); $i++) {

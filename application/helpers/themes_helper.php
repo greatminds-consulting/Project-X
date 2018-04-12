@@ -105,6 +105,7 @@ function do_theme_required_head($params = array()){
         var dt_lang = <?php echo json_encode(get_datatables_language_array()); ?>;
         var discussions_lang = <?php echo json_encode(get_project_discussions_language_array()); ?>;
         var confirm_action_prompt = "<?php echo _l('confirm_action_prompt'); ?>";
+        var package_confirm_action_prompt = "<?php echo _l('package_confirm_action_prompt'); ?>";
         var cf_translate_input_link_tip = "<?php echo _l('cf_translate_input_link_tip'); ?>";
         var cfh_popover_templates  = {};
         var locale = '<?php echo $locale; ?>';

@@ -12,7 +12,7 @@ class Invoice_items_model extends CRM_Model
      * @param  mixed $id
      * @return mixed - array if not passed id, object if id passed
      */
-    public function get($id = '')
+    public function get($id = '', $package_id = '')
     {
         $columns = $this->db->list_fields('tblitems');
         $rateCurrencyColumns = '';
@@ -34,6 +34,9 @@ class Invoice_items_model extends CRM_Model
             $this->db->where('tblitems.id', $id);
 
             return $this->db->get()->row();
+        }
+        if ($package_id) {
+            $this->db->join('tblitems_packages_map', 'tblitems_packages_map.item_id = tblitems.id and tblitems_packages_map.package_id = '.$package_id, 'inner');
         }
 
         return $this->db->get()->result_array();
@@ -82,7 +85,14 @@ class Invoice_items_model extends CRM_Model
         if (isset($data['tax2']) && $data['tax2'] == '') {
             unset($data['tax2']);
         }
-
+        if (isset($data['package_id'])) {
+            if ($data['package_id']) {
+                foreach ($data['package_id'] as $key => $value) {
+                    $packageArray[] = $value;
+                }
+            }
+            unset($data['package_id']);
+        }
         if (isset($data['group_id']) && $data['group_id'] == '') {
             $data['group_id'] = 0;
         }
@@ -106,10 +116,14 @@ class Invoice_items_model extends CRM_Model
                 $this->dbforge->add_column('tblitems', $field);
             }
         }
-
         $this->db->insert('tblitems', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if ($packageArray) {
+                foreach ($packageArray as $key=> $package) {
+                    $this->db->insert('tblitems_packages_map', array('item_id' => $insert_id, 'package_id' => $package));
+                }
+            }
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields, true);
             }
@@ -148,6 +162,14 @@ class Invoice_items_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
+        if (isset($data['package_id'])) {
+            if ($data['package_id']) {
+                foreach ($data['package_id'] as $key => $value) {
+                    $packageArray[] = $value;
+                }
+            }
+            unset($data['package_id']);
+        }
         $columns = $this->db->list_fields('tblitems');
         $this->load->dbforge();
 
@@ -166,6 +188,13 @@ class Invoice_items_model extends CRM_Model
         $affectedRows = 0;
         $this->db->where('id', $itemid);
         $this->db->update('tblitems', $data);
+        $this->db->where('item_id', $itemid);
+        $this->db->delete('tblitems_packages_map');
+        if ($packageArray) {
+            foreach ($packageArray as $package) {
+                $this->db->insert('tblitems_packages_map', array('item_id' => $itemid, 'package_id' => $package));
+            }
+        }
         if ($this->db->affected_rows() > 0) {
             logActivity('Invoice Item Updated [ID: ' . $itemid . ', ' . $data['description'] . ']');
             $affectedRows++;
@@ -225,6 +254,18 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get('tblitems_groups')->result_array();
     }
 
+    public function get_packages($hasItemsOnly = false)
+    {
+        $this->db->order_by('name', 'asc');
+        $this->db->select('tblitems_packages.id, tblitems_packages.name');
+        if ($hasItemsOnly) {
+            $this->db->join('tblitems_packages_map t1', 'tblitems_packages.id = t1.package_id', 'inner');
+            $this->db->group_by('tblitems_packages.id');
+        }
+
+        return $this->db->get('tblitems_packages')->result_array();
+    }
+
     public function add_group($data)
     {
         $this->db->insert('tblitems_groups', $data);
@@ -233,12 +274,34 @@ class Invoice_items_model extends CRM_Model
         return $this->db->insert_id();
     }
 
+    public function add_package($data)
+    {
+        $this->db->insert('tblitems_packages', $data);
+        logActivity('Items Package Created [Name: ' . $data['name'] . ']');
+
+        return $this->db->insert_id();
+    }
+
+
     public function edit_group($data, $id)
     {
         $this->db->where('id', $id);
         $this->db->update('tblitems_groups', $data);
         if ($this->db->affected_rows() > 0) {
             logActivity('Items Group Updated [Name: ' . $data['name'] . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function edit_package($data, $id)
+    {
+        $this->db->where('id', $id);
+        $this->db->update('tblitems_packages', $data);
+        if ($this->db->affected_rows() > 0) {
+            logActivity('Items Package Updated [Name: ' . $data['name'] . ']');
 
             return true;
         }
@@ -266,5 +329,43 @@ class Invoice_items_model extends CRM_Model
         }
 
         return false;
+    }
+
+    public function delete_package($id)
+    {
+        $this->db->where('id', $id);
+        $package = $this->db->get('tblitems_packages')->row();
+
+        if ($package) {
+            $this->db->where('package_id', $id);
+            $this->db->update('tblitems', array(
+                'package_id' => 0
+            ));
+
+            $this->db->where('id', $id);
+            $this->db->delete('tblitems_packages');
+
+            logActivity('Item Package Deleted [Name: ' . $package->name . ']');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function get_item_packages($id, $isAjax = false) {
+        $this->db->select('tblitems_packages.name,tblitems_packages.id');
+        $this->db->from('tblitems_packages');
+        $this->db->join('tblitems_packages_map','tblitems_packages_map.`package_id`=tblitems_packages.id','left');
+        $this->db->where('tblitems_packages_map.item_id',$id);
+        $return = $this->db->get()->result_array();
+        if ($isAjax) {
+            $output = array();
+            foreach ($return as $res) {
+                $output[] = $res['id'];
+            }
+            return $output;
+        }
+        return $return;
     }
 }
