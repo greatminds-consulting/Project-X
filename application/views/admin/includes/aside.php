@@ -344,7 +344,7 @@ foreach($quickActions as $key => $item){
                         <br>
                         <div class="inline-block">
                             <div class="checkbox right">
-                                <input id="checkboxn" type="checkbox" value="1" checked="checked">
+                                <input id="checkboxn" type="checkbox" value="1" >
                                 <label for="checkboxn"><i class="fa fa-search"></i> Search within page</label>
                             </div>
                         </div>

@@ -6216,7 +6216,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 }
 
 .colorpicker {
-    z-index: 99999;
+    z-index: 99999 !important;
 }
 
 .kan-ban-step-indicator {
@@ -6318,7 +6318,7 @@ table.dataTable>tbody>tr.child span.dtr-title {
 }
 
 ul.dt-button-collection.dropdown-menu {
-    z-index: 20005;
+    z-index: 20005 !important;
     min-width: 160px;
 }
 
@@ -9235,4 +9235,8 @@ ul.opt-tabs.nav-tabs>li>a {
 
 .time-sheets-drop .ajax-search.bootstrap-select.btn-group .dropdown-menu {
     margin-top: 0px;
+}
+div.dt-button-background {
+    width: 0%;
+
 }

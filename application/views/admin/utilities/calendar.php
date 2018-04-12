@@ -95,10 +95,7 @@
 
 <?php init_tail(); ?>
 <!-- BEGIN VENDOR JS -->
-<!--<script src="--><?php //echo base_url('assets/plugins/jquery/jquery-1.11.1.min.js'); ?><!--"></script>-->
-<script src="<?php echo base_url('assets/plugins/select2/js/select2.full.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/plugins/interactjs/interact.min.js'); ?>"></script>
-<script src="<?php echo base_url('assets/plugins/moment/moment-with-locales.min.js'); ?>"></script>
 <!-- END VENDOR JS -->
 <!-- BEGIN CORE TEMPLATE JS -->
 <script src="<?php echo base_url('assets/pages/js/pages.min.js'); ?>"></script>
