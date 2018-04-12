@@ -386,4 +386,14 @@ class Venues_model extends CRM_Model
         }
         return false;
     }
+
+    public function getvenues() {
+        $this->db->select('tblvenues.name,tblvenues.id');
+        $this->db->where('is_delete', 0);
+        $this->db->from('tblvenues');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
 }

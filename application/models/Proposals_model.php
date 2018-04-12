@@ -126,6 +126,15 @@ class Proposals_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
+
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
 
@@ -166,6 +175,11 @@ class Proposals_model extends CRM_Model
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Proposal', 'venue_id' => $venue_id));
+                }
+            }
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
@@ -1070,4 +1084,5 @@ class Proposals_model extends CRM_Model
 
         return false;
     }
+
 }
