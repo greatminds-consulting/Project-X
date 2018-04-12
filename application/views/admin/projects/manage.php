@@ -49,7 +49,7 @@
                   <?php
                   $_where = '(tblprojects.is_delete is null or tblprojects.is_delete = 0)';
                   if(!has_permission('projects','','view')){
-                    $_where = ' AND id IN (SELECT project_id FROM tblprojectmembers WHERE staff_id='.get_staff_user_id().')';
+                    $_where .= ' AND id IN (SELECT project_id FROM tblprojectmembers WHERE staff_id='.get_staff_user_id().')';
                   }
                   ?>
                 </div>
