@@ -965,7 +965,14 @@ class Projects_model extends CRM_Model
             $data['progress_from_tasks'] = 0;
         }
 
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         $data['start_date'] = to_sql_date($data['start_date']);
 
@@ -1002,6 +1009,11 @@ class Projects_model extends CRM_Model
         $this->db->insert('tblprojects', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Project', 'venue_id' => $venue_id));
+                }
+            }
             handle_tags_save($tags, $insert_id, 'project');
 
             if (isset($custom_fields)) {
@@ -1094,6 +1106,15 @@ class Projects_model extends CRM_Model
         if (isset($data['send_created_email'])) {
             unset($data['send_created_email']);
             $send_created_email = true;
+        }
+
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
         }
 
         $send_project_marked_as_finished_email_to_contacts = false;
@@ -1237,6 +1258,14 @@ class Projects_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblprojects', $data);
+
+        $this->db->where('type', 'Project');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Project', 'venue_id' => $venue_id));
+            }
+        }
 
         if ($this->db->affected_rows() > 0) {
             if (isset($mark_all_tasks_as_completed)) {

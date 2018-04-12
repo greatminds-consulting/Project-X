@@ -124,7 +124,7 @@
                             </div>
                            </div>
                         <?php $fc_rel_id = (isset($proposal) ? $proposal->id : false);
-                        echo render_select('venue[]',$venues,array('id','name'),'venues',$proposal_venues,array('multiple'=>true,'required'=>true));
+                        echo render_select('venue[]',$venues,array('id','name'),'venues',$proposal_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
                         ?>
                         <?php echo render_custom_fields('proposal',$fc_rel_id); ?>
                          <div class="form-group no-mbot">

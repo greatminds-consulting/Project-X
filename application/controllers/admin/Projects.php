@@ -7,6 +7,7 @@ class Projects extends Admin_controller
         parent::__construct();
         $this->load->model('projects_model');
         $this->load->model('currencies_model');
+        $this->load->model('venues_model');
         $this->load->helper('date');
     }
 
@@ -111,6 +112,9 @@ class Projects extends Admin_controller
         $data['settings']              = $this->projects_model->get_settings();
         $data['statuses']              = $this->projects_model->get_project_statuses();
         $data['staff']                 = $this->staff_model->get('', 1);
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
+
 
         $data['title'] = $title;
         $this->load->view('admin/projects/project', $data);
