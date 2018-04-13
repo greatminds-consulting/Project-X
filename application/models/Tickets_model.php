@@ -404,7 +404,14 @@ class Tickets_model extends CRM_Model
         if (isset($data['status'])) {
             unset($data['status']);
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         $cc = '';
         if (isset($data['cc'])) {
             $cc = $data['cc'];
@@ -439,6 +446,15 @@ class Tickets_model extends CRM_Model
         $data  = $_data['data'];
         $this->db->insert('tblticketreplies', $data);
         $insert_id = $this->db->insert_id();
+        $this->db->where('type_id', $id);
+        $this->db->where('type', 'Ticket');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Ticket', 'venue_id' => $venue_id));
+            }
+        }
+
         if ($insert_id) {
             if (isset($assigned)) {
                 $this->db->where('ticketid', $id);
@@ -680,6 +696,15 @@ class Tickets_model extends CRM_Model
             }
             $data['status'] = 1;
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
+
 
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
@@ -730,6 +755,12 @@ class Tickets_model extends CRM_Model
         $this->db->insert('tbltickets', $data);
         $ticketid = $this->db->insert_id();
         if ($ticketid) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $ticketid, 'type' => 'Ticket', 'venue_id' => $venue_id));
+                }
+            }
+
             handle_tags_save($tags, $ticketid, 'ticket');
             if (isset($custom_fields)) {
                 handle_custom_fields_post($ticketid, $custom_fields);
