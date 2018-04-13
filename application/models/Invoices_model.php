@@ -712,7 +712,14 @@ class Invoices_model extends CRM_Model
                 $affectedRows++;
             }
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         $data = $this->map_shipping_columns($data);
 
         $data['billing_street'] = trim($data['billing_street']);
@@ -800,6 +807,15 @@ class Invoices_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblinvoices', $data);
+
+        $this->db->where('type', 'Invoice');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Invoice', 'venue_id' => $venue_id));
+            }
+        }
 
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
