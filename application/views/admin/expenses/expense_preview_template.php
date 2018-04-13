@@ -160,6 +160,7 @@
                   <p class="bold"><?php echo _l('project'); ?></p>
                   <p><a href="<?php echo admin_url('projects/view/'.$expense->project_id); ?>"><?php echo $expense->project_data->name; ?></a></p>
                   <?php } ?>
+                   <p class="bold">Venues</p><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
                   <?php
                      $custom_fields = get_custom_fields('expenses');
                      foreach($custom_fields as $field){ ?>

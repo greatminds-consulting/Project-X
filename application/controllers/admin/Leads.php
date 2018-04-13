@@ -10,6 +10,7 @@ class Leads extends Admin_controller
         parent::__construct();
         $this->not_importable_leads_fields = do_action('not_importable_leads_fields', array('id', 'source', 'assigned', 'status', 'dateadded', 'last_status_change', 'addedfrom', 'leadorder', 'date_converted', 'lost', 'junk', 'is_imported_from_email_integration', 'email_integration_uid', 'is_public', 'dateassigned', 'client_id', 'lastcontact', 'last_lead_status', 'from_form_id', 'default_language'));
         $this->load->model('leads_model');
+        $this->load->model('venues_model');
 
     }
 
@@ -34,6 +35,7 @@ class Leads extends Admin_controller
         $data['sources']  = $this->leads_model->get_source();
         $data['title']    = _l('leads');
         $data['assigners']     = $this->leads_model->get_assigners($id);
+        $data['selectedvenues']     = $this->leads_model->selectedvenues($id);
         $data['project_members'] = $this->leads_model->get_assigners();
         $data['leadid']   = $id;
         $this->load->view('admin/leads/manage_leads', $data);
@@ -140,11 +142,14 @@ class Leads extends Admin_controller
             $data['notes']         = $this->misc_model->get_notes($id, 'lead');
             $data['activity_log']  = $this->leads_model->get_lead_activity_log($id);
             $data['assigners']     = $this->leads_model->get_assignedstaff($id);
+            $data['selectedvenues']     = $this->leads_model->selectedvenues($id);
 
         }
         $data['statuses']           = $this->leads_model->get_status();
         $data['sources']            = $this->leads_model->get_source();
         $data['project_members']    = $this->leads_model->get_assigners();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['lead_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Leads');
         $data = do_action('lead_view_data', $data);
         return array(
             'data' => $this->load->view('admin/leads/lead', $data, true),
