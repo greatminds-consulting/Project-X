@@ -230,7 +230,9 @@
                   </div>
                </div>
                <?php } ?>
-            <?php $rel_id = (isset($invoice) ? $invoice->id : false); ?>
+            <?php $rel_id = (isset($invoice) ? $invoice->id : false);
+            echo render_select('venue[]',$venues,array('id','name'),'venues',$projects_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+            ?>
             <?php echo render_custom_fields('invoice',$rel_id); ?>
          </div>
          <div class="col-md-6">

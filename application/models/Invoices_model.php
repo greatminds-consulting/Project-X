@@ -253,6 +253,14 @@ class Invoices_model extends CRM_Model
             $data['status'] = 6;
             unset($data['save_as_draft']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         if (isset($data['recurring'])) {
             if ($data['recurring'] == 'custom') {
@@ -305,6 +313,11 @@ class Invoices_model extends CRM_Model
         $this->db->insert('tblinvoices', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Invoice', 'venue_id' => $venue_id));
+                }
+            }
 
             // Update next invoice number in settings
             $this->db->where('name', 'next_invoice_number');
