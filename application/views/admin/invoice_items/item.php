@@ -60,6 +60,9 @@
                 </div>
                 <div class="clearfix mbot15"></div>
                 <?php echo render_input('unit','unit'); ?>
+                        <?php
+                        echo render_select('venue[]',$venues,array('id','name'),'venues',$item_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                        ?>
                 <div id="custom_fields_items">
                     <?php echo render_custom_fields('items'); ?>
                 </div>
@@ -213,7 +216,7 @@ function validate_item_form(){
     _validate_form($('#invoice_item_form'), {
         description: 'required',
         rate: {
-            required: true,
+            required: true
         }
     }, manage_invoice_items);
 }

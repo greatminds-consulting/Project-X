@@ -6,6 +6,7 @@ class Contracts extends Admin_controller
     {
         parent::__construct();
         $this->load->model('contracts_model');
+        $this->load->model('venues_model');
     }
 
     /* List all contracts */
@@ -122,6 +123,8 @@ class Contracts extends Admin_controller
         $this->load->model('currencies_model');
         $data['base_currency'] = $this->currencies_model->get_base_currency();
         $data['types']         = $this->contracts_model->get_contract_types();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['lead_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Contracts');
         $data['title'] = $title;
         $data['bodyclass'] = 'contract';
         $this->load->view('admin/contracts/contract', $data);
@@ -184,13 +187,37 @@ class Contracts extends Admin_controller
 
         $success = false;
         $message = '';
+        $data['venue']=$this->input->post('selectVenues');
 
+        if (isset($data['venue'])) {
+
+            if ($data['venue']) {
+                //print_r( $data['venue']);
+                //exit;
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
+        if ($venueArray) {
+        $id=$this->input->post('contract_id');
+        $this->db->where('type', 'Contracts');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+
+        foreach ($venueArray as $key=> $venue_id) {
+           $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Contracts', 'venue_id' => $venue_id));
+            }
+        }
         $this->db->where('id', $this->input->post('contract_id'));
         $this->db->update('tblcontracts', array(
                 'content' => $this->input->post('content', false),
             ));
 
         if ($this->db->affected_rows() > 0) {
+
+
             $success = true;
             $message = _l('updated_successfully', _l('contract'));
         }

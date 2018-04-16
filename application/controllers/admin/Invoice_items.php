@@ -6,10 +6,11 @@ class Invoice_items extends Admin_controller
     {
         parent::__construct();
         $this->load->model('invoice_items_model');
+        $this->load->model('venues_model');
     }
 
     /* List all available items */
-    public function index()
+    public function index($id = '')
     {
         if (!has_permission('items', '', 'view')) {
             access_denied('Invoice Items');
@@ -19,6 +20,8 @@ class Invoice_items extends Admin_controller
         $data['taxes']          = $this->taxes_model->get();
         $data['items_groups']   = $this->invoice_items_model->get_groups();
         $data['items_packages'] = $this->invoice_items_model->get_packages();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['item_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Items');
 
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
@@ -167,8 +170,9 @@ class Invoice_items extends Admin_controller
             $item->item_packages = $this->invoice_items_model->get_item_packages($id, true);
             $item->long_description = nl2br($item->long_description);
             $item->custom_fields_html = render_custom_fields('items',$id,array(),array('items_pr'=>true));
+            $item->venues = $this->venues_model->getvenues();
+            $item->item_venues = $this->venues_model->get_type_details_from_venue_map($id, 'Items');
             $item->custom_fields = array();
-
             $cf = get_custom_fields('items');
 
             foreach($cf as $custom_field) {

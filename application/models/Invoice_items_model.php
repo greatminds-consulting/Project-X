@@ -96,6 +96,14 @@ class Invoice_items_model extends CRM_Model
         if (isset($data['group_id']) && $data['group_id'] == '') {
             $data['group_id'] = 0;
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
@@ -119,6 +127,11 @@ class Invoice_items_model extends CRM_Model
         $this->db->insert('tblitems', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Items', 'venue_id' => $venue_id));
+                }
+            }
             if ($packageArray) {
                 foreach ($packageArray as $key=> $package) {
                     $this->db->insert('tblitems_packages_map', array('item_id' => $insert_id, 'package_id' => $package));
@@ -155,6 +168,14 @@ class Invoice_items_model extends CRM_Model
 
         if (isset($data['tax2']) && $data['tax2'] == '') {
              $data['tax2'] = NULL;
+        }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
         }
 
         if (isset($data['custom_fields'])) {
@@ -198,6 +219,14 @@ class Invoice_items_model extends CRM_Model
         if ($this->db->affected_rows() > 0) {
             logActivity('Invoice Item Updated [ID: ' . $itemid . ', ' . $data['description'] . ']');
             $affectedRows++;
+        }
+        $this->db->where('type', 'Items');
+        $this->db->where('type_id', $itemid);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $itemid, 'type' => 'Items', 'venue_id' => $venue_id));
+            }
         }
 
         if(isset($custom_fields)) {
