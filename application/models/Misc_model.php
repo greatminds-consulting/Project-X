@@ -128,6 +128,35 @@ class Misc_model extends CRM_Model
         return $select;
     }
 
+    public function get_venues_dropdown_template($name,$venues) {
+        $select           = '<select class="selectpicker display-block venue" data-width="100%" name="' . $name . '" multiple data-none-selected-text="' . _l('dropdown_non_selected_tex') . '">';
+
+        $this->load->model('venues_model');
+        $allVenues = $this->venues_model->getvenues();
+
+        foreach ($allVenues as $venue) {
+            $selected = '';
+                foreach ($venues as $_tax) {
+                    if (is_array($_tax)) {
+                        if ($_tax['name'] == $venue['name']) {
+                            $selected = 'selected';
+                        }
+                    } else {
+                        if ($_tax == $venue['name']) {
+                            $selected = 'selected';
+                        }
+                    }
+                }
+            if(in_array($venue['id'], $venues)) {
+                $selected = 'selected';
+            }
+            $select .= '<option value="' . $venue['name'] . '" ' . $selected . ' data-venuerate="" data-venuename="' . $venue['name'] . '" data-subtext="' . $venue['name'] . '">' . $venue['name'] . '</option>';
+        }
+        $select .= '</select>';
+
+        return $select;
+    }
+
     public function add_attachment_to_database($rel_id, $rel_type, $attachment, $external = false)
     {
         $data['dateadded'] = date('Y-m-d H:i:s');

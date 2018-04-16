@@ -84,7 +84,7 @@
                   <textarea name="long_description" rows="4" class="form-control" placeholder="<?php echo _l('item_long_description_placeholder'); ?>"></textarea>
                </td>
                 <td>
-                    <?php  echo render_select('venue_items[]',$venues,array('id','name'),'',$staff_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
+                    <?php  echo render_select('venue_items[]',$venues,array('id','name'),'',$staff_venues,array('multiple'=>true,'required'=>true),array(), '', 'venues',false);?>
                </td>
 
                 <?php echo render_custom_fields_items_table_add_edit_preview(); ?>

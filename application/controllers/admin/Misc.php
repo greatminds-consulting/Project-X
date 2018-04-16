@@ -35,6 +35,12 @@ class Misc extends Admin_controller
         $taxname = $this->input->post('taxname');
         echo $this->misc_model->get_taxes_dropdown_template($name, $taxname);
     }
+    public function get_venues_dropdown_template()
+    {
+        $venues    = $this->input->post('venues');
+        $name    = $this->input->post('name');
+        echo $this->misc_model->get_venues_dropdown_template($name,$venues);
+    }
 
     public function dismiss_cron_setup_message()
     {
