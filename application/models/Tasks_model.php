@@ -445,6 +445,14 @@ class Tasks_model extends CRM_Model
             $checklistItems = $data['checklist_items'];
             unset($data['checklist_items']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         if ($clientRequest == false) {
             $defaultStatus = get_option('default_task_status');
@@ -545,6 +553,11 @@ class Tasks_model extends CRM_Model
         $this->db->insert('tblstafftasks', $data);
         $insert_id = $this->db->insert_id();
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Tasks', 'venue_id' => $venue_id));
+                }
+            }
             foreach ($checklistItems as $key => $chkID) {
                 $itemTemplate = $this->get_checklist_template($chkID);
                 $this->db->insert('tbltaskchecklists', array(
@@ -653,7 +666,14 @@ class Tasks_model extends CRM_Model
         if (isset($data['datefinished'])) {
             $data['datefinished'] = to_sql_date($data['datefinished'], true);
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             if (handle_custom_fields_post($id, $custom_fields)) {
@@ -753,6 +773,16 @@ class Tasks_model extends CRM_Model
             $affectedRows++;
         }
 
+
+        $this->db->where('type', 'Tasks');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Tasks', 'venue_id' => $venue_id));
+            }
+
+        }
         $this->db->where('id', $id);
         $this->db->update('tblstafftasks', $data);
         if ($this->db->affected_rows() > 0) {
@@ -766,6 +796,17 @@ class Tasks_model extends CRM_Model
         }
 
         return false;
+    }
+
+    public function selectedvenues($id)
+    {
+        $this->db->select('tblvenues.name');
+        $this->db->from('tblvenues');
+        $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $query = $this->db->get();
+        return  $query->result_array();
+
     }
 
     public function get_checklist_item($id)

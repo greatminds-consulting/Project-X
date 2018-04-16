@@ -66,6 +66,16 @@ class Expenses_model extends CRM_Model
 
         return $this->db->get()->result_array();
     }
+    public function selectedvenues($id)
+    {
+        $this->db->select('tblvenues.name');
+        $this->db->from('tblvenues');
+        $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $query = $this->db->get();
+        return  $query->result_array();
+
+    }
 
     /**
      * Add new expense
@@ -89,6 +99,14 @@ class Expenses_model extends CRM_Model
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
+        }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
         }
         if (isset($data['send_invoice_to_customer'])) {
             $data['send_invoice_to_customer'] = 1;
@@ -127,6 +145,11 @@ class Expenses_model extends CRM_Model
         $data['dateadded'] = date('Y-m-d H:i:s');
         $this->db->insert('tblexpenses', $data);
         $insert_id = $this->db->insert_id();
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Expenses', 'venue_id' => $venue_id));
+            }
+        }
         if ($insert_id) {
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
@@ -373,6 +396,14 @@ class Expenses_model extends CRM_Model
             }
             unset($data['custom_fields']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         if (isset($data['create_invoice_billable'])) {
             $data['create_invoice_billable'] = 1;
         } else {
@@ -391,6 +422,14 @@ class Expenses_model extends CRM_Model
 
         if (isset($data['project_id']) && $data['project_id'] == '' || !isset($data['project_id'])) {
             $data['project_id'] = 0;
+        }
+        $this->db->where('type', 'Expenses');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Expenses', 'venue_id' => $venue_id));
+            }
         }
         $this->db->where('id', $id);
         $this->db->update('tblexpenses', $data);

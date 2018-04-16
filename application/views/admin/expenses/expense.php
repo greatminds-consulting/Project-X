@@ -102,7 +102,8 @@
                      </select>
                      </div>
                   </div>
-                  <?php $rel_id = (isset($expense) ? $expense->expenseid : false); ?>
+                  <?php $rel_id = (isset($expense) ? $expense->expenseid : false);
+                  echo render_select('venue[]',$venues,array('id','name'),'venues',$expense_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
                   <?php echo render_custom_fields('expenses',$rel_id); ?>
                    <div class="btn-bottom-toolbar text-right">
                   <button type="submit" class="btn btn-info"><?php echo _l('submit'); ?></button>

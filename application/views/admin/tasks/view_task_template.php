@@ -639,11 +639,16 @@
    </h5>
 </div>
 <?php } ?>
-<?php $custom_fields = get_custom_fields('tasks');
+   <div class="venue-task">
+   <i class="fa task-info-globe"></i><?php echo "Venues :";?>
+   <?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?>
+</div>
+   <?php $custom_fields = get_custom_fields('tasks');
 foreach($custom_fields as $field){ ?>
 <?php $value = get_custom_field_value($task->id,$field['id'],'tasks');
 if($value == ''){continue;}?>
 <div class="task-info">
+
    <h5 class="task-info-custom-field task-info-custom-field-<?php echo $field['id']; ?>">
      <?php echo $field['name']; ?>: <?php echo $value; ?>
    </h5>
