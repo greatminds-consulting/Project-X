@@ -53,6 +53,7 @@
                <th></th>
                <th width="20%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('estimate_table_item_heading'); ?></th>
                <th width="25%" align="left"><?php echo _l('estimate_table_item_description'); ?></th>
+               <th width="25%" align="left"><?php echo _l('Venue'); ?></th>
                <?php
                   $custom_fields = get_custom_fields('items');
                   foreach($custom_fields as $cf){
@@ -82,7 +83,11 @@
                <td>
                   <textarea name="long_description" rows="4" class="form-control" placeholder="<?php echo _l('item_long_description_placeholder'); ?>"></textarea>
                </td>
-               <?php echo render_custom_fields_items_table_add_edit_preview(); ?>
+                <td>
+                    <?php  echo render_select('venue_items[]',$venues,array('id','name'),'',$staff_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
+               </td>
+
+                <?php echo render_custom_fields_items_table_add_edit_preview(); ?>
                <td>
                   <input type="number" name="quantity" min="0" value="1" class="form-control" placeholder="<?php echo _l('item_quantity_placeholder'); ?>">
                   <input type="text" placeholder="<?php echo _l('unit'); ?>" name="unit" class="form-control input-transparent text-right">
