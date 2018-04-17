@@ -72,6 +72,7 @@ class Expenses_model extends CRM_Model
         $this->db->from('tblvenues');
         $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
         $this->db->where('tblvenues_in.type_id',$id);
+        $this->db->where('tblvenues_in.type',Expenses);
         $query = $this->db->get();
         return  $query->result_array();
 

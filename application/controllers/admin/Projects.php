@@ -34,6 +34,8 @@ class Projects extends Admin_controller
     public function expenses($id)
     {
         $this->load->model('expenses_model');
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
         $this->app->get_table_data('project_expenses', array(
             'project_id' => $id,
         ));
@@ -85,7 +87,8 @@ class Projects extends Admin_controller
                     set_alert('success', _l('updated_successfully', _l('project')));
                 }
                 redirect(admin_url('projects/view/' . $id));
-            }
+            }$data['venues'] = $this->venues_model->getvenues();
+            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
         }
         if ($id == '') {
             $title                            = _l('add_new', _l('project_lowercase'));
@@ -112,10 +115,6 @@ class Projects extends Admin_controller
         $data['settings']              = $this->projects_model->get_settings();
         $data['statuses']              = $this->projects_model->get_project_statuses();
         $data['staff']                 = $this->staff_model->get('', 1);
-        $data['venues'] = $this->venues_model->getvenues();
-        $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
-
-
         $data['title'] = $title;
         $this->load->view('admin/projects/project', $data);
     }
@@ -145,7 +144,8 @@ class Projects extends Admin_controller
             $data['project']              = $project;
             $data['currency'] = $this->projects_model->get_currency($id);
 
-            $data['project_total_logged_time'] = $this->projects_model->total_logged_time($id);
+            $data['project_total_logged_time'] = $this->projects_model->total_logged_time($id);$data['venues'] = $this->venues_model->getvenues();
+            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
 
             $data['staff']         = $this->staff_model->get('', 1);
             $percent             = $this->projects_model->calc_progress($id);
@@ -172,7 +172,8 @@ class Projects extends Admin_controller
                         $data['project_days_left']         = round((human_to_unix($data['project']->deadline . ' 00:00') - time()) / 3600 / 24);
                         $data['project_time_left_percent'] = $data['project_days_left'] / $data['project_total_days'] * 100;
                     }
-                    if (human_to_unix($data['project']->deadline . ' 00:00') < time()) {
+                    if (human_to_unix($data['project']->deadline . ' 00:00') < time()) {$data['venues'] = $this->venues_model->getvenues();
+            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
                         $data['project_days_left']         = 0;
                         $data['project_time_left_percent'] = 0;
                     }
@@ -205,7 +206,8 @@ class Projects extends Admin_controller
                 $data['project_overview_chart'] = $this->projects_model->get_project_overview_weekly_chart_data($id, ($this->input->get('overview_chart') ? $this->input->get('overview_chart'):'this_week'));
             } elseif ($view == 'project_invoices') {
                 $this->load->model('invoices_model');
-
+$data['venues'] = $this->venues_model->getvenues();
+            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
                 $data['invoiceid']   = '';
                 $data['status']      = '';
                 $data['custom_view'] = '';
@@ -300,6 +302,7 @@ class Projects extends Admin_controller
             $view = trim($view);
             $data['view'] = $view;
             $data['group_view']            = $this->load->view('admin/projects/' . $view, $data, true);
+
 
             $this->load->view('admin/projects/view', $data);
         } else {
