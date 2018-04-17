@@ -49,7 +49,8 @@
          <?php do_action('after_custom_profile_tab_content',isset($client) ? $client : false); ?>
          <?php if($customer_custom_fields) { ?>
          <div role="tabpanel" class="tab-pane <?php if($this->input->get('tab') == 'custom_fields'){echo ' active';}; ?>" id="custom_fields">
-               <?php $rel_id=( isset($client) ? $client->userid : false); ?>
+               <?php $rel_id=( isset($client) ? $client->userid : false);
+               echo render_select('venue[]',$venues,array('id','name'),'venues',$customer_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
                <?php echo render_custom_fields( 'customers',$rel_id); ?>
          </div>
          <?php } ?>

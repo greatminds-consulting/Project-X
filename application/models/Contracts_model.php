@@ -215,6 +215,11 @@ class Contracts_model extends CRM_Model
         $contract = $this->get($id, array(), true);
         $fields = $this->db->list_fields('tblcontracts');
         $newContactData = array();
+        $this->db->select('venue_id');
+        $this->db->from('tblvenues_in');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $query = $this->db->get();
+        $venueList=$query->result_array();
 
         foreach ($fields as $field) {
             if (isset($contract->$field)) {
@@ -240,6 +245,10 @@ class Contracts_model extends CRM_Model
         $newId = $this->add($newContactData);
 
         if ($newId) {
+            foreach($venueList as $venueItems){
+
+                $this->db->insert('tblvenues_in', array('type_id' => $newId, 'type' => 'Contracts', 'venue_id' => $venueItems['venue_id']));
+            }
             $custom_fields = get_custom_fields('contracts');
             foreach ($custom_fields as $field) {
                 $value = get_custom_field_value($id, $field['id'], 'contracts');
@@ -268,14 +277,14 @@ class Contracts_model extends CRM_Model
         $this->db->where('id',$id);
         $query = $this->db->get()->row();
         if ($query->is_delete == 1) {
+            $this->db->where('type_id',$id);
+            $this->db->where('type', 'Contracts');
+            $this->db->delete('tblvenues_in');
             do_action('before_contract_deleted', $id);
             $this->db->where('id', $id);
             $this->db->delete('tblcontracts');
             if ($this->db->affected_rows() > 0) {
                 // Delete the custom field values
-                $this->db->where('type_id',$id);
-                $this->db->where('type', 'Contracts');
-                $this->db->delete('tblvenues_in');
 
                 $this->db->where('relid', $id);
                 $this->db->where('fieldto', 'contracts');
