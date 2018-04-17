@@ -150,7 +150,7 @@ class Misc_model extends CRM_Model
             if(in_array($venue['id'], $venues)) {
                 $selected = 'selected';
             }
-            $select .= '<option value="' . $venue['name'] . '" ' . $selected . ' data-venuerate="" data-venuename="' . $venue['name'] . '" data-subtext="' . $venue['name'] . '">' . $venue['name'] . '</option>';
+            $select .= '<option value="' . $venue['name'] . '" ' . $selected . ' >' . $venue['name'] . '</option>';
         }
         $select .= '</select>';
 

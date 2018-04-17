@@ -231,8 +231,7 @@
                </div>
                <?php } ?>
             <?php $rel_id = (isset($invoice) ? $invoice->id : false);
-            echo render_select('venue[]',$venues,array('id','name'),'venues',$invoice_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
-            ?>
+            echo render_select('venue[]',$venues,array('id','name'),'venues',$invoice_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);            ?>
             <?php echo render_custom_fields('invoice',$rel_id); ?>
          </div>
          <div class="col-md-6">
@@ -465,6 +464,7 @@
                   <th></th>
                   <th width="20%" align="left"><i class="fa fa-exclamation-circle" aria-hidden="true" data-toggle="tooltip" data-title="<?php echo _l('item_description_new_lines_notice'); ?>"></i> <?php echo _l('invoice_table_item_heading'); ?></th>
                   <th width="25%" align="left"><?php echo _l('invoice_table_item_description'); ?></th>
+                  <th width="25%" align="left"><?php echo _l('Venue'); ?></th>
                   <?php
                   $custom_fields = get_custom_fields('items');
                   foreach($custom_fields as $cf){
@@ -492,6 +492,9 @@
                   </td>
                   <td>
                      <textarea name="long_description" rows="4" class="form-control" placeholder="<?php echo _l('item_long_description_placeholder'); ?>"></textarea>
+                  </td>
+                  <td>
+                      <?php  echo render_select('venue_items[]',$venues,array('id','name'),'',$staff_venues,array('multiple'=>true,'required'=>true),array(), '', 'venues',false);?>
                   </td>
                   <?php echo render_custom_fields_items_table_add_edit_preview(); ?>
                   <td>
@@ -559,6 +562,7 @@
                     $table_row .= '</td>';
                     $table_row .= '<td class="bold description"><textarea name="' . $items_indicator . '[' . $i . '][description]" class="form-control" rows="5">' . clear_textarea_breaks($item['description']) . '</textarea></td>';
                     $table_row .= '<td><textarea name="' . $items_indicator . '[' . $i . '][long_description]" class="form-control" rows="5">' . clear_textarea_breaks($item['long_description']) . '</textarea></td>';
+                    $table_row .= '<td class="taxrate">' . $this->misc_model->get_venues_dropdown_template('' . $items_indicator . '[' . $i . '][taxname][]', $estimate_item_taxes, (isset($is_proposal) ? 'proposal' : 'estimate'), $item['id'], true, $manual) . '</td>';
 
                     $table_row .= render_custom_fields_items_table_in($item,$items_indicator.'['.$i.']');
 
