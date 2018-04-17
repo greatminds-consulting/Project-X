@@ -61,7 +61,7 @@
                 <div class="clearfix mbot15"></div>
                 <?php echo render_input('unit','unit'); ?>
                         <?php
-                        echo render_select('venue[]',$venues,array('id','name'),'venues',$item_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                        echo render_select('venue[]',$venues,array('id','name'),'venues',$item_venues,array('multiple'=>true,'required'=>true),array(), '', 'items',false);
                         ?>
                 <div id="custom_fields_items">
                     <?php echo render_custom_fields('items'); ?>
@@ -184,6 +184,7 @@ function init_item_js() {
                 $('select[name="tax"]').selectpicker('val', response.taxid).change();
                 $('select[name="tax2"]').selectpicker('val', response.taxid_2).change();
                 $itemModal.find('#group_id').selectpicker('val', response.group_id);
+                $itemModal.find('.items').selectpicker('val', response.item_venues);
                 $itemModal.find('.item_packages').selectpicker('val', response.item_packages);
                 $.each(response, function (column, value) {
                     if (column.indexOf('rate_currency_') > -1) {
