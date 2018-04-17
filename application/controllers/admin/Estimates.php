@@ -6,6 +6,7 @@ class Estimates extends Admin_controller
     {
         parent::__construct();
         $this->load->model('estimates_model');
+        $this->load->model('venues_model');
     }
 
     /* Get all estimates in case user go on index page */
@@ -137,6 +138,8 @@ class Estimates extends Admin_controller
         $data['staff']             = $this->staff_model->get('', 1);
         $data['estimate_statuses'] = $this->estimates_model->get_statuses();
         $data['title']             = $title;
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['staff_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Estimate');
         $this->load->view('admin/estimates/estimate', $data);
     }
 
