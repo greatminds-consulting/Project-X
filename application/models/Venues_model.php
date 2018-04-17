@@ -396,14 +396,22 @@ class Venues_model extends CRM_Model
         return  $data;
     }
 
-    public function get_type_details_from_venue_map($type_id , $type) {
-        $this->db->select('tblvenues_in.venue_id');
+    public function get_type_details_from_venue_map($type_id , $type, $isString = false) {
+        $this->db->select('tblvenues_in.venue_id,tblvenues.name');
+        $this->db->join('tblvenues','tblvenues.id=tblvenues_in.venue_id','inner');
         $this->db->where('type_id', $type_id);
         $this->db->where('type', $type);
         $results = $this->db->get('tblvenues_in')->result_array();
         $return = array();
         foreach ($results as $result) {
-            $return[] = $result['venue_id'];
+            if ($isString) {
+                $return[] = $result['name'];
+            } else {
+                $return[] = $result['venue_id'];
+            }
+        }
+        if ($isString) {
+            return implode(',', $return);
         }
         return $return;
     }

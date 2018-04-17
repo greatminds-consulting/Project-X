@@ -145,9 +145,10 @@ class Projects extends Admin_controller
             $data['currency'] = $this->projects_model->get_currency($id);
 
             $data['project_total_logged_time'] = $this->projects_model->total_logged_time($id);$data['venues'] = $this->venues_model->getvenues();
-            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
 
             $data['staff']         = $this->staff_model->get('', 1);
+            $data['venues'] = $this->venues_model->getvenues();
+            $data['project_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project' ,true);
             $percent             = $this->projects_model->calc_progress($id);
             $data['bodyclass'] = '';
             if ($view == 'project_overview') {
