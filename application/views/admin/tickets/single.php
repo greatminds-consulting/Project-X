@@ -168,7 +168,9 @@
 											<div class="row">
 												<div class="col-md-5">
 													<?php echo render_select('status',$statuses,array('ticketstatusid','name'),'ticket_single_change_status',get_option('default_ticket_reply_status'),array(),array(),'','',false); ?>
-													<?php echo render_input('cc','CC'); ?>
+													<?php echo render_input('cc','CC');
+                                                    echo render_select('venue[]',$venues,array('id','name'),'venues',$tickets_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                                                    ?>
 													<?php if($ticket->assigned !== get_staff_user_id()){ ?>
 													<div class="checkbox">
 														<input type="checkbox" name="assign_to_current_user" id="assign_to_current_user">

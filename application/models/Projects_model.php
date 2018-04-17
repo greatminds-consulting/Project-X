@@ -1259,6 +1259,7 @@ class Projects_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->update('tblprojects', $data);
 
+        $this->db->where('type_id', $id);
         $this->db->where('type', 'Project');
         $this->db->delete('tblvenues_in');
         if ($venueArray) {

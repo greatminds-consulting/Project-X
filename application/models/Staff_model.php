@@ -373,7 +373,14 @@ class Staff_model extends CRM_Model
                 unset($data['administrator']);
             }
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         $send_welcome_email = true;
         $original_password  = $data['password'];
         if (!isset($data['send_welcome_email'])) {
@@ -425,6 +432,11 @@ class Staff_model extends CRM_Model
         $this->db->insert('tblstaff', $data);
         $staffid = $this->db->insert_id();
         if ($staffid) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $staffid, 'type' => 'Staff', 'venue_id' => $venue_id));
+                }
+            }
             $sl = $data['firstname'] . ' ' . $data['lastname'];
             if ($sl == ' ') {
                 $sl = 'unknown-' . $staffid;
@@ -440,7 +452,6 @@ class Staff_model extends CRM_Model
             $this->db->update('tblstaff', array(
                 'media_path_slug' => slug_it($sl),
             ));
-
             if (isset($custom_fields)) {
                 handle_custom_fields_post($staffid, $custom_fields);
             }
@@ -574,6 +585,15 @@ class Staff_model extends CRM_Model
             $permissions['delete'] = $data['delete'];
             unset($data['delete']);
         }
+
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             if (handle_custom_fields_post($id, $custom_fields)) {
@@ -662,6 +682,14 @@ class Staff_model extends CRM_Model
 
         $this->db->where('staffid', $id);
         $this->db->update('tblstaff', $data);
+        $this->db->where('type', 'Staff');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Staff', 'venue_id' => $venue_id));
+            }
+        }
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
         }

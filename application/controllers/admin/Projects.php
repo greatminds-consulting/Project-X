@@ -1019,6 +1019,7 @@ class Projects extends Admin_controller
             $data['customer_id']          = $project->clientid;
             $data['invoice_from_project'] = true;
             $data['add_items']            = $items;
+            $data['venues'] = $this->venues_model->getvenues();
             $this->load->view('admin/projects/invoice_project', $data);
         }
     }

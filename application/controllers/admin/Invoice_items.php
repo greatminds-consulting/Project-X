@@ -194,6 +194,7 @@ class Invoice_items extends Admin_controller
             $items                   = $this->invoice_items_model->get('', $id);
             $return = array();
             foreach ($items as $item) {
+                $item['venues'] = $this->venues_model->get_type_details_from_venue_map($item['itemid'] , 'Items');
                 $item['long_description'] = nl2br($item['long_description']);
                 $item['custom_fields_html'] = render_custom_fields('items',$item['itemid'],array(),array('items_pr'=>true));
                 $item['custom_fields'] = array();
