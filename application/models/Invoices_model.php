@@ -914,7 +914,7 @@ class Invoices_model extends CRM_Model
                         $affectedRows++;
                     }
                 } else {
-                    $this->db->where('item_id', $item['itemid']);
+                    $this->db->where('itemid', $item['itemid']);
                     $this->db->where('rel_id', $id);
                     $this->db->where('rel_type', 'invoice');
                     $this->db->delete('tblitemsvenue');
