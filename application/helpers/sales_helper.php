@@ -642,6 +642,32 @@ function _maybe_insert_post_item_tax($item_id, $post_item, $rel_id, $rel_type)
     return $affectedRows > 0 ? true : false;
 }
 
+function _maybe_insert_post_item_venue($item_id, $post_item, $rel_id, $rel_type)
+{
+    $affectedRows = 0;
+    if (isset($post_item['venue_items']) && is_array($post_item['venue_items'])) {
+        $CI = &get_instance();
+        foreach ($post_item['venue_items'] as $venue) {
+                    if (total_rows('tblitemsvenue', array(
+                            'itemid'=>$item_id,
+                            'venue_id'=>$venue,
+                            'rel_id'=>$rel_id,
+                            'rel_type'=>$rel_type,
+                        )) == 0) {
+                        $CI->db->insert('tblitemsvenue', array(
+                            'itemid' => $item_id,
+                            'venue_id' => $venue,
+                            'rel_id' => $rel_id,
+                            'rel_type' => $rel_type,
+                        ));
+                        $affectedRows++;
+                    }
+            }
+    }
+
+    return $affectedRows > 0 ? true : false;
+}
+
 /**
  * Add new item do database, used for proposals,estimates,credit notes,invoices
  * This is repetitive action, that's why this function exists
@@ -755,6 +781,16 @@ function delete_taxes_from_item($item_id, $rel_type)
     $CI->db->where('itemid', $item_id)
     ->where('rel_type', $rel_type)
     ->delete('tblitemstax');
+
+    return $CI->db->affected_rows() > 0 ? true : false;
+}
+
+function delete_venue_from_item($item_id, $rel_type)
+{
+    $CI = &get_instance();
+    $CI->db->where('itemid', $item_id)
+        ->where('rel_type', $rel_type)
+        ->delete('tblitemsvenue');
 
     return $CI->db->affected_rows() > 0 ? true : false;
 }

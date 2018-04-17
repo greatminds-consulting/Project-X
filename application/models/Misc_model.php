@@ -136,21 +136,10 @@ class Misc_model extends CRM_Model
 
         foreach ($allVenues as $venue) {
             $selected = '';
-                foreach ($venues as $_tax) {
-                    if (is_array($_tax)) {
-                        if ($_tax['name'] == $venue['name']) {
-                            $selected = 'selected';
-                        }
-                    } else {
-                        if ($_tax == $venue['name']) {
-                            $selected = 'selected';
-                        }
-                    }
-                }
             if(in_array($venue['id'], $venues)) {
                 $selected = 'selected';
             }
-            $select .= '<option value="' . $venue['name'] . '" ' . $selected . ' >' . $venue['name'] . '</option>';
+            $select .= '<option value="' . $venue['id'] . '" ' . $selected . ' >' . $venue['name'] . '</option>';
         }
         $select .= '</select>';
 
