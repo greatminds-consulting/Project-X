@@ -87,8 +87,7 @@ class Projects extends Admin_controller
                     set_alert('success', _l('updated_successfully', _l('project')));
                 }
                 redirect(admin_url('projects/view/' . $id));
-            }$data['venues'] = $this->venues_model->getvenues();
-            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
+            }
         }
         if ($id == '') {
             $title                            = _l('add_new', _l('project_lowercase'));
@@ -111,7 +110,8 @@ class Projects extends Admin_controller
             $key = array_search('available_features', array_column($data['last_project_settings'], 'name'));
             $data['last_project_settings'][$key]['value'] = unserialize($data['last_project_settings'][$key]['value']);
         }
-
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
         $data['settings']              = $this->projects_model->get_settings();
         $data['statuses']              = $this->projects_model->get_project_statuses();
         $data['staff']                 = $this->staff_model->get('', 1);

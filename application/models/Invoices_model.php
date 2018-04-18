@@ -25,6 +25,17 @@ class Invoices_model extends CRM_Model
      * @param  mixed $id
      * @return array
      */
+    public function selectedvenues($id)
+    {
+        $this->db->select('tblvenues.name');
+        $this->db->from('tblvenues');
+        $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $this->db->where('tblvenues_in.type','Invoice');
+        $query = $this->db->get();
+        return  $query->result();
+
+    }
     public function get($id = '', $where = array())
     {
         $this->db->select('*, tblcurrencies.id as currencyid, tblinvoices.id as id, tblcurrencies.name as currency_name');
