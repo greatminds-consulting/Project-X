@@ -344,6 +344,7 @@
 
 									</div>
 									<div class="col-md-12">
+                                      <?php  echo render_select('venue[]',$venues,array('id','name'),'venues',$tickets_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
 										<?php echo render_custom_fields('tickets',$ticket->ticketid); ?>
 									</div>
 								</div>

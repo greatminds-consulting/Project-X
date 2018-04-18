@@ -999,6 +999,15 @@ class Tickets_model extends CRM_Model
             $tags = $data['tags'];
             unset($data['tags']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+                $affectedRows++;
+            }
+            unset($data['venue']);
+        }
 
         if (handle_tags_save($tags, $data['ticketid'], 'ticket')) {
             $affectedRows++;
@@ -1086,6 +1095,13 @@ class Tickets_model extends CRM_Model
             $this->emails_model->send_email_template('ticket-assigned-to-admin', $assignedEmail, $merge_fields, $data['ticketid']);
         }
         if ($affectedRows > 0) {
+            $this->db->where('type', 'Ticket');
+            $this->db->delete('tblvenues_in');
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $data['ticketid'], 'type' => 'Ticket', 'venue_id' => $venue_id));
+                }
+            }
             logActivity('Ticket Updated [ID: ' . $data['ticketid'] . ']');
 
             return true;
