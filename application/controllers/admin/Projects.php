@@ -87,8 +87,7 @@ class Projects extends Admin_controller
                     set_alert('success', _l('updated_successfully', _l('project')));
                 }
                 redirect(admin_url('projects/view/' . $id));
-            }$data['venues'] = $this->venues_model->getvenues();
-            $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
+            }
         }
         if ($id == '') {
             $title                            = _l('add_new', _l('project_lowercase'));
@@ -116,6 +115,8 @@ class Projects extends Admin_controller
         $data['statuses']              = $this->projects_model->get_project_statuses();
         $data['staff']                 = $this->staff_model->get('', 1);
         $data['title'] = $title;
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['projects_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Project');
         $this->load->view('admin/projects/project', $data);
     }
 
