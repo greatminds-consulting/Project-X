@@ -407,6 +407,7 @@ $lang['settings_group_cronjob']       = 'Cron Job';
 $lang['settings_yes']                                        = 'Yes';
 $lang['settings_no']                                         = 'No';
 $lang['settings_clients_default_theme']                      = 'Default customers theme';
+$lang['settings_supplier_default_theme']                      = 'Default suppliers theme';
 $lang['settings_clients_allow_registration']                 = 'Allow customers to register';
 $lang['settings_clients_allow_kb_view_without_registration'] = 'Allow knowledge base to be viewed without registration';
 $lang['settings_cron_send_overdue_reminder']                 = 'Send invoice overdue reminder';

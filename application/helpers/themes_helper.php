@@ -38,9 +38,25 @@ function get_template_part($name, $data = array(), $return = false)
  */
 function get_all_client_themes()
 {
-    return list_folders(APPPATH . 'views/themes/');
+    $themes = list_folders(APPPATH . 'views/themes/');
+    foreach ($themes as $key => $theme) {
+        if (strpos($theme, 'supplier_') !== false) {
+            unset($themes[$key]);
+        }
+    }
+    return $themes;
 }
 
+function get_all_supplier_themes()
+{
+    $themes = list_folders(APPPATH . 'views/themes/');
+    foreach ($themes as $key => $theme) {
+        if (strpos($theme, 'supplier_') === false) {
+            unset($themes[$key]);
+        }
+    }
+    return $themes;
+}
 /**
  * Get active client theme
  * @return mixed
@@ -50,6 +66,19 @@ function active_clients_theme()
     $CI =& get_instance();
 
     $theme = get_option('clients_default_theme');
+    if ($theme == '') {
+        show_error('Default theme is not set');
+    }
+    if (!is_dir(APPPATH . 'views/themes/' . $theme)) {
+        show_error('Theme does not exists');
+    }
+    return $theme;
+}
+function active_supplier_theme()
+{
+    $CI =& get_instance();
+
+    $theme = get_option('supplier_default_theme');
     if ($theme == '') {
         show_error('Default theme is not set');
     }

@@ -7,6 +7,14 @@
 		<?php } ?>
 	</select>
 </div>
+<div class="form-group">
+	<label for="clients_default_theme" class="control-label"><?php echo _l('settings_supplier_default_theme'); ?></label>
+	<select name="settings[supplier_default_theme]" id="supplier_default_theme" class="form-control selectpicker" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
+		<?php foreach(get_all_supplier_themes() as $theme){ ?>
+		<option value="<?php echo $theme; ?>" <?php if(active_supplier_theme() == $theme){echo 'selected';} ?>><?php echo ucfirst($theme); ?></option>
+		<?php } ?>
+	</select>
+</div>
 <hr />
 <?php echo render_select( 'settings[customer_default_country]',get_all_countries(),array( 'country_id',array( 'short_name')), 'customer_default_country',get_option('customer_default_country')); ?>
 <hr />
