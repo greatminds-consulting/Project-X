@@ -1,5 +1,9 @@
 <?php $this->load->view('authentication/includes/head.php'); ?>
 <body class="login_admin"<?php if(is_rtl()){ echo ' dir="rtl"'; } ?>>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WFLNCFK"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
  <div class="container">
   <div class="row">
    <div class="col-md-4 col-md-offset-4 authentication-form-wrapper">
