@@ -1,7 +1,7 @@
 <?php
 echo $head;
 if($use_navigation == true){
-	get_template_part('navigation');
+    get_supplier_template_part('navigation');
 }
 ?>
 <div id="wrapper">
