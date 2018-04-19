@@ -22,7 +22,7 @@
         <?php do_action('customers_navigation_end'); ?>
         <li class="dropdown customers-nav-item-profile">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            <img src="<?php echo contact_profile_image_url($contact->id,'thumb'); ?>" class="client-profile-image-small mright5">
+              <?php echo suppliers_image(); ?>
             <span class="caret"></span></a>
             <ul class="dropdown-menu animated fadeIn">
               <li class="customers-nav-item-edit-profile"><a href="<?php echo site_url('suppliers/profile'); ?>"><?php echo _l('clients_nav_profile'); ?></a></li>

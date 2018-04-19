@@ -401,6 +401,20 @@ function contact_profile_image_url($contact_id, $type = 'small')
 
     return $url;
 }
+
+function suppliers_image() {
+    $image = base_url('assets/images/user-placeholder.jpg');
+    $url = '<img src="' . $image . '"  class="client-profile-image-small mright5">';
+    $CI =& get_instance();
+    $CI->db->select('businessname');
+    $CI->db->from('tblsuppliers');
+    $CI->db->where('supplierid', get_supplier_user_id());
+    $supplier = $CI->db->get()->row();
+    if ($supplier->businessname) {
+        $url = '<span class="profile-initials" style="">'.strtoupper(substr($supplier->businessname, 0, 2)).'</span>';
+    }
+    return $url;
+}
 /**
  * Used in:
  * Search contact tickets
