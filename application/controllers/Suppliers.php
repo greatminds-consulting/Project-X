@@ -7,6 +7,7 @@ class Suppliers extends Supplier_controller
         parent::__construct();
         $this->form_validation->set_error_delimiters('<p class="text-danger alert-validation">', '</p>');
         do_action('after_suppliers_area_init', $this);
+        $this->load->model('suppliers_model');
     }
 
     public function index() {
@@ -32,7 +33,7 @@ class Suppliers extends Supplier_controller
 
     public function login()
     {
-        if (is_client_logged_in()) {
+        if (is_supplier_logged_in()) {
             redirect(site_url());
         }
         $this->form_validation->set_rules('password', _l('clients_login_password'), 'required');
@@ -53,7 +54,7 @@ class Suppliers extends Supplier_controller
 
             maybe_redirect_to_previous_url();
             do_action('after_contact_login');
-            redirect(site_url('suppliers'));
+            redirect(site_url('suppliers/profile'));
         }
         if (get_option('allow_registration') == 1) {
             $data['title'] = _l('clients_login_heading_register');
@@ -64,6 +65,51 @@ class Suppliers extends Supplier_controller
 
         $this->data        = $data;
         $this->view        = 'login';
+        $this->layout();
+    }
+
+    public function profile()
+    {
+        if (!is_supplier_logged_in()) {
+            redirect(site_url('suppliers/login'));
+        }
+        if ($this->input->post('profile')) {
+            $this->form_validation->set_rules('email', _l('email'), 'required');
+            $this->form_validation->set_rules('businessname', _l('businessname'), 'required');
+            if ($this->form_validation->run() !== false) {
+                $data = $this->input->post();
+                // Unset the form indicator so we wont send it to the model
+                unset($data['profile']);
+
+                // For all cases
+                if (isset($data['password'])) {
+                    unset($data['password']);
+                }
+                $success = $this->suppliers_model->update_supplier($data, get_supplier_user_id());
+
+                if ($success == true) {
+                    set_alert('success', _l('clients_profile_updated'));
+                }
+                redirect(site_url('suppliers/profile'));
+            }
+        } elseif ($this->input->post('change_password')) {
+            $this->form_validation->set_rules('oldpassword', _l('clients_edit_profile_old_password'), 'required');
+            $this->form_validation->set_rules('newpassword', _l('clients_edit_profile_new_password'), 'required');
+            $this->form_validation->set_rules('newpasswordr', _l('clients_edit_profile_new_password_repeat'), 'required|matches[newpassword]');
+            if ($this->form_validation->run() !== false) {
+                $success = $this->suppliers_model->change_supplier_password($this->input->post());
+                if (is_array($success) && isset($success['old_password_not_match'])) {
+                    set_alert('danger', _l('client_old_password_incorrect'));
+                } elseif ($success == true) {
+                    set_alert('success', _l('client_password_changed'));
+                }
+                redirect(site_url('suppliers/profile'));
+            }
+        }
+        $data['title'] = _l('clients_profile_heading');
+        $data['supplier'] = $this->suppliers_model->getSupplierProfile(get_supplier_user_id());
+        $this->data    = $data;
+        $this->view    = 'profile';
         $this->layout();
     }
 

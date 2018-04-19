@@ -875,6 +875,15 @@ $lang['clients_profile_heading'] = 'Profile';
 # Used for edit profile and register START
 $lang['clients_firstname'] = 'First Name';
 $lang['clients_lastname']  = 'Last Name';
+$lang['abn']               = 'ABN';
+$lang['acn']               = 'ACN';
+$lang['address1']          = 'Address1';
+$lang['address2']          = 'Address2';
+$lang['suburb']            = 'Suburb';
+$lang['postcode']          = 'PostCode';
+$lang['country']           = 'Country';
+$lang['state']             = 'State';
+$lang['businessname']      = 'Business Name';
 $lang['clients_email']     = 'Email Address';
 $lang['clients_company']   = 'Company';
 $lang['clients_vat']       = 'VAT Number';
