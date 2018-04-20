@@ -31,7 +31,7 @@
   <link href="<?php echo base_url('assets/plugins/lightbox/css/lightbox.min.css'); ?>" rel="stylesheet" />
   <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css'); ?>">
   <?php echo app_stylesheet('assets/css','bs-overides.css'); ?>
-  <?php echo app_stylesheet(template_assets_path().'/css','style.css'); ?>
+  <?php echo app_stylesheet(supplier_template_assets_path().'/css','style.css'); ?>
   <?php if(file_exists(FCPATH.'assets/css/custom.css')){ ?>
   <link href="<?php echo base_url('assets/css/custom.css'); ?>" rel="stylesheet" type='text/css'>
   <?php } ?>

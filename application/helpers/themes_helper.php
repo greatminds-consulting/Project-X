@@ -17,6 +17,10 @@ function template_assets_path()
 {
     return 'assets/themes/' . get_option('clients_default_theme');
 }
+function supplier_template_assets_path()
+{
+    return 'assets/themes/' . get_option('supplier_default_theme');
+}
 
 /**
  * Current theme view part
