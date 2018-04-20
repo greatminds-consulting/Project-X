@@ -14,13 +14,7 @@ class Suppliers extends Supplier_controller
         if (!is_supplier_logged_in()) {
             redirect(site_url('suppliers/login'));
         }
-        $data['is_home'] = true;
-        $this->load->model('reports_model');
-        $data['title'] = get_supplier_company_name(get_supplier_user_id());
-
-        $this->data    = $data;
-        $this->view    = 'home';
-        $this->layout();
+        redirect(site_url('suppliers/profile'));
     }
 
     public function logout()
@@ -34,7 +28,7 @@ class Suppliers extends Supplier_controller
     public function login()
     {
         if (is_supplier_logged_in()) {
-            redirect(site_url());
+            redirect(site_url('suppliers'));
         }
         $this->form_validation->set_rules('password', _l('clients_login_password'), 'required');
         $this->form_validation->set_rules('email', _l('clients_login_email'), 'trim|required|valid_email');

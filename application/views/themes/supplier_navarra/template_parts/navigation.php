@@ -16,7 +16,7 @@
         <?php do_action('suppliers_navigation_start'); ?>
 
         <?php if(!is_supplier_logged_in()){ ?>
-        <li class="customers-nav-item-login"><a href="<?php echo site_url('clients/login'); ?>"><?php echo _l('clients_nav_login'); ?></a></li>
+        <li class="customers-nav-item-login"><a href="<?php echo site_url('suppliers/login'); ?>"><?php echo _l('clients_nav_login'); ?></a></li>
         <?php } else { ?>
          <li class="customers-nav-item-tickets"><a href="<?php echo site_url('clients/tickets'); ?>"><?php echo _l('items'); ?></a></li>
         <?php do_action('customers_navigation_end'); ?>
