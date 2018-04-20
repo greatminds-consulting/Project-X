@@ -23,7 +23,7 @@ class Migration_Version_213 extends CI_Migration
               PRIMARY KEY (`supplierid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
-        $this->db->query("ALTER TABLE `tblitems` ADD COLUMN `stockinhand` INT NULL AFTER `group_id`, ADD COLUMN `type` VARCHAR(32) NULL AFTER `stock in hand`, ADD COLUMN `created_by` INT NULL AFTER `type`");
+        $this->db->query("ALTER TABLE `tblitems` ADD COLUMN `stockinhand` INT NULL AFTER `group_id`, ADD COLUMN `type` VARCHAR(32) NULL AFTER `stockinhand`, ADD COLUMN `created_by` INT NULL AFTER `type`");
 
         add_option('supplier_default_theme','supplier_navarra');
 
