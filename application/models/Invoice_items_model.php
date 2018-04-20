@@ -12,7 +12,7 @@ class Invoice_items_model extends CRM_Model
      * @param  mixed $id
      * @return mixed - array if not passed id, object if id passed
      */
-    public function get($id = '', $package_id = '')
+    public function get($id = '', $package_id = '',$supplier_id = '')
     {
         $columns = $this->db->list_fields('tblitems');
         $rateCurrencyColumns = '';
@@ -37,6 +37,9 @@ class Invoice_items_model extends CRM_Model
         }
         if ($package_id) {
             $this->db->join('tblitems_packages_map', 'tblitems_packages_map.item_id = tblitems.id and tblitems_packages_map.package_id = '.$package_id, 'inner');
+        }
+        if ($supplier_id) {
+            $this->db->where('tblitems.created_by', $supplier_id);
         }
 
         return $this->db->get()->result_array();

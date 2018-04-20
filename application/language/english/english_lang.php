@@ -2709,6 +2709,7 @@ $lang['invoice_activity_marked_as_cancelled'] = 'marked invoice as cancelled';
 $lang['invoice_activity_unmarked_as_cancelled'] = 'unmarked invoice as cancelled';
 $lang['wait_text'] = 'Please wait...';
 $lang['projects_summary'] = 'Projects Summary';
+$lang['items_summary'] = 'Items Summary';
 $lang['dept_imap_host'] = 'IMAP Host';
 $lang['dept_encryption'] = 'Encryption';
 $lang['dept_email_password'] = 'Password';

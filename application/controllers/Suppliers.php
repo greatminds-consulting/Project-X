@@ -8,6 +8,9 @@ class Suppliers extends Supplier_controller
         $this->form_validation->set_error_delimiters('<p class="text-danger alert-validation">', '</p>');
         do_action('after_suppliers_area_init', $this);
         $this->load->model('suppliers_model');
+        $this->load->model('projects_model');
+        $this->load->model('taxes_model');
+        $this->load->model('invoice_items_model');
     }
 
     public function index() {
@@ -107,4 +110,14 @@ class Suppliers extends Supplier_controller
         $this->layout();
     }
 
+    public function items() {
+        if (!is_supplier_logged_in()) {
+            redirect(site_url('suppliers/login'));
+        }
+        $data['items']            = $this->invoice_items_model->get(false,false,get_supplier_user_id());
+        $data['title']            = _l('items');
+        $this->data               = $data;
+        $this->view               = 'items';
+        $this->layout();
+    }
 }
