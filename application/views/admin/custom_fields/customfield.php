@@ -63,6 +63,7 @@
                                 <option value="proposal" <?php if(isset($custom_field) && $custom_field->fieldto == 'proposal'){echo 'selected';} ?>><?php echo _l('proposal'); ?></option>
                                 <option value="projects" <?php if(isset($custom_field) && $custom_field->fieldto == 'projects'){echo 'selected';} ?>><?php echo _l('projects'); ?></option>
                                 <option value="tickets" <?php if(isset($custom_field) && $custom_field->fieldto == 'tickets'){echo 'selected';} ?>><?php echo _l('tickets'); ?></option>
+                                <option value="supplier" <?php if(isset($custom_field) && $custom_field->fieldto == 'supplier'){echo 'selected';} ?>><?php echo _l('supplier'); ?></option>
                             </select>
                           </div>
                             <div class="clearfix mbot15"></div>

@@ -573,6 +573,7 @@ $lang['als_leads']     = 'Leads';
 $lang['als_contracts'] = 'Contracts';
 $lang['als_sales']       = 'Sales';
 $lang['als_staff'] = 'Staff';
+$lang['als_supplier'] = 'Supplier Management';
 $lang['als_tasks'] = 'Tasks';
 $lang['als_kb']    = 'Knowledge Base';
 $lang['als_surveys']               = 'Surveys';
@@ -654,6 +655,24 @@ $lang['ticket_staff_string']                    = 'Staff';
 $lang['ticket_client_string']                   = 'Customer';
 $lang['ticket_posted']                          = 'Posted: %s';
 $lang['ticket_access_by_department_denied']     = 'You do not have access to this ticket. This ticket belongs to department that you are not assigned.';
+
+# Supplier
+$lang['new_supplier']                           = 'New Supplier';
+$lang['supplier_member_lowercase']              = 'supplier member';
+$lang['supplier_add_edit_businessname']         = 'Business Name';
+$lang['supplier_add_edit_email']                = 'Email';
+$lang['supplier_add_edit_password']             = 'Password';
+$lang['address1']                               = 'Address1';
+$lang['address2']                               = 'Address2';
+$lang['supplier_permissions_info']              = 'Make sure to set appropriate permissions for this supplier';
+$lang['supplier']                               = 'Supplier';
+$lang['delete_supplier']                        = 'Delete Supplier';
+$lang['supplier_dt_id']                         = 'Id';
+$lang['supplier_dt_name']                       = 'Business Name';
+$lang['supplier_dt_email']                      = 'Email';
+$lang['supplier_abn']                           = 'ABN';
+$lang['supplier_dt_active']                     = 'Active';
+$lang['supplier_dt_options']                    = 'Options';
 
 # Staff
 $lang['new_staff']                       = 'New Staff Member';

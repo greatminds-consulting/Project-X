@@ -509,6 +509,33 @@ function has_contact_permission($permission, $contact_id = '')
 
     return false;
 }
+
+function has_supplier_permission($permission, $contact_id = '')
+{
+    $CI =& get_instance();
+    if (!class_exists('app')) {
+        $CI->load->library('app');
+    }
+    $permissions = get_supplier_permissions();
+    // Contact id passed form function
+    if ($contact_id != '') {
+       $_contact_id = $contact_id;
+    } else {
+        // Current logged in contact
+        $_contact_id     = get_contact_user_id();
+    }
+
+    foreach ($permissions as $_permission) {
+        if ($_permission['short_name'] == $permission) {
+            return total_rows('tblsupplierpermissions', array(
+                'permission_id' => $_permission['id'],
+                'userid' => $_contact_id,
+            )) > 0;
+        }
+    }
+
+    return false;
+}
 /**
  * Load customers area language
  * @param  string $customer_id
@@ -613,6 +640,24 @@ function get_contact_permissions()
                 'short_name' => 'projects',
             ),
         );
+
+    return do_action('get_contact_permissions', $permissions);
+}
+
+function get_supplier_permissions()
+{
+    $permissions = array(
+        array(
+            'id' => 1,
+            'name' => 'Profile',
+            'short_name' => 'Profile',
+        ),
+        array(
+            'id' => 2,
+            'name' => 'Items',
+            'short_name' => 'Items',
+        )
+    );
 
     return do_action('get_contact_permissions', $permissions);
 }
