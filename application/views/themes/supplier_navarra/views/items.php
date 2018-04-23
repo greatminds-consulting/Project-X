@@ -1,6 +1,8 @@
 <div class="panel_s">
     <div class="panel-body">
-        <h4 class="no-margin"><?php echo _l('items'); ?></h4>
+        <div class="_buttons">
+            <a href="/suppliers/item" class="btn btn-info pull-left"><?php echo _l('new_invoice_item'); ?></a>
+        </div>
     </div>
 </div>
 <div class="panel_s">
@@ -53,5 +55,5 @@
     </div>
 </div>
 <?php
-$this->load->view('themes/supplier_navarra/views/item');
+
 

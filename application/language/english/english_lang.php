@@ -198,6 +198,7 @@ $lang['invoice_item_lowercase']                             = 'invoice item';
 $lang['invoice_items_list_description'] = 'Description';
 $lang['invoice_items_list_rate']        = 'Rate';
 $lang['invoice_item_add_edit_description'] = 'Description';
+$lang['stock_in_hand'] = 'Stock In Hand';
 $lang['invoice_item_add_edit_rate']        = 'Rate';
 $lang['invoice_item_edit_heading'] = 'Edit Item';
 $lang['invoice_item_add_heading']  = 'Add New Item';

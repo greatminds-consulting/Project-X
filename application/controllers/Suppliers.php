@@ -132,4 +132,45 @@ class Suppliers extends Supplier_controller
         }
         redirect(site_url('suppliers/items'));
     }
+    public function item() {
+        if (!is_supplier_logged_in()) {
+            redirect(site_url('suppliers/login'));
+        }
+        if ($this->input->post()) {
+            $data = $this->input->post();
+            $data['created_by'] = get_supplier_user_id();
+            $data['type'] = 'Supplier';
+            $this->form_validation->set_rules('description', _l('invoice_item_add_edit_description'), 'required');
+            $this->form_validation->set_rules('rate', _l('invoice_item_add_edit_rate_currency'), 'required');
+            $this->form_validation->set_rules('stockinhand', _l('stock_in_hand'), 'required');
+            if ($this->form_validation->run() !== false) {
+                if ($data['itemid'] == '') {
+                    $id      = $this->invoice_items_model->add($data);
+                    if ($id) {
+                        set_alert('success', _l('added_successfully'));
+                    }
+                } else {
+                    $success = $this->invoice_items_model->edit($data);
+                    if ($success) {
+                        set_alert('success', _l('updated_successfully', _l('invoice_item')));
+                    }
+                }
+                redirect(site_url('suppliers/items'));
+            }
+        }
+        $this->load->model('taxes_model');
+        $data['taxes']          = $this->taxes_model->get();
+        $data['items_groups']   = $this->invoice_items_model->get_groups();
+        $data['items_packages'] = $this->invoice_items_model->get_packages();
+
+        $this->load->model('currencies_model');
+        $data['currencies'] = $this->currencies_model->get();
+
+        $data['base_currency'] = $this->currencies_model->get_base_currency();
+        $data['title']            = _l('items');
+        $this->data               = $data;
+        $this->view               = 'item';
+        $this->layout();
+    }
+
 }

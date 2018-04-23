@@ -12,7 +12,7 @@
 <script src="<?php echo base_url('assets/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js'); ?>"></script>
 <?php echo app_script(template_assets_path().'/js','global.js'); ?>
 <script src="<?php echo base_url('assets/plugins/lightbox/js/lightbox.min.js'); ?>"></script>
-<?php if(is_client_logged_in()){ ?>
+<?php if(is_supplier_logged_in()){ ?>
 <script src="<?php echo base_url('assets/plugins/dropzone/min/dropzone.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/plugins/app-build/moment.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/plugins/jquery-comments/js/jquery-comments.min.js'); ?>"></script>
