@@ -45,7 +45,7 @@
                         <td><?php echo get_custom_field_value($item['itemid'],$field['itemid'],'items'); ?></td>
                     <?php } ?>
                     <td>
-                        <a href="#" class="btn btn-default btn-icon" data-toggle="modal" data-target="#sales_item_modal" data-id="2"><i class="fa fa-pencil-square-o"></i></a>
+                        <a href="/suppliers/item/<?php echo $item['itemid'] ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square-o"></i></a>
                         <a href="/suppliers/itemdelete/<?php echo $item['itemid'] ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
                     </td>
                 </tr>

@@ -132,9 +132,13 @@ class Suppliers extends Supplier_controller
         }
         redirect(site_url('suppliers/items'));
     }
-    public function item() {
+    public function item($id = '') {
         if (!is_supplier_logged_in()) {
             redirect(site_url('suppliers/login'));
+        }
+        if ($id) {
+            $data['item_details'] = $this->invoice_items_model->get($id);
+            $data['item_packages'] = $this->invoice_items_model->get_item_packages($id);
         }
         if ($this->input->post()) {
             $data = $this->input->post();
@@ -152,7 +156,7 @@ class Suppliers extends Supplier_controller
                 } else {
                     $success = $this->invoice_items_model->edit($data);
                     if ($success) {
-                        set_alert('success', _l('updated_successfully', _l('invoice_item')));
+                        set_alert('success', _l('updated_successfully', _l('item')));
                     }
                 }
                 redirect(site_url('suppliers/items'));

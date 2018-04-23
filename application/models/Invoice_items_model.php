@@ -21,7 +21,7 @@ class Invoice_items_model extends CRM_Model
                 $rateCurrencyColumns .= $column.',';
             }
         }
-        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,
+        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,stockinhand,
             t1.taxrate as taxrate,t1.id as taxid,t1.name as taxname,
             t2.taxrate as taxrate_2,t2.id as taxid_2,t2.name as taxname_2,
             description,long_description,group_id,tblitems_groups.name as group_name,unit');
@@ -84,7 +84,6 @@ class Invoice_items_model extends CRM_Model
         if ($data['tax'] == '') {
             unset($data['tax']);
         }
-
         if (isset($data['tax2']) && $data['tax2'] == '') {
             unset($data['tax2']);
         }
