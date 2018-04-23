@@ -120,4 +120,16 @@ class Suppliers extends Supplier_controller
         $this->view               = 'items';
         $this->layout();
     }
+
+    public function itemdelete($id) {
+        $response = $this->invoice_items_model->delete($id);
+        if (is_array($response) && isset($response['referenced'])) {
+            set_alert('warning', _l('is_referenced', _l('invoice_item_lowercase')));
+        } elseif ($response == true) {
+            set_alert('success', _l('deleted', _l('invoice_item')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('invoice_item_lowercase')));
+        }
+        redirect(site_url('suppliers/items'));
+    }
 }
