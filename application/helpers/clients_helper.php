@@ -536,7 +536,7 @@ function has_supplier_permission($permission, $contact_id = '')
        $_contact_id = $contact_id;
     } else {
         // Current logged in contact
-        $_contact_id     = get_contact_user_id();
+        $_contact_id     = get_supplier_user_id();
     }
 
     foreach ($permissions as $_permission) {

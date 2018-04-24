@@ -114,6 +114,10 @@ class Suppliers extends Supplier_controller
         if (!is_supplier_logged_in()) {
             redirect(site_url('suppliers/login'));
         }
+        if(!has_supplier_permission('Items')){
+            set_alert('warning', _l('access_denied'));
+            redirect(site_url('suppliers/login'));
+        }
         $data['items']            = $this->invoice_items_model->get(false,false,get_supplier_user_id());
         $data['title']            = _l('items');
         $this->data               = $data;

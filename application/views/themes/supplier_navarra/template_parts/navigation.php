@@ -17,8 +17,11 @@
 
         <?php if(!is_supplier_logged_in()){ ?>
         <li class="customers-nav-item-login"><a href="<?php echo site_url('suppliers/login'); ?>"><?php echo _l('clients_nav_login'); ?></a></li>
-        <?php } else { ?>
-         <li class="customers-nav-item-tickets"><a href="<?php echo site_url('suppliers/items'); ?>"><?php echo _l('items'); ?></a></li>
+        <?php } else { 
+          if(has_supplier_permission('Items')){
+            ?>
+              <li class="customers-nav-item-tickets"><a href="<?php echo site_url('suppliers/items'); ?>"><?php echo _l('items'); ?></a></li>
+          <?php } ?>
         <?php do_action('customers_navigation_end'); ?>
         <li class="dropdown customers-nav-item-profile">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
