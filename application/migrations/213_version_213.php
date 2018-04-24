@@ -10,7 +10,24 @@ class Migration_Version_213 extends CI_Migration
 
     public function up() {
 
-        // Venue Custom Fields In Items
+        $menu = get_option('setup_menu_active');
+        $menu = json_decode($menu);
+        if (is_object($menu)) {
+            if (count($menu->setup_menu_active) == 0) {
+                $order = 1;
+            } else {
+                $order = count($menu->setup_menu_active);
+            }
+            add_setup_menu_item(array(
+                'name' => 'Supplier Management',
+                'permission' => 'is_admin',
+                'url' => 'supplier',
+                'id' => 'supplier',
+                'order' => $order
+            ));
+        }
+
+         //supplier Custom Fields In Items
         $this->db->query("CREATE TABLE IF NOT EXISTS `tblsuppliers` (
               `supplierid` int(11) NOT NULL AUTO_INCREMENT,
               `email` varchar(100)  DEFAULT NULL,`password` varchar(256)  DEFAULT NULL,`businessname` varchar(128) DEFAULT NULL,
