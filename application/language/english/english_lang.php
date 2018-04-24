@@ -658,6 +658,7 @@ $lang['ticket_access_by_department_denied']     = 'You do not have access to thi
 
 # Supplier
 $lang['new_supplier']                           = 'New Supplier';
+$lang['supplier_members']                       = 'Supplier Members';
 $lang['supplier_member_lowercase']              = 'supplier member';
 $lang['supplier_add_edit_businessname']         = 'Business Name';
 $lang['supplier_add_edit_email']                = 'Email';

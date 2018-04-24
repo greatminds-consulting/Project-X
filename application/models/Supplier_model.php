@@ -37,6 +37,11 @@ class Supplier_model extends CRM_Model
             $permissions = $data['permissions'];
             unset($data['permissions']);
         }
+        if (isset($data['password'])) {
+            $this->load->helper('phpass');
+            $hasher                       = new PasswordHash(PHPASS_HASH_STRENGTH, PHPASS_HASH_PORTABLE);
+            $data['password']             = $hasher->HashPassword($data['password']);
+        }
 
         $this->db->insert('tblsuppliers', $data);
         $userid = $this->db->insert_id();
@@ -88,6 +93,14 @@ class Supplier_model extends CRM_Model
         if (isset($data['permissions'])) {
             $permissions = $data['permissions'];
             unset($data['permissions']);
+        }
+        if (empty($data['password'])) {
+            unset($data['password']);
+        } else {
+            $this->load->helper('phpass');
+            $hasher                       = new PasswordHash(PHPASS_HASH_STRENGTH, PHPASS_HASH_PORTABLE);
+            $data['password']             = $hasher->HashPassword($data['password']);
+            $data['last_password_change'] = date('Y-m-d H:i:s');
         }
         if (isset($permissions) ) {
             $this->db->where('userid', $id);
