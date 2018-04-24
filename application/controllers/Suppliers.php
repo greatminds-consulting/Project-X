@@ -139,6 +139,9 @@ class Suppliers extends Supplier_controller
         if ($id) {
             $data['item_details'] = $this->invoice_items_model->get($id);
             $data['item_packages'] = $this->invoice_items_model->get_item_packages($id);
+            $data['heading'] = _l('invoice_item_edit_heading');
+        } else {
+            $data['heading']            = _l('invoice_item_add_heading');
         }
         if ($this->input->post()) {
             $data = $this->input->post();

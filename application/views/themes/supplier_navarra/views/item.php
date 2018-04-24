@@ -3,7 +3,7 @@
     <div class="col-md-6">
         <div class="panel_s">
             <div class="panel-heading text-uppercase">
-                <?php echo _l('invoice_item_add_heading'); ?>
+                <?php echo $heading; ?>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -72,8 +72,12 @@
                         <div id="custom_fields_items">
                             <?php echo render_custom_fields('items'); ?>
                         </div>
+                            <?php  $packages = array();
+                            foreach ($item_packages as $item_package) {
+                                $packages[] = $item_package['id'];
+                            }?>
                         <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group',$item_details->group_id); ?>
-                        <?php echo render_select('package_id[]',$items_packages,array('id','name'),'item_package','',array('multiple'=>true),array(),'','item_packages',false); ?>
+                        <?php echo render_select('package_id[]',$items_packages,array('id','name'),'item_package',$packages,array('multiple'=>true),array(),'','item_packages',false); ?>
                     </div>
                 </div>
             </div>
