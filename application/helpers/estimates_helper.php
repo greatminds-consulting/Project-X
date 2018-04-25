@@ -258,6 +258,29 @@ function get_estimate_item_taxes($itemid)
     return $taxes;
 }
 
+function get_item_venues($itemid, $type, $relid, $isString = false)
+{
+    $CI =& get_instance();
+    $CI->db->where('itemid', $itemid);
+    $CI->db->where('rel_type', $type);
+    $CI->db->where('rel_id', $relid);
+    $venues = $CI->db->from('tblvenues')->join('tblitemsvenue', 'tblvenues.id=tblitemsvenue.venue_id')->get();
+    $venue_details=$venues->result_array();
+    $return = array();
+
+    foreach ($venue_details as $venue) {
+        if ($isString) {
+            $return[] = $venue['name'];
+        } else {
+            $return[] = $venue['venue_id'];
+        }
+    }
+    if ($isString) {
+        return implode(',', $return);
+    }
+    return $return;
+}
+
 /**
  * Calculate estimates percent by status
  * @param  mixed $status          estimate status

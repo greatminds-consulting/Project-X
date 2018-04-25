@@ -68,7 +68,7 @@ foreach($pdf_custom_fields as $field){
 $pdf->writeHTMLCell(($dimensions['wk'] / 2) - $dimensions['rm'], '', '', ($swap == '1' ? $y : ''), $estimate_info, 0, 1, false, true, ($swap == '1' ? 'J' : 'R'), true);
 
 // The Table
-$pdf->Ln(6);
+$pdf->Ln(7);
 $item_width = 38;
 // If show item taxes is disabled in PDF we should increase the item width table heading
 $item_width = get_option('show_tax_per_item') == 0 ? $item_width+15 : $item_width;
@@ -97,7 +97,7 @@ $tblhtml .= '<th width="'.$item_width.'%" align="left">' . _l('estimate_table_it
 foreach ($custom_fields_items as $cf) {
     $tblhtml .= '<th width="'.$headings_width.'%" align="left">' . $cf['name'] . '</th>';
 }
-
+$tblhtml .= '<th width="10%;" align="center">Venues</th>';
 $tblhtml .= '<th width="'.$headings_width.'%" align="right">' . $qty_heading . '</th>';
 $tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('estimate_table_rate_heading') . '</th>';
 

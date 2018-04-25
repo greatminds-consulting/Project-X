@@ -675,6 +675,15 @@ $lang['supplier_dt_email']                      = 'Email';
 $lang['supplier_abn']                           = 'ABN';
 $lang['supplier_dt_active']                     = 'Active';
 $lang['supplier_dt_options']                    = 'Options';
+$lang['supplier_items']                         = 'Items';
+$lang['new_items']                              = 'New Items';
+$lang['item_description']                       = 'Description';
+$lang['item_long_description']                  = 'Long Description';
+$lang['item_rate']                              = 'Rate';
+$lang['item_tax1']                              = 'Tax 1';
+$lang['item_tax2']                              = 'Tax 2';
+$lang['item_unit']                              = 'Unit';
+$lang['item_groupname']                         = 'Group Name';
 
 # Staff
 $lang['new_staff']                       = 'New Staff Member';

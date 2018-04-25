@@ -271,7 +271,8 @@
     <input type="text" class="tagsinput" id="tags" name="tags" value="<?php echo (isset($task) ? prep_tags_input(get_tags_in($task->id,'task')) : ''); ?>" data-role="tagsinput">
   </div>
 </div>
-<?php $rel_id_custom_field = (isset($task) ? $task->id : false); ?>
+<?php $rel_id_custom_field = (isset($task) ? $task->id : false);
+echo render_select('venue[]',$venues,array('id','name'),'venues',$task_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
 <?php echo render_custom_fields('tasks',$rel_id_custom_field); ?>
 <hr />
 <p class="bold"><?php echo _l('task_add_edit_description'); ?></p>

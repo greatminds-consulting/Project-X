@@ -6,6 +6,7 @@ class Supplier extends Admin_controller
     {
         parent::__construct();
         $this->load->model('supplier_model');
+        $this->load->model('invoice_items_model');
     }
 
     /* List all supplier members */
@@ -53,7 +54,12 @@ class Supplier extends Admin_controller
             $data['member']            = $member;
             $title                     = $member->businessname;
             $data['supplier_permissions'] = $this->supplier_model->get_supplier_permissions($id);
-        }
+            $data['items']            = $this->invoice_items_model->get(false,false,$id);
+            $this->load->model('taxes_model');
+            $data['taxes']          = $this->taxes_model->get();
+            $data['items_groups']   = $this->invoice_items_model->get_groups();
+            $data['items_packages'] = $this->invoice_items_model->get_packages();
+         }
         $data['supplier_permissions'] = get_supplier_permissions();
         $data['title']       = $title;
         $this->load->view('admin/supplier/member', $data);

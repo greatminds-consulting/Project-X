@@ -72,7 +72,13 @@ class Clients_model extends CRM_Model
 
         return $this->db->get('tblcontacts')->row();
     }
+     public function add_itemvenues($data,$clientid)
+     {
+         foreach ($data as  $venue_id) {
+                     $this->db->insert('tblvenues_in', array('type_id' => $clientid, 'type' => 'Customers', 'venue_id' => $venue_id));
+                 }
 
+     }
     /**
      * @param array $_POST data
      * @param client_request is this request from the customer area
@@ -81,6 +87,7 @@ class Clients_model extends CRM_Model
      */
     public function add($data, $client_or_lead_convert_request = false)
     {
+
         $contact_data = array();
         foreach ($this->contact_columns as $field) {
             if (isset($data[$field])) {
@@ -98,6 +105,7 @@ class Clients_model extends CRM_Model
             unset($data['contact_phonenumber']);
         }
 
+
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
@@ -106,6 +114,14 @@ class Clients_model extends CRM_Model
         if (isset($data['groups_in'])) {
             $groups_in = $data['groups_in'];
             unset($data['groups_in']);
+        }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
         }
 
         $data = $this->check_zero_columns($data);
@@ -123,6 +139,11 @@ class Clients_model extends CRM_Model
 
         $userid = $this->db->insert_id();
         if ($userid) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $userid, 'type' => 'Customers', 'venue_id' => $venue_id));
+                }
+            }
             if (isset($custom_fields)) {
                 $_custom_fields = $custom_fields;
                 // Possible request from the register area with 2 types of custom fields for contact and for comapny/customer
@@ -142,8 +163,29 @@ class Clients_model extends CRM_Model
              * Used in Import, Lead Convert, Register
              */
             if ($client_or_lead_convert_request == true) {
+
+                if (isset($data['venue'])) {
+                    if ($data['venue']) {
+                        foreach ($data['venue'] as $key => $value) {
+                            $venueArray[] = $value;
+                        }
+                    }
+                    unset($data['venue']);
+                }
+
+
+                if (isset($venue_fields)) {
+                    if ($venueArray) {
+                        foreach ($venueArray as $key=> $venue_id) {
+                            $this->db->insert('tblvenues_in', array('type_id' => $contact_id, 'type' => 'Project', 'venue_id' => $venue_id));
+                        }
+                    }
+                }
+
                 $contact_id = $this->add_contact($contact_data, $userid, $client_or_lead_convert_request);
             }
+
+
             if (isset($groups_in)) {
                 foreach ($groups_in as $group) {
                     $this->db->insert('tblcustomergroups_in', array(
@@ -202,6 +244,14 @@ class Clients_model extends CRM_Model
             $groups_in = $data['groups_in'];
             unset($data['groups_in']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         $data = $this->check_zero_columns($data);
 
@@ -213,6 +263,13 @@ class Clients_model extends CRM_Model
         $data  = $_data['data'];
         $this->db->where('userid', $id);
         $this->db->update('tblclients', $data);
+        $this->db->where('type', 'Customers');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Customers', 'venue_id' => $venue_id));
+            }
+        }
 
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
@@ -417,7 +474,6 @@ class Clients_model extends CRM_Model
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
         }
-
         if (isset($data['permissions'])) {
             $permissions = $data['permissions'];
             unset($data['permissions']);

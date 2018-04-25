@@ -108,6 +108,12 @@
             <td class="text-success"><?php echo _dt($project->date_finished); ?></td>
          </tr>
          <?php } ?>
+         <?php if($project_venues){?>
+         <tr class="project-overview-venue">
+            <td class="bold"><?php echo _l('Venue'); ?></td>
+            <td><?php echo $project_venues; ?></td>
+         </tr>
+         <?php } ?>
          <?php if($project->estimated_hours && $project->estimated_hours != '0'){ ?>
          <tr class="project-overview-estimated-hours">
             <td class="bold<?php if(hours_to_seconds_format($project->estimated_hours) < (int)$project_total_logged_time){echo ' text-warning';} ?>"><?php echo _l('estimated_hours'); ?></td>

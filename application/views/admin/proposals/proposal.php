@@ -123,7 +123,9 @@
                               </div>
                             </div>
                            </div>
-                        <?php $fc_rel_id = (isset($proposal) ? $proposal->id : false); ?>
+                        <?php $fc_rel_id = (isset($proposal) ? $proposal->id : false);
+                        echo render_select('venue[]',$venues,array('id','name'),'venues',$proposal_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                        ?>
                         <?php echo render_custom_fields('proposal',$fc_rel_id); ?>
                          <div class="form-group no-mbot">
                            <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
