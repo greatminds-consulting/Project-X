@@ -5,6 +5,7 @@ class Leads_model extends CRM_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('venues_model');
     }
 
     /**
@@ -1131,8 +1132,20 @@ class Leads_model extends CRM_Model
             }
         }
 
+        $venues = $this->venues_model->getvenues();
+        if ($venues) {
+            foreach ($venues as $venue) {
+                if (isset($data['staffs_'.$venue['id']])) {
+                    foreach ($data['staffs_'.$venue['id']] as $key => $staff) {
+                        $this->db->insert('tblvenuesstaffs_in', array('staff_id' => $staff, 'venue_id' => $venue['id']));
+                    }
+                    unset($data['staffs_'.$venue['id']]);
+                }
+            }
+        }
         $this->db->where('id', 1);
         $this->db->update('tblleadsintegration', $data);
+
         if ($this->db->affected_rows() > 0) {
             return true;
         }

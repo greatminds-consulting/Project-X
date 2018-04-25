@@ -1051,6 +1051,8 @@ class Leads extends Admin_controller
         $data['title']   = _l('leads_email_integration');
         $data['mail']    = $this->leads_model->get_email_integration();
         $data['bodyclass']    = 'leads-email-integration';
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['staffs'] = $this->staff_model->get('', 1);
         $this->load->view('admin/leads/email_integration', $data);
     }
 
