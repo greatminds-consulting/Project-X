@@ -113,15 +113,16 @@
                             ?>
                             <?php echo render_select('responsible',$members,array('staffid',array('firstname','lastname')),'leads_email_integration_default_assigned',$selected,array('data-ays-ignore'=>true)); ?>
                             <label for="responsible" class="control-label"> <small class="req text-danger hide">* </small>Assign Default Staff for Venues</label>
-                            <?php foreach ($venues as $venue) { ?>
+                            <?php foreach ($venues as $venue) {
+                                $staff_selected = array();
+                                ?>
                                 <div class="row">
                                     <div class="col-md-6"><?php echo $venue['name'];?>
                                     </div>
                                     <div class="col-md-6">
-                                        <?php  echo render_select('staffs_'.$venue["id"].'[]',$staffs,array('staffid',array('firstname','lastname')),'',$selected,array('multiple'=>true)); ?>
+                                        <?php  echo render_select('staffs_'.$venue["id"].'[]',$staffs,array('staffid',array('firstname','lastname')),'',isset($venue_staffs[$venue["id"]])?$venue_staffs[$venue["id"]]:array(),array('multiple'=>true)); ?>
                                     </div>
                                 </div>
-
                             <?php }
                             ?>
                             <hr />

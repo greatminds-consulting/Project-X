@@ -1329,4 +1329,13 @@ class Leads_model extends CRM_Model
             }
         }
     }
+
+    public function venues_in_staffs() {
+        $venue_staffs =  $this->db->get('tblvenuesstaffs_in')->result_array();
+        $result = array();
+        foreach($venue_staffs as $staff) {
+            $result[$staff['venue_id']][] = $staff['staff_id'];
+        }
+        return $result;
+    }
 }
