@@ -1304,4 +1304,16 @@ class Leads_model extends CRM_Model
 
         return $data;
     }
+
+    public function venues_in_leads($insert_id, $val) {
+        $values = explode(",",$val);
+        foreach ($values as $value) {
+            $value = trim($value);
+            $this->db->where('name', $value);
+            $venue = $this->db->get('tblvenues')->row();
+            if ($venue) {
+                $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue->id));
+            }
+        }
+    }
 }

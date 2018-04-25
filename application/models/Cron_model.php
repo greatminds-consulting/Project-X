@@ -1319,6 +1319,9 @@ class Cron_model extends CRM_Model
 
                             if (strpos($key, 'custom_field_') !== false) {
                                 $insert_lead_custom_fields[$field] = $val;
+                                if ($field == 1) {
+                                    $this->leads_model->venues_in_leads($insert_id, $val);
+                                }
                             } elseif ($this->db->field_exists($field, 'tblleads')) {
                                 $insert_lead_fields[$field] = $val;
                             }
