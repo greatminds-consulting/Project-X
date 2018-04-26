@@ -1394,4 +1394,42 @@ class Leads_model extends CRM_Model
         }
         return $result;
     }
+
+    public function event_categories_in_leads($insert_id, $val) {
+        $values = explode(",",$val);
+        $staffs = array();
+        $flag = false;
+        foreach ($values as $value) {
+            $value = trim($value);
+            // assign leads staff automatically from event category
+            $this->db->where('event_category', strtolower($value));
+            $eventStaffs = $this->db->get('tbleventcategorystaffs_in')->result_array();
+            if ($eventStaffs) {
+                foreach ($eventStaffs as $eventStaff) {
+                    $this->db->where('lead_id', $insert_id);
+                    $this->db->where('staff_id', $eventStaff['staff_id']);
+                    $leadStaffs = $this->db->get('tblleadstaffs')->result_array();
+                    if (!$leadStaffs) {
+                        $data_staff['lead_id'] = $insert_id;
+                        $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                        $data_staff['staff_id'] = $eventStaff['staff_id'];
+                        $staffs[] = $eventStaff['staff_id'];
+                        $this->db->insert('tblleadstaffs', $data_staff);
+                    } else {
+                        $flag = true;
+                    }
+                }
+                if ($values) {
+                    if (!$staffs && !$flag) {
+                        $mail = $this->get_email_integration();
+                        $staffs[] = $mail->responsible;
+                    }
+                    if ($staffs) {
+                        $this->lead_assigned_member_notification($insert_id, $staffs, true);
+                    }
+                }
+            }
+
+        }
+    }
 }
