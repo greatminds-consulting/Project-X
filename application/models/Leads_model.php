@@ -1136,6 +1136,8 @@ class Leads_model extends CRM_Model
         if ($venues) {
             foreach ($venues as $venue) {
                 if (isset($data['staffs_'.$venue['id']])) {
+                    $this->db->where('venue_id', $venue['id']);
+                    $this->db->delete('tblvenuesstaffs_in');
                     foreach ($data['staffs_'.$venue['id']] as $key => $staff) {
                         $this->db->insert('tblvenuesstaffs_in', array('staff_id' => $staff, 'venue_id' => $venue['id']));
                     }
