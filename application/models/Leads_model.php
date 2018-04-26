@@ -1135,9 +1135,9 @@ class Leads_model extends CRM_Model
         $venues = $this->venues_model->getvenues();
         if ($venues) {
             foreach ($venues as $venue) {
+                $this->db->where('venue_id', $venue['id']);
+                $this->db->delete('tblvenuesstaffs_in');
                 if (isset($data['staffs_'.$venue['id']])) {
-                    $this->db->where('venue_id', $venue['id']);
-                    $this->db->delete('tblvenuesstaffs_in');
                     foreach ($data['staffs_'.$venue['id']] as $key => $staff) {
                         $this->db->insert('tblvenuesstaffs_in', array('staff_id' => $staff, 'venue_id' => $venue['id']));
                     }
@@ -1149,6 +1149,8 @@ class Leads_model extends CRM_Model
         $event_categories = get_custom_fields_by_slug('leads_event_category');
         if ($event_categories) {
             foreach ($event_categories as $event_category) {
+                $this->db->where('event_category', strtolower($event_category));
+                $this->db->delete('tbleventcategorystaffs_in');
                 if (isset($data['staffs_'.strtolower($event_category)])) {
                     foreach ($data['staffs_'.strtolower($event_category)] as $key => $staff) {
                         $this->db->insert('tbleventcategorystaffs_in', array('staff_id' => $staff, 'event_category' => strtolower($event_category)));

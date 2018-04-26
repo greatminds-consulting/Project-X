@@ -1043,6 +1043,7 @@ class Leads extends Admin_controller
         $data['sources']  = $this->leads_model->get_source();
         $data['statuses'] = $this->leads_model->get_status();
         $data['venue_staffs'] = $this->leads_model->venues_in_staffs();
+        $data['event_categories_staffs'] = $this->leads_model->event_categories_in_staffs();
         $data['event_categories'] = get_custom_fields_by_slug('leads_event_category');
 
 
