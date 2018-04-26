@@ -1145,6 +1145,18 @@ class Leads_model extends CRM_Model
                 }
             }
         }
+
+        $event_categories = get_custom_fields_by_slug('leads_event_category');
+        if ($event_categories) {
+            foreach ($event_categories as $event_category) {
+                if (isset($data['staffs_'.strtolower($event_category)])) {
+                    foreach ($data['staffs_'.strtolower($event_category)] as $key => $staff) {
+                        $this->db->insert('tbleventcategorystaffs_in', array('staff_id' => $staff, 'event_category' => strtolower($event_category)));
+                    }
+                    unset($data['staffs_'.strtolower($event_category)]);
+                }
+            }
+        }
         $this->db->where('id', 1);
         $this->db->update('tblleadsintegration', $data);
 

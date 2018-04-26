@@ -86,9 +86,23 @@
                             <input type="checkbox" name="mark_public" class="ays-ignore" id="mark_public" <?php if($mail->mark_public == 1){echo 'checked';} ?>>
                             <label for="mark_public">
                                 <?php echo _l('auto_mark_as_public'); ?></label>
-                            </div>
-
                         </div>
+                        <hr />
+                        <label for="responsible" class="control-label"> <small class="req text-danger hide">* </small>Assign Default Staff for Event Category</label>
+                        <?php foreach ($event_categories as $key=> $event_category) {
+                            $staff_selected = array();
+                            ?>
+                            <div class="row">
+                                <div class="col-md-6"><?php echo $event_category;?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?php  echo render_select('staffs_'.strtolower($event_category).'[]',$staffs,array('staffid',array('firstname','lastname')),'',isset($venue_staffs[$venue["id"]])?$venue_staffs[$venue["id"]]:array(),array('multiple'=>true)); ?>
+                                </div>
+                            </div>
+                        <?php }
+                        ?>
+                        </div>
+
                         <div class="col-md-6">
                             <?php
 
