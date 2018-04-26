@@ -1336,12 +1336,43 @@ class Leads_model extends CRM_Model
 
     public function venues_in_leads($insert_id, $val) {
         $values = explode(",",$val);
+        $staffs = array();
+        $flag = false;
         foreach ($values as $value) {
             $value = trim($value);
             $this->db->where('name', $value);
             $venue = $this->db->get('tblvenues')->row();
             if ($venue) {
                 $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue->id));
+
+                // assign leads staff automatically from venue
+                $this->db->where('venue_id', $venue->id);
+                $venueStaffs= $this->db->get('tblvenuesstaffs_in')->result_array();
+                if ($venueStaffs) {
+                    foreach ($venueStaffs as $venueStaff) {
+                        $this->db->where('lead_id', $insert_id);
+                        $this->db->where('staff_id', $venueStaff['staff_id']);
+                        $leadStaffs = $this->db->get('tblleadstaffs')->result_array();
+                        if (!$leadStaffs) {
+                            $data_staff['lead_id'] = $insert_id;
+                            $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                            $data_staff['staff_id'] = $venueStaff['staff_id'];
+                            $staffs[] = $venueStaff['staff_id'];
+                            $this->db->insert('tblleadstaffs', $data_staff);
+                        } else {
+                            $flag = true;
+                        }
+                    }
+                }
+            }
+        }
+        if ($values) {
+            if (!$staffs && !$flag) {
+                $mail = $this->get_email_integration();
+                $staffs[] = $mail->responsible;
+            }
+            if ($staffs) {
+                $this->lead_assigned_member_notification($insert_id, $staffs, true);
             }
         }
     }
