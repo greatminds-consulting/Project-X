@@ -648,6 +648,7 @@ class Estimates_model extends CRM_Model
         }
 
         unset($data['removed_items']);
+        unset($data['venue_items']);
 
         $this->db->where('id', $id);
         $this->db->update('tblestimates', $data);
