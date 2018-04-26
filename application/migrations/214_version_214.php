@@ -12,6 +12,7 @@ class Migration_Version_214 extends CI_Migration
 
         // Venue Staff Mapping
         $this->db->query("CREATE TABLE `tblvenuesstaffs_in`( `id` INT NOT NULL AUTO_INCREMENT, `venue_id` INT, `staff_id` INT, PRIMARY KEY (`id`) ); ");
+        $this->db->query("CREATE TABLE `tbleventcategorystaffs_in`( `id` INT NOT NULL AUTO_INCREMENT, `event_category` varchar(64) NOT NULL, `staff_id` INT, PRIMARY KEY (`id`) ); ");
 
         if (file_exists(FCPATH.'pipe.php')) {
             @chmod(FCPATH.'pipe.php', 0755);
