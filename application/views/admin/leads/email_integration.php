@@ -96,7 +96,7 @@
                                 <div class="col-md-6"><?php echo $event_category;?>
                                 </div>
                                 <div class="col-md-6">
-                                    <?php  echo render_select('staffs_'.strtolower($event_category).'[]',$staffs,array('staffid',array('firstname','lastname')),'',isset($venue_staffs[$venue["id"]])?$venue_staffs[$venue["id"]]:array(),array('multiple'=>true)); ?>
+                                    <?php  echo render_select('staffs_'.strtolower($event_category).'[]',$staffs,array('staffid',array('firstname','lastname')),'',isset($event_categories_staffs[strtolower($event_category)])?$event_categories_staffs[strtolower($event_category)]:array(),array('multiple'=>true)); ?>
                                 </div>
                             </div>
                         <?php }

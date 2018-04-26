@@ -1354,4 +1354,13 @@ class Leads_model extends CRM_Model
         }
         return $result;
     }
+
+    public function event_categories_in_staffs() {
+        $event_categories_staffs =  $this->db->get('tbleventcategorystaffs_in')->result_array();
+        $result = array();
+        foreach($event_categories_staffs as $staff) {
+            $result[$staff['event_category']][] = $staff['staff_id'];
+        }
+        return $result;
+    }
 }
