@@ -1,4 +1,4 @@
-<?php echo form_open('suppliers/item'); ?>
+<?php echo form_open_multipart('suppliers/item'); ?>
 <div class="row">
     <div class="col-md-6">
         <div class="panel_s">
@@ -26,7 +26,14 @@
                                 <label for="long_description"><?php echo _l('invoice_item_long_description'); ?></label>
                                 <input type="text" class="form-control" name="long_description" id="long_description" value="<?php echo $item_details->long_description ;?>">
                             </div>
-
+                            <div class="form-group">
+                                <label for="item_images" class="control-label">Item Image</label>
+                                <input type="file" name="item_images" class="form-control" id="item_images">
+                                <?php if($item_details->item_image!=''){?>
+                                <img src="<?php echo base_url()?>uploads/items/<?php echo $item_details->itemid ?>/thumb_<?php echo $item_details->item_image ?>"  width="42" height="42">
+                            <?php }
+                            ?>
+                            </div>
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-4">
@@ -44,8 +51,7 @@
                                     </div>
                                 </div>
                             </div>
-
-                        <?php
+                            <?php
                         foreach($currencies as $currency){
                             if($currency['isdefault'] == 0 && total_rows('tblclients',array('default_currency'=>$currency['id'])) > 0){ ?>
                                 <div class="form-group">

@@ -158,12 +158,18 @@ class Suppliers extends Supplier_controller
                 if ($data['itemid'] == '') {
                     $id      = $this->invoice_items_model->add($data);
                     if ($id) {
+                       handle_contact_item_image_upload($id);
                         set_alert('success', _l('added_successfully'));
                     }
                 } else {
+                    $updated          = false;
                     $success = $this->invoice_items_model->edit($data);
                     if ($success) {
                         set_alert('success', _l('updated_successfully', _l('item')));
+                    }
+                    if (handle_contact_item_image_upload($id) && !$updated) {
+                        $message = _l('updated_successfully', _l('contact'));
+                        $success = true;
                     }
                 }
                 redirect(site_url('suppliers/items'));

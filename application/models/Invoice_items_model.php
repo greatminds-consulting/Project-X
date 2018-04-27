@@ -136,6 +136,9 @@ class Invoice_items_model extends CRM_Model
            $data['created_by']             = $data['memberid'];
             unset($data['memberid']);
         }
+        if ($data['item_images']) {
+            unset($data['item_images']);
+        }
 
         $columns = $this->db->list_fields('tblitems');
         $this->load->dbforge();
