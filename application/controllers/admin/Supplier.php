@@ -56,7 +56,9 @@ class Supplier extends Admin_controller
             $data['supplier_permissions'] = $this->supplier_model->get_supplier_permissions($id);
             $data['items']            = $this->invoice_items_model->get(false,false,$id);
             $this->load->model('taxes_model');
+            $this->load->model('venues_model');
             $data['taxes']          = $this->taxes_model->get();
+            $data['venues']         = $this->venues_model->getvenues();
             $data['items_groups']   = $this->invoice_items_model->get_groups();
             $data['items_packages'] = $this->invoice_items_model->get_packages();
          }
@@ -90,5 +92,26 @@ class Supplier extends Admin_controller
                 $this->supplier_model->change_supplier_status($id, $status);
             }
         }
+    }
+    public function delete_item($id,$memberid='')
+    {
+        if (!has_permission('items', '', 'delete')) {
+            access_denied('Invoice Items');
+        }
+
+        if (!$id) {
+            redirect(admin_url('invoice_items'));
+        }
+
+        $response = $this->invoice_items_model->delete($id);
+        if (is_array($response) && isset($response['referenced'])) {
+            set_alert('warning', _l('is_referenced', _l('invoice_item_lowercase')));
+        } elseif ($response == true) {
+            set_alert('success', _l('deleted', _l('invoice_item')));
+        } else {
+            set_alert('warning', _l('problem_deleting', _l('invoice_item_lowercase')));
+        }
+        redirect(admin_url('supplier/member/'.$memberid));
+
     }
 }

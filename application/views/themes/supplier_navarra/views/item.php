@@ -76,8 +76,7 @@
                             foreach ($item_packages as $item_package) {
                                 $packages[] = $item_package['id'];
                             }?>
-                        <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group',$item_details->group_id); ?>
-                        <?php echo render_select('package_id[]',$items_packages,array('id','name'),'item_package',$packages,array('multiple'=>true),array(),'','item_packages',false); ?>
+
                     </div>
                 </div>
             </div>

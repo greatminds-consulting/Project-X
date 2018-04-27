@@ -42,6 +42,10 @@
     <?php $value = (isset($member) ? $member->email : ''); ?>
     <?php echo render_input('email','supplier_add_edit_email',$value,'email',array('autocomplete'=>'off')); ?>
     <div class="form-group">
+        <label for="margin" class="control-label"> Margin</label>
+        <input type="text" class="form-control" name="margin" value="<?php if(isset($member)){echo $member->margin;} ?>">
+    </div>
+    <div class="form-group">
         <label for="abn" class="control-label"> <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="Australian Business Number"></i>ABN</label>
         <input type="text" class="form-control" name="abn" value="<?php if(isset($member)){echo $member->abn;} ?>">
     </div>
@@ -143,7 +147,9 @@
                     </h4>
                     <hr class="hr-panel-heading" />
                     <?php
-                    $data['id']=1;?>
+                    $data['id']=$member->supplierid;
+                    $data['margin']=$member->margin;
+                    ?>
                     <a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>
                     <?php $this->load->view('admin/invoice_items/item',$data); ?>
                     <div class="clearfix"></div>
@@ -159,7 +165,6 @@
                                 <th><?php echo _l('item_rate'); ?></th>
                                 <th><?php echo _l('item_tax1'); ?></th>
                                 <th><?php echo _l('item_tax2'); ?></th>
-                                <th><?php echo _l('item_unit'); ?></th>
                                 <th><?php echo _l('item_groupname'); ?></th>
                                 <th><?php echo _l('options'); ?></th>
                             </tr>
@@ -172,15 +177,12 @@
                                     <td><?php echo $temdetails['rate']; ?></td>
                                     <td><?php echo $temdetails['taxrate']; ?></td>
                                     <td><?php echo $temdetails['taxrate_2']; ?></td>
-                                    <td><?php echo $temdetails['unit']; ?></td>
                                     <td><?php echo $temdetails['group_name']; ?></td>
                                     <?php foreach ($custom_fields as $field) { ?>
                                         <td><?php echo get_custom_field_value($temdetails['itemid'],$field['itemid'],'items'); ?></td>
                                     <?php } ?>
-                                    <td>
-                                        <a href="/suppliers/item/<?php echo $temdetails['itemid'] ?>" class="btn btn-default btn-icon"><i class="fa fa-pencil-square-o"></i></a>
-                                        <a href="/suppliers/itemdelete/<?php echo $temdetails['itemid'] ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a>
-                                    </td>
+                                    <td><a href="<?php echo admin_url('#'.$temdetails['itemid']); ?>"  class="btn btn-default btn-icon" data-toggle="modal" data-target="#sales_item_modal" data-id="<?php echo $temdetails['itemid']?>"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="<?php echo admin_url('supplier/delete_item/'.$temdetails['itemid'].'/'.$member->supplierid); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a></td>
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -224,6 +226,7 @@ init_roles_permissions();
                 }
             }
         });
+
     });
 
 </script>

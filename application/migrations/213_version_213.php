@@ -40,8 +40,8 @@ class Migration_Version_213 extends CI_Migration
               PRIMARY KEY (`supplierid`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
-        $this->db->query("ALTER TABLE `tblitems` ADD COLUMN `stockinhand` INT NULL AFTER `group_id`, ADD COLUMN `type` VARCHAR(32) NULL AFTER `stockinhand`, ADD COLUMN `created_by` INT NULL AFTER `type`");
-
+        $this->db->query("ALTER TABLE `tblitems` ADD COLUMN `stockinhand` INT NULL AFTER `group_id`, ADD COLUMN `type` VARCHAR(32) NULL AFTER `stockinhand`, ADD COLUMN `created_by` INT NULL AFTER `type`,ADD COLUMN `margin` INT NULL AFTER `item_image`,ADD COLUMN `item_image` INT NULL AFTER `created_by`");
+        $this->db->query("ALTER TABLE `tblsuppliers` ADD COLUMN `margin` varchar(32) NULL AFTER `is_delete`");
         $this->db->query("CREATE TABLE `tblsupplierpermissions` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `permission_id` int(12) DEFAULT NULL,

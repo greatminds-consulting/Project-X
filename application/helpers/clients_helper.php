@@ -402,6 +402,32 @@ function contact_profile_image_url($contact_id, $type = 'small')
     return $url;
 }
 
+/**
+ * Return item image url
+ * @param  mixed $item_id
+ * @param  string $type
+ * @return string
+ */
+function contact_item_image_url($item_id, $type = 'small')
+{
+    $url = base_url('assets/images/user-placeholder.jpg');
+    $CI =& get_instance();
+    $CI->db->select('item_image');
+    $CI->db->from('tblitems');
+    $CI->db->where('id', $item_id);
+    $contact = $CI->db->get()->row();
+    if ($contact) {
+        if (!empty($contact->item_image)) {
+            $path = 'uploads/items/' . $item_id . '/' . $type . '_' . $contact->item_image;
+            if (file_exists($path)) {
+                $url = base_url($path);
+            }
+        }
+    }
+
+    return $url;
+}
+
 function suppliers_image() {
     $image = base_url('assets/images/user-placeholder.jpg');
     $url = '<img src="' . $image . '"  class="client-profile-image-small mright5">';

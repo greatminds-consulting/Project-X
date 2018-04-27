@@ -21,18 +21,18 @@ class Invoice_items_model extends CRM_Model
                 $rateCurrencyColumns .= $column.',';
             }
         }
-        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,stockinhand,
+        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,stockinhand,item_image,
             t1.taxrate as taxrate,t1.id as taxid,t1.name as taxname,
             t2.taxrate as taxrate_2,t2.id as taxid_2,t2.name as taxname_2,
-            description,long_description,group_id,tblitems_groups.name as group_name,unit');
+            description,long_description,group_id,tblitems_groups.name as group_name,unit,ts.businessname as created_by,tblitems.margin');
         $this->db->from('tblitems');
+        $this->db->join('tblsuppliers ts', 'ts.supplierid = tblitems.created_by', 'left');
         $this->db->join('tbltaxes t1', 't1.id = tblitems.tax', 'left');
         $this->db->join('tbltaxes t2', 't2.id = tblitems.tax2', 'left');
         $this->db->join('tblitems_groups', 'tblitems_groups.id = tblitems.group_id', 'left');
         $this->db->order_by('description', 'asc');
         if (is_numeric($id)) {
             $this->db->where('tblitems.id', $id);
-
             return $this->db->get()->row();
         }
         if ($package_id) {
@@ -41,7 +41,6 @@ class Invoice_items_model extends CRM_Model
         if ($supplier_id) {
             $this->db->where('tblitems.created_by', $supplier_id);
         }
-
         return $this->db->get()->result_array();
     }
 
@@ -72,6 +71,21 @@ class Invoice_items_model extends CRM_Model
 
         return $items;
     }
+    public function getsupplier($id, $isAjax = false){
+        $this->db->select('tblsuppliers.businessname');
+        $this->db->from('tblitems');
+        $this->db->join('tblsuppliers','tblsuppliers.supplierid=tblitems.created_by','left');
+        $this->db->where('tblitems.id',$id);
+        $return = $this->db->get()->row();
+        if ($isAjax) {
+
+            $output= $return->businessname;
+            return $output;
+        }
+        return $return;
+
+    }
+
 
     /**
      * Add new invoice item
@@ -106,10 +120,21 @@ class Invoice_items_model extends CRM_Model
             }
             unset($data['venue']);
         }
-
+        if (empty($data['stock'])) {
+            unset($data['stock']);
+        } else {
+            $data['stockinhand']             = $data['stock'];
+            unset($data['stock']);
+        }
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
+        }
+        if (empty($data['memberid'])) {
+            unset($data['memberid']);
+        } else {
+           $data['created_by']             = $data['memberid'];
+            unset($data['memberid']);
         }
 
         $columns = $this->db->list_fields('tblitems');
@@ -128,7 +153,7 @@ class Invoice_items_model extends CRM_Model
         }
         $this->db->insert('tblitems', $data);
         $insert_id = $this->db->insert_id();
-        if ($insert_id) {
+       if ($insert_id) {
             if ($venueArray) {
                 foreach ($venueArray as $key=> $venue_id) {
                     $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Items', 'venue_id' => $venue_id));
@@ -183,6 +208,18 @@ class Invoice_items_model extends CRM_Model
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             unset($data['custom_fields']);
+        }
+        if (empty($data['memberid'])) {
+            unset($data['memberid']);
+        } else {
+            $data['created_by']             = $data['memberid'];
+            unset($data['memberid']);
+        }
+        if (empty($data['stock'])) {
+            unset($data['stock']);
+        } else {
+            $data['stockinhand']             = $data['stock'];
+            unset($data['stock']);
         }
 
         if (isset($data['package_id'])) {

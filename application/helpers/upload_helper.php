@@ -794,6 +794,74 @@ function handle_contact_profile_image_upload($contact_id = '')
 
     return false;
 }
+
+/**
+ * Maybe upload item image
+ * @param  string $item_id item_id
+ * @return boolean
+ */
+function handle_contact_item_image_upload($item_id = '')
+{
+    if (isset($_FILES['item_images']['name']) && $_FILES['item_images']['name'] != '') {
+        //do_action('before_upload_contact_item_image');
+        $path        = get_upload_path_by_type('item_images') . $item_id . '/';
+        // Get the temp file path
+        $tmpFilePath = $_FILES['item_images']['tmp_name'];
+        // Make sure we have a filepath
+        if (!empty($tmpFilePath) && $tmpFilePath != '') {
+            // Getting file extension
+            $path_parts         = pathinfo($_FILES["item_images"]["name"]);
+            $extension          = $path_parts['extension'];
+            $extension = strtolower($extension);
+            $allowed_extensions = array(
+                'jpg',
+                'jpeg',
+                'png'
+            );
+            if (!in_array($extension, $allowed_extensions)) {
+                set_alert('warning', _l('file_php_extension_blocked'));
+
+                return false;
+            }
+            _maybe_create_upload_path($path);
+            $filename    = unique_filename($path, $_FILES["item_images"]["name"]);
+            $newFilePath = $path . $filename;
+            // Upload the file into the company uploads dir
+            if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                $CI =& get_instance();
+                $config                   = array();
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $newFilePath;
+                $config['new_image']      = 'thumb_' . $filename;
+                $config['maintain_ratio'] = true;
+                $config['width']          = 160;
+                $config['height']         = 160;
+                $CI->image_lib->initialize($config);
+                $CI->image_lib->resize();
+                $CI->image_lib->clear();
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $newFilePath;
+                $config['new_image']      = 'small_' . $filename;
+                $config['maintain_ratio'] = true;
+                $config['width']          = 32;
+                $config['height']         = 32;
+                $CI->image_lib->initialize($config);
+                $CI->image_lib->resize();
+
+                $CI->db->where('id', $item_id);
+                $CI->db->update('tblitems', array(
+                    'item_image' => $filename
+                ));
+                // Remove original image
+                unlink($newFilePath);
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 /**
  * Handle upload for project discussions comment
  * Function for jquery-comment plugin
@@ -989,6 +1057,9 @@ function get_upload_path_by_type($type)
         break;
         case 'newsfeed':
         return NEWSFEED_FOLDER;
+        break;
+        case 'item_images':
+        return ITEM_FOLDER;
         break;
         default:
         return false;
