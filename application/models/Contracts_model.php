@@ -17,7 +17,7 @@ class Contracts_model extends CRM_Model
      */
     public function get($id = '', $where = array(), $for_editor = false)
     {
-        $this->db->select('*,tblcontracttypes.name as type_name,tblcontracts.id as id, tblcontracts.addedfrom');
+        $this->db->select('*,tblcontracttypes.name as type_name,tblcontracts.id as id, tblcontracts.addedfrom,tblcontracts.is_delete');
         $this->db->where($where);
         $this->db->join('tblcontracttypes', 'tblcontracttypes.id = tblcontracts.contract_type', 'left');
         $this->db->join('tblclients', 'tblclients.userid = tblcontracts.client');
