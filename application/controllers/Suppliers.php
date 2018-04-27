@@ -169,7 +169,9 @@ class Suppliers extends Supplier_controller
                 redirect(site_url('suppliers/items'));
             }
         }
+
         $this->load->model('taxes_model');
+        $data['suppliermargin']=$this->invoice_items_model->get_margin(get_supplier_user_id());
         $data['taxes']          = $this->taxes_model->get();
         $data['items_groups']   = $this->invoice_items_model->get_groups();
         $data['items_packages'] = $this->invoice_items_model->get_packages();

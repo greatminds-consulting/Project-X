@@ -26,12 +26,25 @@
                                 <label for="long_description"><?php echo _l('invoice_item_long_description'); ?></label>
                                 <input type="text" class="form-control" name="long_description" id="long_description" value="<?php echo $item_details->long_description ;?>">
                             </div>
-                            <div class="form-group">
-                                <label for="rate" class="control-label">
-                                    <?php echo _l('invoice_item_add_edit_rate_currency',$base_currency->name . ' <small>('._l('base_currency_string').')</small>'); ?></label>
-                                <input type="number" id="rate" name="rate" class="form-control" value="<?php echo $item_details->rate ;?>">
-                                <?php echo form_error('rate'); ?>
+
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label for="rate" class="control-label">
+                                            <?php echo _l('invoice_item_add_edit_rate_currency',$base_currency->name . ' <small>('._l('base_currency_string').')</small>'); ?></label>
+                                        <input type="number" id="rate" name="rate" class="form-control" value="<?php echo $item_details->rate ;?>" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="margin" class="control-label">Margin</label>
+                                        <input type="text" class="form-control" name="margin" id="itemmargin" value="<?php if($item_details==''){ echo $suppliermargin->margin;} else {echo $item_details->margin;}?>" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="total" class="control-label">Total Amount</label>
+                                        <div name="total" class="control-label" id="total"></div>
+                                    </div>
+                                </div>
                             </div>
+
                         <?php
                         foreach($currencies as $currency){
                             if($currency['isdefault'] == 0 && total_rows('tblclients',array('default_currency'=>$currency['id'])) > 0){ ?>
@@ -88,3 +101,29 @@
     </div>
 </div>
 <?php echo form_close(); ?>
+<script>
+    $( document ).ready(function() {
+        var rate = parseInt($('input[name=rate]').val());
+        if (isNaN(rate)) {
+            rate=0;
+        }
+        var margin = parseInt($('#itemmargin').val());
+        if (isNaN(margin)) {
+            margin=0;
+        }
+        var total = rate + margin;
+        $('#total').html(total);
+        $("#rate, #itemmargin").keyup(function() {
+            var rate = parseInt($('input[name=rate]').val());
+            if (isNaN(rate)) {
+                rate=0;
+            }
+            var margin = parseInt($('#itemmargin').val());
+            if (isNaN(margin)) {
+                margin=0;
+            }
+            var total = rate + margin;
+            $('#total').html(total);
+        });
+    });
+</script>

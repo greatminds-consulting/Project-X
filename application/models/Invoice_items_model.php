@@ -322,6 +322,14 @@ class Invoice_items_model extends CRM_Model
         return $this->db->get('tblitems_groups')->result_array();
     }
 
+    public function get_margin($id)
+    {
+        $this->db->select('margin');
+        $this->db->from('tblsuppliers');
+        $this->db->where('supplierid',$id);
+        return $this->db->get()->row();
+    }
+
     public function get_packages($hasItemsOnly = false)
     {
         $this->db->order_by('name', 'asc');
