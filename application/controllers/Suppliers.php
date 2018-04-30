@@ -162,6 +162,7 @@ class Suppliers extends Supplier_controller
                         set_alert('success', _l('added_successfully'));
                     }
                 } else {
+                    $id=$data['itemid'];
                     $updated          = false;
                     $success = $this->invoice_items_model->edit($data);
                     if ($success) {

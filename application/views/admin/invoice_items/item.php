@@ -295,9 +295,11 @@
         // Set validation for invoice item form
         _validate_form($('#invoice_item_form'), {
             description: 'required',
+            stock: 'required',
             rate: {
                 required: true
             }
+
         }, manage_invoice_items);
     }
     function total_amount(){

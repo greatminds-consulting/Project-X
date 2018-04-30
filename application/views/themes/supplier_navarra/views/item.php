@@ -1,4 +1,4 @@
-<?php echo form_open_multipart('suppliers/item'); ?>
+<?php echo form_open_multipart('suppliers/item',array('id'=>'supplier_item_form')); ?>
 <div class="row">
     <div class="col-md-6">
         <div class="panel_s">
@@ -109,6 +109,14 @@
 <?php echo form_close(); ?>
 <script>
     $( document ).ready(function() {
+        $( '#supplier_item_form' ).validate(
+            {
+                rules: {
+                    stockinhand: 'required',
+                    description:'required',
+                    rate:'required'
+                }
+            });
         var rate = parseInt($('input[name=rate]').val());
         if (isNaN(rate)) {
             rate=0;
