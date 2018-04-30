@@ -1270,4 +1270,8 @@ class Leads_model extends CRM_Model
 
         return $data;
     }
+
+    public function get_statuses() {
+        return $this->db->get('tblleadsstatus')->result_array();
+    }
 }

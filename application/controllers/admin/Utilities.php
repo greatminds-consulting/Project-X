@@ -12,6 +12,7 @@ class Utilities extends Admin_controller
     {
         parent::__construct();
         $this->load->model('utilities_model');
+        $this->load->model('leads_model');
     }
 
     /* All perfex activity log */
@@ -263,9 +264,11 @@ class Utilities extends Admin_controller
             access_denied('bulk_pdf_exporter');
         }
 
+
         $has_permission_estimates_view = has_permission('estimates', '', 'view');
         $has_permission_invoices_view  = has_permission('invoices', '', 'view');
         $has_permission_proposals_view = has_permission('proposals', '', 'view');
+        $has_permission_leads_view = has_permission('leads', '', 'view');
         $has_permission_payments_view  = has_permission('payments', '', 'view');
         $has_permission_credit_notes_view  = has_permission('credit_notes', '', 'view');
 
@@ -338,6 +341,10 @@ class Utilities extends Admin_controller
                 }
 
                 $this->db->order_by('date', 'desc');
+            } elseif ($type == 'leads') {
+                $this->db->select('id');
+                $this->db->from('tblleads');
+                $this->db->where('status', 1);
             } else {
                 // This may not happend but in all cases :)
                 die('No Export Type Selected');
@@ -394,6 +401,16 @@ class Utilities extends Admin_controller
                     $file_name       = $dir . '/' . strtoupper($_temp_file_name);
                     $this->pdf_zip->Output($file_name . '.pdf', 'F');
                 }
+            } elseif ($type == 'leads') {
+                foreach ($data as $estimate) {
+                    $this->load->model('estimates_model');
+                    $this->load->model('leads_model');
+                    $estimate_data   = $this->leads_model->get($estimate['id']);
+                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'));
+                    $_temp_file_name =  slug_it(format_leads_number($estimate_data->id));
+                    $file_name       = $dir . '/' . strtoupper($_temp_file_name);
+                    $this->pdf_zip->Output($file_name . '.pdf', 'F');
+                }
             } elseif ($type == 'payments') {
                 $this->load->model('payments_model');
                 $this->load->model('invoices_model');
@@ -428,6 +445,8 @@ class Utilities extends Admin_controller
 
         $this->load->model('invoices_model');
         $data['invoice_statuses'] = $this->invoices_model->get_statuses();
+        $data['leads_statuses'] = $this->leads_model->get_statuses();
+
 
         $this->load->model('credit_notes_model');
         $data['credit_notes_statuses'] = $this->credit_notes_model->get_statuses();

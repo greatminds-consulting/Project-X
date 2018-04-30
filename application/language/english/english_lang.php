@@ -514,6 +514,9 @@ $lang['leads_search']                 = 'Search Leads';
 $lang['leads_table_total'] = 'Total Leads: %s';
 $lang['leads_dt_name']         = 'Name';
 $lang['leads_dt_email']        = 'Email';
+$lang['leads_dt_description']        = 'Description';
+$lang['leads_dt_state']        = 'State';
+$lang['leads_dt_city']        = 'City';
 $lang['leads_dt_phonenumber']  = 'Phone';
 $lang['leads_dt_assigned']     = 'Assigned';
 $lang['leads_dt_status']       = 'Status';
@@ -1188,6 +1191,7 @@ $lang['client_payments_tab']  = 'Payments';
 
 # Estimate General
 $lang['estimate_pdf_heading']            = 'ESTIMATE';
+$lang['leads_pdf_heading']            = 'LEAD';
 $lang['estimate_table_item_heading']     = 'Item';
 $lang['estimate_table_quantity_heading'] = 'Qty';
 $lang['estimate_table_rate_heading']     = 'Rate';
@@ -1744,6 +1748,7 @@ $lang['lead_import_source']          = 'Source';
 
 # Bulk PDF Export
 $lang['bulk_export_pdf_proposals'] = 'Proposals';
+$lang['bulk_export_pdf_leads'] = 'Leads';
 
 # Invoices
 $lang['delete_invoice'] = 'Delete';
