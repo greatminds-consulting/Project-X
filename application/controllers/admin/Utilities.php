@@ -408,7 +408,8 @@ class Utilities extends Admin_controller
                     $this->load->model('leads_model');
                     $estimate_data   = $this->leads_model->get($estimate['id']);
                     $proposals = $this->proposals_model->lead_rel_details($estimate['id']);
-                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'),$proposals);
+                    $tasks = $this->tasks_model->lead_rel_details($estimate['id']);
+                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'),$proposals, $tasks);
                     $_temp_file_name =  slug_it(format_leads_number($estimate_data->id));
                     $file_name       = $dir . '/' . strtoupper($_temp_file_name);
                     $this->pdf_zip->Output($file_name . '.pdf', 'F');

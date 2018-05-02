@@ -1,7 +1,6 @@
 <?php
 
 $dimensions = $pdf->getPageDimensions();
-
 $info_right_column = '';
 $info_left_column = '';
 
@@ -84,7 +83,7 @@ $total_headings += count($custom_fields_items);
 $headings_width = (100-($item_width+6)) / $total_headings;
 
 
-// Header
+// Proposals Header
 $tblhtml = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="8">';
 $tblhtml .= '<tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">';
 $tblhtml .= '<th>#</th>';
@@ -109,7 +108,32 @@ foreach ($proposals as $proposal) {
 }
 $tblhtml .= '</tbody>';
 $tblhtml .= '</table>';
+
+// Tasks Header
+$tbltaskhtml = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="8">';
+$tbltaskhtml .= '<tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">';
+$tbltaskhtml .= '<th>#</th>';
+$tbltaskhtml .= '<th>' . _l('als_tasks') . '</th>';
+$tbltaskhtml .= '<th>' . _l('task_single_start_date') .  '</th>';
+$tbltaskhtml .= '<th>' . _l('task_single_due_date') . '</th>';
+$tbltaskhtml .= '<th>' . _l('task_add_edit_priority') . '</th>';
+$tbltaskhtml .= '<th>' . _l('proposal_status') . '</th>';
+$tbltaskhtml .= '</tr>';
+$tbltaskhtml .= '<tbody>';
+foreach ($tasks as $task) {
+    $tbltaskhtml .= '<tr>';
+    $tbltaskhtml .= '<td>' . $task["id"] .  '</td>';
+    $tbltaskhtml .= '<td>' . $task["name"] .  '</td>';
+    $tbltaskhtml .= '<td>' . _d($task["startdate"]) .  '</td>';
+    $tbltaskhtml .= '<td>' . _d($task["duedate"]) .  '</td>';
+    $tbltaskhtml .= '<td>' . task_priority($task['priority']) .  '</td>';
+    $tbltaskhtml .= '<td>' . format_task_status($task['status'], false, true) .  '</td>';
+    $tbltaskhtml .= '</tr>';
+}
+$tbltaskhtml .= '</tbody>';
+$tbltaskhtml .= '</table>';
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
+$pdf->writeHTML($tbltaskhtml, true, false, false, false, '');
 
 if(get_option('total_to_words_enabled') == 1){
     // Set the font bold

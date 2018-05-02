@@ -2073,4 +2073,10 @@ class Tasks_model extends CRM_Model
                 || $this->is_task_creator($staffid, $taskid)
                 || $this->staff_has_commented_on_task($staffid, $taskid));
     }
+
+    public function lead_rel_details($rel_id) {
+        $this->db->where('rel_id', $rel_id);
+        $_data       = $this->db->get('tblstafftasks')->result_array();
+        return $_data;
+    }
 }
