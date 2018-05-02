@@ -49,6 +49,9 @@ class Migration_Version_213 extends CI_Migration
                   PRIMARY KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1");
 
+                $this->db->query("ALTER TABLE `tblleads` ADD COLUMN `lead_data` TEXT NULL AFTER `is_delete`;");
+
+
         add_option('supplier_default_theme','supplier_navarra');
 
         if (file_exists(FCPATH.'pipe.php')) {
