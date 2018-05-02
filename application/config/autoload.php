@@ -122,6 +122,7 @@ $autoload['helper'] = array(
         'tags',
         'pdf',
         'clients',
+        'suppliers',
         'database',
         'upload',
         'sales',
