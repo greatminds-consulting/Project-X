@@ -175,7 +175,9 @@
                     <label for="tags" class="control-label"><i class="fa fa-tag" aria-hidden="true"></i> <?php echo _l('tags'); ?></label>
                     <input type="text" class="tagsinput" id="tags" name="tags" value="<?php echo (isset($project) ? prep_tags_input(get_tags_in($project->id,'project')) : ''); ?>" data-role="tagsinput">
                 </div>
-                <?php $rel_id_custom_field = (isset($project) ? $project->id : false); ?>
+                <?php $rel_id_custom_field = (isset($project) ? $project->id : false);
+                echo render_select('venue[]',$venues,array('id','name'),'venues',$projects_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                ?>
                 <?php echo render_custom_fields('projects',$rel_id_custom_field); ?>
                 <p class="bold"><?php echo _l('project_description'); ?></p>
                 <?php $contents = ''; if(isset($project)){$contents = $project->description;} ?>

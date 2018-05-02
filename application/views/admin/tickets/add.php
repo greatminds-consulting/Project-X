@@ -46,6 +46,11 @@
 								<?php echo render_input('cc','CC'); ?>
 							</div>
 						</div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <?php echo render_select('venue[]',$venues,array('id','name'),'venues',$tickets_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
+                            </div>
+                        </div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-group">
@@ -94,7 +99,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-12">
+                     <div class="col-md-12">
 						<?php echo render_custom_fields('tickets'); ?>
 					</div>
 				</div>
@@ -161,6 +166,7 @@
 		</div>
 	</div>
 	<?php echo form_close(); ?>
+</div>
 </div>
 </div>
 <?php $this->load->view('admin/tickets/services/service'); ?>

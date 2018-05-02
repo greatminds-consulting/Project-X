@@ -503,6 +503,8 @@ class Estimates_model extends CRM_Model
         ));
 
         $data  = $hook_data['data'];
+        unset($data['venue_items']);
+
         $items = $hook_data['items'];
 
         $this->db->insert('tblestimates', $data);
@@ -523,6 +525,7 @@ class Estimates_model extends CRM_Model
             foreach ($items as $key => $item) {
                 if ($itemid = add_new_sales_item_post($item, $insert_id, 'estimate')) {
                     _maybe_insert_post_item_tax($itemid, $item, $insert_id, 'estimate');
+                    _maybe_insert_post_item_venue($itemid, $item, $insert_id, 'estimate');
                 }
             }
 
@@ -735,11 +738,26 @@ class Estimates_model extends CRM_Model
                     $affectedRows++;
                 }
             }
+
+            if (!isset($item['venue_items']) || (isset($item['venue_items']) && count($item['venue_items']) == 0)) {
+                if (delete_venue_from_item($item['itemid'], 'estimate')) {
+                    $affectedRows++;
+                }
+            } else {
+                $this->db->where('itemid', $item['itemid']);
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'estimate');
+                $this->db->delete('tblitemsvenue');
+                if (_maybe_insert_post_item_venue($item['itemid'], $item, $id, 'estimate')) {
+                    $affectedRows++;
+                }
+            }
         }
 
         foreach ($newitems as $key => $item) {
             if ($new_item_added = add_new_sales_item_post($item, $id, 'estimate')) {
                 _maybe_insert_post_item_tax($new_item_added, $item, $id, 'estimate');
+                _maybe_insert_post_item_venue($new_item_added, $item, $id, 'estimate');
                 $this->log_estimate_activity($id, 'invoice_estimate_activity_added_item', false, serialize(array(
                     $item['description'],
                 )));

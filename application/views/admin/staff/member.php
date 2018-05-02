@@ -179,7 +179,9 @@
                         <?php } ?>
                      </div>
                      <?php $rel_id = (isset($member) ? $member->staffid : false); ?>
-                     <?php echo render_custom_fields('staff',$rel_id); ?>
+                     <?php  echo render_select('venue[]',$venues,array('id','name'),'venues',$staff_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+                     echo render_custom_fields('staff',$rel_id);
+                     ?>
                      <?php if (is_admin()){ ?>
                      <div class="row">
                         <div class="col-md-12">

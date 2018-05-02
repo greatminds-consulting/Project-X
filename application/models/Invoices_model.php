@@ -253,6 +253,14 @@ class Invoices_model extends CRM_Model
             $data['status'] = 6;
             unset($data['save_as_draft']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
 
         if (isset($data['recurring'])) {
             if ($data['recurring'] == 'custom') {
@@ -301,10 +309,17 @@ class Invoices_model extends CRM_Model
 
         $data  = $hook_data['data'];
         $items = $hook_data['items'];
+        unset($data['venue_items']);
 
         $this->db->insert('tblinvoices', $data);
         $insert_id = $this->db->insert_id();
+
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Invoice', 'venue_id' => $venue_id));
+                }
+            }
 
             // Update next invoice number in settings
             $this->db->where('name', 'next_invoice_number');
@@ -429,6 +444,8 @@ class Invoices_model extends CRM_Model
                         }
                     }
                     _maybe_insert_post_item_tax($itemid, $item, $insert_id, 'invoice');
+                    _maybe_insert_post_item_venue($itemid, $item, $insert_id, 'invoice');
+
                 }
             }
 
@@ -634,6 +651,7 @@ class Invoices_model extends CRM_Model
      */
     public function update($data, $id)
     {
+
         $original_invoice = $this->get($id);
         $affectedRows             = 0;
 
@@ -699,7 +717,14 @@ class Invoices_model extends CRM_Model
                 $affectedRows++;
             }
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         $data = $this->map_shipping_columns($data);
 
         $data['billing_street'] = trim($data['billing_street']);
@@ -784,9 +809,18 @@ class Invoices_model extends CRM_Model
 
         unset($data['removed_items']);
         unset($data['package_id']);
-
+        unset($data['venue_items']);
         $this->db->where('id', $id);
         $this->db->update('tblinvoices', $data);
+
+        $this->db->where('type', 'Invoice');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Invoice', 'venue_id' => $venue_id));
+            }
+        }
 
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
@@ -874,6 +908,20 @@ class Invoices_model extends CRM_Model
                         $affectedRows++;
                     }
                 }
+
+                if (!isset($item['venue_items']) || (isset($item['venue_items']) && count($item['venue_items']) == 0)) {
+                    if (delete_venue_from_item($item['itemid'], 'invoice')) {
+                        $affectedRows++;
+                    }
+                } else {
+                    $this->db->where('itemid', $item['itemid']);
+                    $this->db->where('rel_id', $id);
+                    $this->db->where('rel_type', 'invoice');
+                    $this->db->delete('tblitemsvenue');
+                    if (_maybe_insert_post_item_venue($item['itemid'], $item, $id, 'invoice')) {
+                        $affectedRows++;
+                    }
+                }
             }
         }
 
@@ -897,6 +945,7 @@ class Invoices_model extends CRM_Model
                     }
                 }
                 _maybe_insert_post_item_tax($new_item_added, $item, $id, 'invoice');
+                _maybe_insert_post_item_venue($new_item_added, $item, $id, 'invoice');
 
                 $this->log_invoice_activity($id, 'invoice_estimate_activity_added_item', false, serialize(array(
                         $item['description'],

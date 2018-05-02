@@ -10,6 +10,7 @@ class Migration_Version_213 extends CI_Migration
 
     public function up() {
 
+
         $menu = get_option('setup_menu_active');
         $menu = json_decode($menu);
         if (is_object($menu)) {
@@ -28,6 +29,7 @@ class Migration_Version_213 extends CI_Migration
         }
 
          //supplier Custom Fields In Items
+
         $this->db->query("CREATE TABLE IF NOT EXISTS `tblsuppliers` (
               `supplierid` int(11) NOT NULL AUTO_INCREMENT,
               `email` varchar(100)  DEFAULT NULL,`password` varchar(256)  DEFAULT NULL,`businessname` varchar(128) DEFAULT NULL,
@@ -48,6 +50,7 @@ class Migration_Version_213 extends CI_Migration
                   `userid` int(12) DEFAULT NULL,
                   PRIMARY KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1");
+
 
         add_option('supplier_default_theme','supplier_navarra');
 

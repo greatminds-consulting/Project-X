@@ -102,12 +102,16 @@ class Leads_model extends CRM_Model
         $query = $this->db->get();
         return  $query->result_array();
     }
-    public function get_venues()
+    public function selectedvenues($id)
     {
-        $this->db->select('id,name,email');
+        $this->db->select('tblvenues.name');
         $this->db->from('tblvenues');
+        $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $this->db->where('tblvenues_in.type','Leads');
         $query = $this->db->get();
         return  $query->result_array();
+
     }
     public function get_assignedstaff($id)
     {
@@ -168,11 +172,19 @@ class Leads_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
-
         if (isset($data['assigned'])) {
             $assigned_fields = $data['assigned'];
             $assigned_members[]=$data['assigned'];
             unset($data['assigned']);
+        }
+
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+             }
+            unset($data['venue']);
         }
 
         $data['address'] = trim($data['address']);
@@ -186,6 +198,12 @@ class Leads_model extends CRM_Model
             $this->log_lead_activity($insert_id, 'not_lead_activity_created');
 
             handle_tags_save($tags, $insert_id, 'lead');
+
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue_id));
+                }
+            }
 
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
@@ -309,6 +327,14 @@ class Leads_model extends CRM_Model
             }
             unset($data['custom_fields']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+           unset($data['venue']);
+        }
         $assigned_fields = array();
         $assignList = array();
         if (isset($data['assigned'])) {
@@ -396,6 +422,14 @@ class Leads_model extends CRM_Model
                     'lost' => 0,
                 ));
             }
+            $this->db->where('type', 'Leads');
+            $this->db->where('type_id', $id);
+            $this->db->delete('tblvenues_in');
+                if ($venueArray) {
+                    foreach ($venueArray as $key=> $venue_id) {
+                        $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
+                     }
+             }
 
             if ($assigned_fields) {
                 $this->lead_assigned_member_notification($id, $assigned_fields);
