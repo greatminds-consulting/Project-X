@@ -12,7 +12,7 @@ class Invoice_items_model extends CRM_Model
      * @param  mixed $id
      * @return mixed - array if not passed id, object if id passed
      */
-    public function get($id = '', $package_id = '')
+    public function get($id = '', $package_id = '',$supplier_id = '')
     {
         $columns = $this->db->list_fields('tblitems');
         $rateCurrencyColumns = '';
@@ -21,7 +21,7 @@ class Invoice_items_model extends CRM_Model
                 $rateCurrencyColumns .= $column.',';
             }
         }
-        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,
+        $this->db->select($rateCurrencyColumns.'tblitems.id as itemid,rate,stockinhand,
             t1.taxrate as taxrate,t1.id as taxid,t1.name as taxname,
             t2.taxrate as taxrate_2,t2.id as taxid_2,t2.name as taxname_2,
             description,long_description,group_id,tblitems_groups.name as group_name,unit');
@@ -37,6 +37,9 @@ class Invoice_items_model extends CRM_Model
         }
         if ($package_id) {
             $this->db->join('tblitems_packages_map', 'tblitems_packages_map.item_id = tblitems.id and tblitems_packages_map.package_id = '.$package_id, 'inner');
+        }
+        if ($supplier_id) {
+            $this->db->where('tblitems.created_by', $supplier_id);
         }
 
         return $this->db->get()->result_array();
@@ -81,7 +84,6 @@ class Invoice_items_model extends CRM_Model
         if ($data['tax'] == '') {
             unset($data['tax']);
         }
-
         if (isset($data['tax2']) && $data['tax2'] == '') {
             unset($data['tax2']);
         }
