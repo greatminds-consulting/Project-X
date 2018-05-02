@@ -8,7 +8,7 @@ $info_right_column .= '<span style="font-weight:bold;font-size:27px;">'._l('lead
 $info_right_column .= '<b style="color:#4e4e4e;">#'.$estimate->id.' </b>';
 
 if(get_option('show_status_on_pdf_ei') == 1){
-    $info_right_column .= '<br /><span style="color:rgb('.estimate_status_color_pdf(1).');text-transform:uppercase;">' . format_estimate_status(1,'',false) . '</span>';
+    $info_right_column .= '<br /><span style="color:rgb('.estimate_status_color_pdf($estimate->id).');text-transform:uppercase;">' . format_estimate_status($estimate->id,'',false) . '</span>';
 }
 
 // write the first column

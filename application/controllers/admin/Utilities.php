@@ -14,6 +14,7 @@ class Utilities extends Admin_controller
         $this->load->model('utilities_model');
         $this->load->model('leads_model');
         $this->load->model('proposals_model');
+        $this->load->model('tasks_model');
     }
 
     /* All perfex activity log */
@@ -345,7 +346,14 @@ class Utilities extends Admin_controller
             } elseif ($type == 'leads') {
                 $this->db->select('id');
                 $this->db->from('tblleads');
-                $this->db->where('status', 1);
+                $status = $this->input->post('leads_export_status');
+                if ($status != 'all') {
+                    $this->db->where('status', $status);
+                }
+
+                if (!$has_permission_leads_view) {
+                    $this->db->where('addedfrom', get_staff_user_id());
+                }
             } else {
                 // This may not happend but in all cases :)
                 die('No Export Type Selected');
@@ -357,6 +365,9 @@ class Utilities extends Admin_controller
                 // Column date is ambiguous in payments
                 if ($type == 'payments') {
                     $date_field = 'tblinvoicepaymentrecords.date';
+                }
+                if ($type == 'leads') {
+                    $date_field = 'tblleads.dateadded';
                 }
                 if ($from_date == $to_date) {
                     $this->db->where($date_field, $from_date);
@@ -403,14 +414,13 @@ class Utilities extends Admin_controller
                     $this->pdf_zip->Output($file_name . '.pdf', 'F');
                 }
             } elseif ($type == 'leads') {
-                foreach ($data as $estimate) {
-                    $this->load->model('estimates_model');
+                foreach ($data as $lead) {
                     $this->load->model('leads_model');
-                    $estimate_data   = $this->leads_model->get($estimate['id']);
-                    $proposals = $this->proposals_model->lead_rel_details($estimate['id']);
-                    $tasks = $this->tasks_model->lead_rel_details($estimate['id']);
-                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'),$proposals, $tasks);
-                    $_temp_file_name =  slug_it(format_leads_number($estimate_data->id));
+                    $lead_data   = $this->leads_model->get($lead['id']);
+                    $proposals = $this->proposals_model->lead_rel_details($lead['id']);
+                    $tasks = $this->tasks_model->lead_rel_details($lead['id']);
+                    $this->pdf_zip   = leads_pdf($lead_data, $this->input->post('tag'),$proposals, $tasks);
+                    $_temp_file_name =  slug_it(format_leads_number($lead_data->id));
                     $file_name       = $dir . '/' . strtoupper($_temp_file_name);
                     $this->pdf_zip->Output($file_name . '.pdf', 'F');
                 }
