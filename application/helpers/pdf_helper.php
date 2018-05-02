@@ -394,7 +394,7 @@ function estimate_pdf($estimate, $tag = '')
  * @param  string $tag tag for bulk pdf exporter
  * @return mixed object
  */
-function leads_pdf($leads, $tag = '') {
+function leads_pdf($leads, $tag = '',$proposals = '') {
     $GLOBALS['leads_pdf'] = $leads;
     $CI =& get_instance();
     load_pdf_language(1);

@@ -13,6 +13,7 @@ class Utilities extends Admin_controller
         parent::__construct();
         $this->load->model('utilities_model');
         $this->load->model('leads_model');
+        $this->load->model('proposals_model');
     }
 
     /* All perfex activity log */
@@ -406,7 +407,8 @@ class Utilities extends Admin_controller
                     $this->load->model('estimates_model');
                     $this->load->model('leads_model');
                     $estimate_data   = $this->leads_model->get($estimate['id']);
-                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'));
+                    $proposals = $this->proposals_model->lead_rel_details($estimate['id']);
+                    $this->pdf_zip   = leads_pdf($estimate_data, $this->input->post('tag'),$proposals);
                     $_temp_file_name =  slug_it(format_leads_number($estimate_data->id));
                     $file_name       = $dir . '/' . strtoupper($_temp_file_name);
                     $this->pdf_zip->Output($file_name . '.pdf', 'F');

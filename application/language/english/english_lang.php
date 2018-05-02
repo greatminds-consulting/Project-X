@@ -518,6 +518,7 @@ $lang['leads_dt_description']        = 'Description';
 $lang['leads_dt_state']        = 'State';
 $lang['leads_dt_city']        = 'City';
 $lang['leads_dt_phonenumber']  = 'Phone';
+$lang['leads_dt_company']  = 'Company';
 $lang['leads_dt_assigned']     = 'Assigned';
 $lang['leads_dt_status']       = 'Status';
 $lang['leads_dt_last_contact'] = 'Last Contact';

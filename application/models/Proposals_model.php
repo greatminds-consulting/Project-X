@@ -1070,4 +1070,10 @@ class Proposals_model extends CRM_Model
 
         return false;
     }
+
+    public function lead_rel_details($rel_id) {
+        $this->db->where('rel_id', $rel_id);
+        $_data       = $this->db->get('tblproposals')->result_array();
+        return $_data;
+    }
 }
