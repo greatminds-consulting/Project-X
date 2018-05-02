@@ -87,15 +87,13 @@ $headings_width = (100-($item_width+6)) / $total_headings;
 // Header
 $tblhtml = '<table width="100%" bgcolor="#fff" cellspacing="0" cellpadding="8">';
 $tblhtml .= '<tr height="30" bgcolor="' . get_option('pdf_table_heading_color') . '" style="color:' . get_option('pdf_table_heading_text_color') . ';">';
-$tblhtml .= '<th width="5%;" align="center">#</th>';
-$tblhtml .= '<th width="'.$item_width.'%" align="left">' . _l('proposal') . '</th>';
-foreach ($custom_fields_items as $cf) {
-    $tblhtml .= '<th width="'.$headings_width.'%" align="left">' . $cf['proposal_subject'] . '</th>';
-}
-$tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('proposal_total') .  '</th>';
-$tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('proposal_date_created') . '</th>';
-$tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('proposal_date') . '</th>';
-$tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('proposal_open_till') . '</th>';
+$tblhtml .= '<th>#</th>';
+$tblhtml .= '<th>' . _l('proposal') . '</th>';
+$tblhtml .= '<th>' . _l('proposal_total') .  '</th>';
+$tblhtml .= '<th>' . _l('proposal_date_created') . '</th>';
+$tblhtml .= '<th>' . _l('proposal_date') . '</th>';
+$tblhtml .= '<th>' . _l('proposal_open_till') . '</th>';
+$tblhtml .= '<th>' . _l('proposal_status') . '</th>';
 $tblhtml .= '</tr>';
 $tblhtml .= '<tbody>';
 foreach ($proposals as $proposal) {
@@ -106,6 +104,7 @@ foreach ($proposals as $proposal) {
     $tblhtml .= '<td>' . _d($proposal["datecreated"]) .  '</td>';
     $tblhtml .= '<td>' . _d($proposal["date"]) .  '</td>';
     $tblhtml .= '<td>' . _d($proposal["open_till"]) .  '</td>';
+    $tblhtml .= '<td>' . format_proposal_status($proposal["status"]) .  '</td>';
     $tblhtml .= '</tr>';
 }
 $tblhtml .= '</tbody>';
