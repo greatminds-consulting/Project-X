@@ -196,6 +196,19 @@ function is_client_logged_in()
     return false;
 }
 /**
+ * Is supplier logged in
+ * @return boolean
+ */
+function is_supplier_logged_in()
+{
+    $CI =& get_instance();
+    if ($CI->session->has_userdata('supplier_logged_in')) {
+        return true;
+    }
+
+    return false;
+}
+/**
  * Is staff logged in
  * @return boolean
  */
@@ -233,6 +246,19 @@ function get_client_user_id()
     }
 
     return $CI->session->userdata('client_user_id');
+}
+/**
+ * Return logged supplier User ID from session
+ * @return mixed
+ */
+function get_supplier_user_id()
+{
+    $CI =& get_instance();
+    if (!$CI->session->has_userdata('supplier_logged_in')) {
+        return false;
+    }
+
+    return $CI->session->userdata('supplier_user_id');
 }
 
 /**

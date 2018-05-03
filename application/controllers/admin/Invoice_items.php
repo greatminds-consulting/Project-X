@@ -5,11 +5,13 @@ class Invoice_items extends Admin_controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->helper('url');
         $this->load->model('invoice_items_model');
+        $this->load->model('venues_model');
     }
 
     /* List all available items */
-    public function index()
+    public function index($id = '')
     {
         if (!has_permission('items', '', 'view')) {
             access_denied('Invoice Items');
@@ -19,6 +21,8 @@ class Invoice_items extends Admin_controller
         $data['taxes']          = $this->taxes_model->get();
         $data['items_groups']   = $this->invoice_items_model->get_groups();
         $data['items_packages'] = $this->invoice_items_model->get_packages();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['item_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Items');
 
         $this->load->model('currencies_model');
         $data['currencies'] = $this->currencies_model->get();
@@ -51,6 +55,7 @@ class Invoice_items extends Admin_controller
                     $success = false;
                     $message = '';
                     if ($id) {
+                        handle_contact_item_image_upload($id);
                         $success = true;
                         $message = _l('added_successfully', _l('invoice_item'));
                     }
@@ -60,6 +65,8 @@ class Invoice_items extends Admin_controller
                         'item' => $this->invoice_items_model->get($id)
                     ));
                 } else {
+                    $id      = $data['itemid'];
+                    $updated          = false;
                     if (!has_permission('items', '', 'edit')) {
                         header('HTTP/1.0 400 Bad error');
                         echo _l('access_denied');
@@ -69,6 +76,10 @@ class Invoice_items extends Admin_controller
                     $message = '';
                     if ($success) {
                         $message = _l('updated_successfully', _l('invoice_item'));
+                    }
+                    if (handle_contact_item_image_upload($id) && !$updated) {
+                        $message = _l('updated_successfully', _l('contact'));
+                        $success = true;
                     }
                     echo json_encode(array(
                         'success' => $success,
@@ -164,11 +175,15 @@ class Invoice_items extends Admin_controller
     {
         if ($this->input->is_ajax_request()) {
             $item                   = $this->invoice_items_model->get($id);
+
             $item->item_packages = $this->invoice_items_model->get_item_packages($id, true);
             $item->long_description = nl2br($item->long_description);
+            $item->item_image=$item->item_image;
+            $item->stock = nl2br($item->stockinhand);
             $item->custom_fields_html = render_custom_fields('items',$id,array(),array('items_pr'=>true));
+            $item->venues = $this->venues_model->getvenues();
+            $item->item_venues = $this->venues_model->get_type_details_from_venue_map($id, 'Items');
             $item->custom_fields = array();
-
             $cf = get_custom_fields('items');
 
             foreach($cf as $custom_field) {
@@ -190,6 +205,7 @@ class Invoice_items extends Admin_controller
             $items                   = $this->invoice_items_model->get('', $id);
             $return = array();
             foreach ($items as $item) {
+                $item['venues'] = $this->venues_model->get_type_details_from_venue_map($item['itemid'] , 'Items');
                 $item['long_description'] = nl2br($item['long_description']);
                 $item['custom_fields_html'] = render_custom_fields('items',$item['itemid'],array(),array('items_pr'=>true));
                 $item['custom_fields'] = array();

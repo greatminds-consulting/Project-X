@@ -401,6 +401,46 @@ function contact_profile_image_url($contact_id, $type = 'small')
 
     return $url;
 }
+
+/**
+ * Return item image url
+ * @param  mixed $item_id
+ * @param  string $type
+ * @return string
+ */
+function contact_item_image_url($item_id, $type = 'small')
+{
+    $url = base_url('assets/images/user-placeholder.jpg');
+    $CI =& get_instance();
+    $CI->db->select('item_image');
+    $CI->db->from('tblitems');
+    $CI->db->where('id', $item_id);
+    $contact = $CI->db->get()->row();
+    if ($contact) {
+        if (!empty($contact->item_image)) {
+            $path = 'uploads/items/' . $item_id . '/' . $type . '_' . $contact->item_image;
+            if (file_exists($path)) {
+                $url = base_url($path);
+            }
+        }
+    }
+
+    return $url;
+}
+
+function suppliers_image() {
+    $image = base_url('assets/images/user-placeholder.jpg');
+    $url = '<img src="' . $image . '"  class="client-profile-image-small mright5">';
+    $CI =& get_instance();
+    $CI->db->select('businessname');
+    $CI->db->from('tblsuppliers');
+    $CI->db->where('supplierid', get_supplier_user_id());
+    $supplier = $CI->db->get()->row();
+    if ($supplier->businessname) {
+        $url = '<span class="profile-initials" style="">'.strtoupper(substr($supplier->businessname, 0, 2)).'</span>';
+    }
+    return $url;
+}
 /**
  * Used in:
  * Search contact tickets
@@ -501,6 +541,33 @@ function has_contact_permission($permission, $contact_id = '')
     foreach ($permissions as $_permission) {
         if ($_permission['short_name'] == $permission) {
            return total_rows('tblcontactpermissions', array(
+                'permission_id' => $_permission['id'],
+                'userid' => $_contact_id,
+            )) > 0;
+        }
+    }
+
+    return false;
+}
+
+function has_supplier_permission($permission, $contact_id = '')
+{
+    $CI =& get_instance();
+    if (!class_exists('app')) {
+        $CI->load->library('app');
+    }
+    $permissions = get_supplier_permissions();
+    // Contact id passed form function
+    if ($contact_id != '') {
+       $_contact_id = $contact_id;
+    } else {
+        // Current logged in contact
+        $_contact_id     = get_supplier_user_id();
+    }
+
+    foreach ($permissions as $_permission) {
+        if ($_permission['short_name'] == $permission) {
+            return total_rows('tblsupplierpermissions', array(
                 'permission_id' => $_permission['id'],
                 'userid' => $_contact_id,
             )) > 0;
@@ -613,6 +680,24 @@ function get_contact_permissions()
                 'short_name' => 'projects',
             ),
         );
+
+    return do_action('get_contact_permissions', $permissions);
+}
+
+function get_supplier_permissions()
+{
+    $permissions = array(
+        array(
+            'id' => 1,
+            'name' => 'Profile',
+            'short_name' => 'Profile',
+        ),
+        array(
+            'id' => 2,
+            'name' => 'Items',
+            'short_name' => 'Items',
+        )
+    );
 
     return do_action('get_contact_permissions', $permissions);
 }

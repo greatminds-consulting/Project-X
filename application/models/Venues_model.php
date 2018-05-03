@@ -386,4 +386,33 @@ class Venues_model extends CRM_Model
         }
         return false;
     }
+
+    public function getvenues() {
+        $this->db->select('tblvenues.name,tblvenues.id');
+        $this->db->where('is_delete', 0);
+        $this->db->from('tblvenues');
+        $query = $this->db->get();
+        $data = $query->result_array();
+        return  $data;
+    }
+
+    public function get_type_details_from_venue_map($type_id , $type, $isString = false) {
+        $this->db->select('tblvenues_in.venue_id,tblvenues.name');
+        $this->db->join('tblvenues','tblvenues.id=tblvenues_in.venue_id','inner');
+        $this->db->where('type_id', $type_id);
+        $this->db->where('type', $type);
+        $results = $this->db->get('tblvenues_in')->result_array();
+        $return = array();
+        foreach ($results as $result) {
+            if ($isString) {
+                $return[] = $result['name'];
+            } else {
+                $return[] = $result['venue_id'];
+            }
+        }
+        if ($isString) {
+            return implode(',', $return);
+        }
+        return $return;
+    }
 }
