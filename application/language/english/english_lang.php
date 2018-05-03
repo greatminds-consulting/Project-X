@@ -2052,6 +2052,7 @@ $lang['not_goal_message_success'] = 'Congratulations! We achieved new goal.<br /
 <br />End Date: %s';
 $lang['not_assigned_lead_to_you'] = 'assigned lead %s to you';
 $lang['not_lead_activity_assigned_to'] = '%s assigned to %s';
+$lang['not_lead_activity_assignee_removed_from'] = '%s removed assignee  %s';
 $lang['not_lead_activity_attachment_deleted'] = 'Deleted Attachment';
 $lang['not_lead_activity_status_updated'] = '%s updated lead status from %s to %s';
 $lang['not_lead_activity_contacted'] = '%s contacted this lead on %s';
