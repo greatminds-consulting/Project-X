@@ -224,13 +224,12 @@ class Leads extends Admin_controller
         redirect($ref);
     }
 
-    public function mark_as_lost($id)
-    {
+    public function mark_as_lost($id, $lost_reason) {
         if (!is_staff_member() || !$this->leads_model->staff_can_access_lead($id)) {
             $this->access_denied_ajax();
         }
         $message = '';
-        $success = $this->leads_model->mark_as_lost($id);
+        $success = $this->leads_model->mark_as_lost($id,$lost_reason);
         if ($success) {
             $message = _l('lead_marked_as_lost');
         }

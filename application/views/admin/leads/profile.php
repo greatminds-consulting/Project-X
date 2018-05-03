@@ -1,3 +1,9 @@
+<style>
+    .more-links {
+        display: inline-block;
+        margin-left: 8px;
+    }
+</style>
 <div class="lead-wrapper" <?php if(isset($lead) && ($lead->junk == 1 || $lead->lost == 1)){ echo 'lead-is-junk-or-lost';} ?>>
    <?php if(isset($lead)){ ?>
    <div class="btn-group pull-left lead-actions-left">
@@ -5,21 +11,17 @@
          <?php echo _l('edit'); ?>
          <i class="fa fa-pencil-square-o"></i>
       </a>
-      <a href="#" class="font-medium-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <?php echo _l('more'); ?>
-      <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-left">
+       <ul class="pull-left">
          <?php if($lead->junk == 0){
          if($lead->lost == 0 && (total_rows('tblclients',array('leadid'=>$lead->id)) == 0)){ ?>
-         <li>
-            <a href="#" onclick="lead_mark_as_lost(<?php echo $lead->id; ?>); return false;">
+         <li class="more-links">
+            <a href="#" onclick="lead_mark_as_lost_reason(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-mars"></i>
               <?php echo _l('lead_mark_as_lost'); ?>
             </a>
          </li>
          <?php } else if($lead->lost == 1){ ?>
-         <li>
+       <li class="more-links">
             <a href="#" onclick="lead_unmark_as_lost(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_lost'); ?>
@@ -30,14 +32,14 @@
          <!-- mark as junk -->
          <?php if($lead->lost == 0){
          if($lead->junk == 0 && (total_rows('tblclients',array('leadid'=>$lead->id)) == 0)){ ?>
-         <li>
+         <li class="more-links">
             <a href="#" onclick="lead_mark_as_junk(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa fa-times"></i>
               <?php echo _l('lead_mark_as_junk'); ?>
             </a>
          </li>
          <?php } else if($lead->junk == 1){ ?>
-         <li>
+         <li class="more-links">
             <a href="#" onclick="lead_unmark_as_junk(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_junk'); ?>
@@ -46,7 +48,7 @@
          <?php } ?>
          <?php } ?>
          <?php if(((is_lead_creator($lead->id) || has_permission('leads','','delete')) && $lead_locked == false) || is_admin()){ ?>
-         <li>
+       <li class="more-links">
             <a href="<?php echo admin_url('leads/delete/'.$lead->id); ?>" class="text-danger delete-text _delete" data-toggle="tooltip" title="">
               <i class="fa fa-remove"></i>
               <?php echo _l('lead_edit_delete_tooltip'); ?>
@@ -382,6 +384,33 @@
    <div class="clearfix"></div>
    <?php echo form_close(); ?>
 </div>
+
+<!-- Modal -->
+<div id="lost_reason_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Reason to mark as lost</h4>
+            </div>
+            <div class="modal-body">
+                <select name="lost_reason">
+                    <option value="CoupleBrokeup">Couple Broke up</option>
+                    <option value="Tooexpensive">Too expensive</option>
+                    <option value="Datenotavailable">Date not available</option>
+                    <option value="Roomnotavailable">Room not available</option>
+                </select>
+                <input type="hidden" id="lead_id" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="lead_mark_as_lost_reason_save(); return false;">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
 <?php if(isset($lead) && $lead_locked == true){ ?>
 <script>
   $(function() {

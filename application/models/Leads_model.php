@@ -551,12 +551,17 @@ class Leads_model extends CRM_Model
         $this->db->where('id', $id);
         $last_lead_status = $this->db->get()->row()->status;
 
+        $lostReason = '';
+        if ($lost_reason) {
+            $lostReason = json_encode(array('lost_reason' => $lost_reason));
+        }
         $this->db->where('id', $id);
         $this->db->update('tblleads', array(
             'lost' => 1,
             'status' => 0,
             'last_status_change' => date('Y-m-d H:i:s'),
             'last_lead_status' => $last_lead_status,
+            'lead_data'=> $lostReason
         ));
         if ($this->db->affected_rows() > 0) {
             $this->log_lead_activity($id, 'not_lead_activity_marked_lost');
