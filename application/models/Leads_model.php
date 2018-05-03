@@ -350,13 +350,14 @@ class Leads_model extends CRM_Model
             $datastaff['datecreated']=date("Y/m/d H:i:s");
             foreach ($currentStaffLeads as $currentStaffLead) {
                 if (false !== $key = array_search($currentStaffLead['staff_id'], $assigned_fields)) {
+                    unset($assigned_fields[$key]);
+                } else {
                     $not_additional_data = array(
                         get_staff_full_name(),
                         '<a href="' . admin_url('profile/' . $currentStaffLead['staff_id']) . '" target="_blank">' . get_staff_full_name($currentStaffLead['staff_id']) . '</a>',
                     );
                     $not_additional_data = serialize($not_additional_data);
                     $this->log_lead_activity($id, 'not_lead_activity_assignee_removed_from', false, $not_additional_data);
-                    unset($assigned_fields[$key]);
                 }
             }
             $this->db->where('lead_id', $id);
