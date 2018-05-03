@@ -403,6 +403,15 @@ class Leads_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
+
+        $this->db->where('type', 'Leads');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
+            }
+        }
         if ($this->db->affected_rows() > 0 || $assigned_fields) {
             $affectedRows++;
             if (isset($data['status']) && $current_status_id != $data['status']) {
@@ -427,14 +436,6 @@ class Leads_model extends CRM_Model
                     'lost' => 0,
                 ));
             }
-            $this->db->where('type', 'Leads');
-            $this->db->where('type_id', $id);
-            $this->db->delete('tblvenues_in');
-                if ($venueArray) {
-                    foreach ($venueArray as $key=> $venue_id) {
-                        $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
-                     }
-             }
             if ($assigned_fields) {
                 $this->lead_assigned_member_notification($id, $assigned_fields);
             }
