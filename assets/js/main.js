@@ -4620,8 +4620,8 @@ function delete_lead_note(wrapper, id) {
 }
 
 // Mark lead as lost function
-function lead_mark_as_lost(id) {
-    requestGetJSON('leads/mark_as_lost/' + id).done(function(response) {
+function lead_mark_as_lost(id,lost_reason) {
+    requestGetJSON('leads/mark_as_lost/' + id +'/' +lost_reason).done(function(response) {
         if (response.success == true) {
             alert_float('success', response.message);
             $("body").find('tr#lead_' + id).remove();
@@ -4631,6 +4631,15 @@ function lead_mark_as_lost(id) {
     }).fail(function(error) {
             alert_float('danger', error.responseText);
         });
+}
+
+function lead_mark_as_lost_reason(id) {
+    $('#lost_reason_modal').modal('show');
+    $('#lead_id').val(id);
+}
+function lead_mark_as_lost_reason_save() {
+    $('#lost_reason_modal').modal('hide');
+    lead_mark_as_lost($('#lead_id').val(),$('select[name="lost_reason"]').val());
 }
 
 // Unmark lead as lost function
