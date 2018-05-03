@@ -552,7 +552,7 @@ class Leads_model extends CRM_Model
         $last_lead_status = $this->db->get()->row()->status;
         $lostReason = '';
         if ($lost_reason) {
-            $lostReason = json_encode(array('lost_reason' => $lost_reason));
+            $lostReason = json_encode(array('lost_reason' => $lost_reason,'last_lost_change' => date('Y-m-d H:i:s')));
         }
         $this->db->where('id', $id);
         $this->db->update('tblleads', array(
