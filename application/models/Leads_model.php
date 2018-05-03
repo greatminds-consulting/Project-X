@@ -302,7 +302,6 @@ class Leads_model extends CRM_Model
      */
     public function update($data, $id)
     {
-
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -349,10 +348,16 @@ class Leads_model extends CRM_Model
             $currentStaffLeads = $query->result_array();
             $datastaff['lead_id']=$id;
             $datastaff['datecreated']=date("Y/m/d H:i:s");
-
             foreach ($currentStaffLeads as $currentStaffLead) {
                 if (false !== $key = array_search($currentStaffLead['staff_id'], $assigned_fields)) {
                     unset($assigned_fields[$key]);
+                } else {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('profile/' . $currentStaffLead['staff_id']) . '" target="_blank">' . get_staff_full_name($currentStaffLead['staff_id']) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_assignee_removed_from', false, $not_additional_data);
                 }
             }
             $this->db->where('lead_id', $id);
@@ -430,7 +435,6 @@ class Leads_model extends CRM_Model
                         $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
                      }
              }
-
             if ($assigned_fields) {
                 $this->lead_assigned_member_notification($id, $assigned_fields);
             }
@@ -544,16 +548,15 @@ class Leads_model extends CRM_Model
      * @param  mixed $id lead id
      * @return boolean
      */
-    public function mark_as_lost($id)
+    public function mark_as_lost($id ,$lost_reason)
     {
         $this->db->select('status');
         $this->db->from('tblleads');
         $this->db->where('id', $id);
         $last_lead_status = $this->db->get()->row()->status;
-
         $lostReason = '';
         if ($lost_reason) {
-            $lostReason = json_encode(array('lost_reason' => $lost_reason));
+            $lostReason = json_encode(array('lost_reason' => $lost_reason,'last_lost_change' => date('Y-m-d H:i:s')));
         }
         $this->db->where('id', $id);
         $this->db->update('tblleads', array(

@@ -396,12 +396,24 @@
                 <h4 class="modal-title">Reason to mark as lost</h4>
             </div>
             <div class="modal-body">
-                <select name="lost_reason">
-                    <option value="CoupleBrokeup">Couple Broke up</option>
-                    <option value="Tooexpensive">Too expensive</option>
-                    <option value="Datenotavailable">Date not available</option>
-                    <option value="Roomnotavailable">Room not available</option>
-                </select>
+                <?php
+                $type = array(
+                    0 => array(
+                        'id' => 'CoupleBrokeup',
+                        'name' => 'Couple Broke up'
+                    ),1 => array(
+                        'id' => 'Tooexpensive',
+                        'name' => 'Too expensive'
+                    ),2 => array(
+                        'id' => 'Datenotavailable',
+                        'name' => 'Date not available'
+                    ),3 => array(
+                        'id' => 'Roomnotavailable',
+                        'name' => 'Room not available'
+                    )
+                );
+                echo render_select('lost_reason',$type,array('id','name'),'Reason To Mark as lost','',array('required' => true));
+                ?>
                 <input type="hidden" id="lead_id" value="">
             </div>
             <div class="modal-footer">
