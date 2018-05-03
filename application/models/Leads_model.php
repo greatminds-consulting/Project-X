@@ -544,13 +544,12 @@ class Leads_model extends CRM_Model
      * @param  mixed $id lead id
      * @return boolean
      */
-    public function mark_as_lost($id)
+    public function mark_as_lost($id ,$lost_reason)
     {
         $this->db->select('status');
         $this->db->from('tblleads');
         $this->db->where('id', $id);
         $last_lead_status = $this->db->get()->row()->status;
-
         $lostReason = '';
         if ($lost_reason) {
             $lostReason = json_encode(array('lost_reason' => $lost_reason));
