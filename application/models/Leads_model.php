@@ -411,12 +411,40 @@ class Leads_model extends CRM_Model
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
 
+
+        $this->db->select('venue_id');
+        $this->db->from('tblvenues_in');
+        $this->db->where('type_id', $id);
+        $query = $this->db->get();
+        $currentVenueLeads = $query->result_array();
         $this->db->where('type', 'Leads');
         $this->db->where('type_id', $id);
         $this->db->delete('tblvenues_in');
         if ($venueArray) {
+            $newVenue = $venueArray;
+            foreach ($currentVenueLeads as $currentVenueLead) {
+                if (false === $key = array_search($currentVenueLead['venue_id'], $venueArray)) {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $currentVenueLead['venue_id']) . '" target="_blank">' . get_venue_name($currentVenueLead['venue_id']) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_venue_removed_from', false, $not_additional_data);
+                } else {
+                    unset($newVenue[$key]);
+                }
+            }
             foreach ($venueArray as $key=> $venue_id) {
+                if (array_search($venue_id, $newVenue) !== false) {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $venue_id) . '" target="_blank">' . get_venue_name($venue_id) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_venue_added_to', false, $not_additional_data);
+                }
                 $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
+
             }
         }
         if ($this->db->affected_rows() > 0 || $assigned_fields) {
