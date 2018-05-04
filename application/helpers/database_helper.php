@@ -827,3 +827,16 @@ function get_country_name($id)
 
     return '';
 }
+
+/**
+ * Get venue name by passed id
+ * @param  mixed $id county id
+ * @return mixed
+ */
+function get_venue_name($id) {
+    $CI =& get_instance();
+    $CI->db->select('name');
+    $CI->db->from('tblvenues');
+    $CI->db->where('id', $id);
+    return $CI->db->get()->row();
+}

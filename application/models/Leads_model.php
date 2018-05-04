@@ -202,6 +202,13 @@ class Leads_model extends CRM_Model
             if ($venueArray) {
                 foreach ($venueArray as $key=> $venue_id) {
                     $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue_id));
+
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $venue_id) . '" target="_blank">' . get_venue_name($venue_id) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($insert_id, 'not_lead_activity_venue_added_to', false, $not_additional_data);
                 }
             }
 
