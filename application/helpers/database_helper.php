@@ -838,5 +838,6 @@ function get_venue_name($id) {
     $CI->db->select('name');
     $CI->db->from('tblvenues');
     $CI->db->where('id', $id);
-    return $CI->db->get()->row();
+    $result = $CI->db->get()->result_array();
+    return $result[0]['name'];
 }
