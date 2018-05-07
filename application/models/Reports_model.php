@@ -329,7 +329,6 @@ class Reports_model extends CRM_Model
                 'lost' => 0
             )));
         }
-
         return $chart;
     }
 
@@ -627,6 +626,70 @@ class Reports_model extends CRM_Model
             $i = 0;
             foreach ($chart['labels'] as $date) {
                 if (_d(date('Y-m-d', strtotime($lead['dateadded']))) == $date) {
+                    $chart['datasets'][0]['data'][$i]++;
+                }
+                $i++;
+            }
+        }
+
+        return $chart;
+    }
+
+    /**
+     * Chart incoming leads weeekly report
+     * @return array  chart data
+     */
+    public function incoming_leads_this_week_report() {
+        $this->db->where('CAST(dateadded as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(dateadded as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '" AND status = 1 and lost = 0');
+        $weekly = $this->db->get('tblleads')->result_array();
+        $colors = get_system_favourite_colors();
+        $chart  = array(
+            'labels' => array(
+                _l('wd_monday'),
+                _l('wd_tuesday'),
+                _l('wd_wednesday'),
+                _l('wd_thursday'),
+                _l('wd_friday'),
+                _l('wd_saturday'),
+                _l('wd_sunday')
+            ),
+            'datasets' => array(
+                array(
+                    'data' => array(
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ),
+                    'backgroundColor' => array(
+                        $colors[0],
+                        $colors[1],
+                        $colors[2],
+                        $colors[3],
+                        $colors[4],
+                        $colors[5],
+                        $colors[6]
+                    ),
+                    'hoverBackgroundColor' => array(
+                        adjust_color_brightness($colors[0], -20),
+                        adjust_color_brightness($colors[1], -20),
+                        adjust_color_brightness($colors[2], -20),
+                        adjust_color_brightness($colors[3], -20),
+                        adjust_color_brightness($colors[4], -20),
+                        adjust_color_brightness($colors[5], -20),
+                        adjust_color_brightness($colors[6], -20)
+                    )
+                )
+            )
+        );
+        foreach ($weekly as $weekly) {
+            $lead_status_day = _l(mb_strtolower('wd_' . date('l', strtotime($weekly['dateadded']))));
+            $i               = 0;
+            foreach ($chart['labels'] as $dat) {
+                if ($lead_status_day == $dat) {
                     $chart['datasets'][0]['data'][$i]++;
                 }
                 $i++;
