@@ -172,6 +172,7 @@ class Reports_model extends CRM_Model
     {
         $this->db->where('CAST(last_status_change as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(last_status_change as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '" AND status = 1 and lost = 0');
         $weekly = $this->db->get('tblleads')->result_array();
+
         $colors = get_system_favourite_colors();
         $chart  = array(
             'labels' => array(
@@ -696,6 +697,33 @@ class Reports_model extends CRM_Model
             }
         }
 
+        return $chart;
+    }
+
+    /**
+     * Incoming Leads by sources report / chart
+     * @return arrray chart data
+     */
+    public function incoming_leads_sources_report() {
+        $this->load->model('leads_model');
+        $sources = $this->leads_model->get_source();
+        $chart   = array(
+            'labels' => array(),
+            'datasets' => array(
+                array(
+                    'label' => _l('report_leads_sources_incoming'),
+                    'backgroundColor' => 'rgba(124, 179, 66, 0.5)',
+                    'borderColor' => '#7cb342',
+                    'data' => array()
+                )
+            )
+        );
+        foreach ($sources as $source) {
+            array_push($chart['labels'], $source['name']);
+            array_push($chart['datasets'][0]['data'], total_rows('tblleads', array(
+                'source' => $source['id']
+            )));
+        }
         return $chart;
     }
 }
