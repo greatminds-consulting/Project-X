@@ -1333,8 +1333,21 @@ class Reports extends Admin_controller
     {
         echo json_encode($this->reports_model->leads_monthly_report($month));
     }
+    /* Leads conversion monthly report / ajax chart*/
+    public function incoming_leads_monthly_report($month)
+    {
+        echo json_encode($this->reports_model->incoming_leads_monthly_report($month));
+    }
 
     private function distinct_taxes($rel_type){
         return $this->db->query("SELECT DISTINCT taxname,taxrate FROM tblitemstax WHERE rel_type='".$rel_type."' ORDER BY taxname ASC")->result_array();
+    }
+
+    public function incoming_leads() {
+        $this->load->model('leads_model');
+        $data['statuses']               = $this->leads_model->get_status();
+        $data['leads_this_week_report'] = json_encode($this->reports_model->leads_this_week_report());
+        $data['leads_sources_report']   = json_encode($this->reports_model->leads_sources_report());
+        $this->load->view('admin/reports/incoming_leads', $data);
     }
 }
