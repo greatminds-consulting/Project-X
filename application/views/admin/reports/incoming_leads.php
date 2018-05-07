@@ -110,7 +110,7 @@
 
         new Chart($('#leads-sources-report'),{
             type:'bar',
-            data:<?php echo $leads_sources_report; ?>,
+            data:<?php echo $incoming_leads_sources_report; ?>,
             options:{
                 responsive:true,
                 legend: {
