@@ -218,7 +218,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="lead-edit<?php if(isset($lead)){echo ' hide';} ?>">
-         <div class="col-md-4 mtop15">
+         <div class="col-md-3 mtop15">
           <?php
             $selected = '';
             if(isset($lead)){
@@ -234,13 +234,18 @@
             echo render_leads_status_select($statuses, $selected,'lead_add_edit_status');
           ?>
          </div>
-         <div class="col-md-4 mtop15">
+         <div class="col-md-3 mtop15">
             <?php
                $selected = (isset($lead) ? $lead->source : get_option('leads_default_source'));
                echo render_leads_source_select($sources, $selected,'lead_add_edit_source');
             ?>
          </div>
-            <div class="col-md-4 mtop15">
+          <div class="col-md-3 mtop15">
+              <?php
+              echo render_select('venue[]',$venues,array('id','name'),'venues',$lead_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+              ?>
+              </div>
+            <div class="col-md-3 mtop15">
               <?php
               $selected = array();
               if(isset($assigners)){
@@ -358,10 +363,8 @@
             </div>
          </div>
          <div class="col-md-12 mtop15">
-
-            <?php $rel_id = (isset($lead) ? $lead->id : false);
-            echo render_select('venue[]',$venues,array('id','name'),'venues',$lead_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
-            echo render_custom_fields('leads',$rel_id); ?>
+            <?php $rel_id = (isset($lead) ? $lead->id : false); ?>
+            <?php echo render_custom_fields('leads',$rel_id); ?>
          </div>
          <div class="clearfix"></div>
       </div>

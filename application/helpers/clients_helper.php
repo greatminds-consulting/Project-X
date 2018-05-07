@@ -37,6 +37,9 @@ function is_client_id_used($id)
     $total += total_rows('tblprojects', array(
         'clientid' => $id,
     ));
+    $total += total_rows('tbleventmanager', array(
+        'clientid' => $id,
+    ));
 
     $total += total_rows('tblstafftasks', array(
         'rel_id' => $id,
@@ -149,6 +152,14 @@ function get_customer_profile_tabs($customer_id)
     'lang'=>_l('projects'),
     'visible'=>true,
     'order'=>11,
+    ),
+    array(
+        'name'=>'eventmanager',
+        'url'=>admin_url('clients/client/'.$customer_id.'?group=eventmanager'),
+        'icon'=>'fa fa-bars',
+        'lang'=>_l('eventmanager'),
+        'visible'=>true,
+        'order'=>11,
     ),
     array(
     'name'=>'tasks',
@@ -679,6 +690,11 @@ function get_contact_permissions()
                 'name' => _l('customer_permission_projects'),
                 'short_name' => 'projects',
             ),
+            array(
+                'id' => 7,
+                'name' => _l('customer_permission_eventmanager'),
+                'short_name' => 'eventmanager',
+            ),
         );
 
     return do_action('get_contact_permissions', $permissions);
@@ -709,7 +725,7 @@ function get_supplier_permissions()
  */
 function can_contact_view_email_notifications_options()
 {
-    if (has_contact_permission('invoices') || has_contact_permission('estimates') || has_contact_permission('projects') || has_contact_permission('contracts')) {
+    if (has_contact_permission('invoices') || has_contact_permission('estimates') || has_contact_permission('projects') || has_contact_permission('eventmanager')|| has_contact_permission('contracts')) {
         return true;
     }
 

@@ -393,6 +393,148 @@ function init_relation_tasks_table($table_attributes = array())
     }
     echo "<div class='clearfix'></div>";
     $table .= render_datatable($table_data, $name, array(), $table_attributes);
+return $table;
+}
+
+/**
+ * Tasks html table used all over the application for relation eventmanagertasks
+ * This table is not used for the main tasks table
+ * @param  array  $table_attributes
+ * @return string
+ */
+function init_relation_eventmanagertasks_table($table_attributes = array())
+{
+    $table_data = array(
+        array(
+            'name'=>_l('tasks_dt_name'),
+            'th_attrs'=>array(
+                'style'=>'min-width:200px',
+            ),
+        ),
+        array(
+            'name'=>_l('tasks_dt_datestart'),
+            'th_attrs'=>array(
+                'style'=>'min-width:75px',
+            ),
+        ),
+        array(
+            'name'=>_l('task_duedate'),
+            'th_attrs'=>array(
+                'style'=>'min-width:75px',
+                'class'=>'duedate',
+            ),
+        ),
+        _l('tags'),
+        array(
+            'name'=>_l('task_assigned'),
+            'th_attrs'=>array(
+                'style'=>'min-width:75px',
+            ),
+        ),
+        _l('tasks_list_priority'),
+        _l('task_status'),
+    );
+
+    if ($table_attributes['data-new-rel-type'] == 'eventmanager') {
+        array_unshift($table_data, '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="rel-tasks"><label></label></div>');
+    }
+
+    $custom_fields = get_custom_fields('tasks', array(
+        'show_on_table' => 1,
+    ));
+
+    foreach ($custom_fields as $field) {
+        array_push($table_data, $field['name']);
+    }
+
+    $table_data = do_action('tasks_related_table_columns', $table_data);
+
+    array_push($table_data, array('name'=>_l('options'), 'th_attrs'=>array('class'=>'table-tasks-options')));
+
+    $name = 'rel-tasks';
+    if ($table_attributes['data-new-rel-type'] == 'lead') {
+        $name = 'rel-tasks-leads';
+    }
+
+    $table = '';
+    $CI =& get_instance();
+    $table_name = '.table-' . $name;
+    $CI->load->view('admin/tasks/tasks_filter_by', array(
+        'view_table_name' => $table_name,
+    ));
+    if (has_permission('tasks', '', 'create')) {
+        $disabled   = '';
+        $table_name = addslashes($table_name);
+        if ($table_attributes['data-new-rel-type'] == 'customer' && is_numeric($table_attributes['data-new-rel-id'])) {
+            if (total_rows('tblclients', array(
+                    'active' => 0,
+                    'userid' => $table_attributes['data-new-rel-id'],
+                )) > 0) {
+                $disabled = ' disabled';
+            }
+        }
+        // eventmanagers have button on top
+        if ($table_attributes['data-new-rel-type'] != 'eventmanager') {
+            echo "<a href='#' class='btn btn-info pull-left mbot25 mright5 new-task-relation" . $disabled . "' onclick=\"new_task_from_relation('$table_name'); return false;\" data-rel-id='".$table_attributes['data-new-rel-id']."' data-rel-type='".$table_attributes['data-new-rel-type']."'>" . _l('new_task') . "</a>";
+        }
+    }
+
+    if ($table_attributes['data-new-rel-type'] == 'eventmanager') {
+        echo "<a href='" . admin_url('tasks/detailed_overview?event_manager_id=' . $table_attributes['data-new-rel-id']) . "' class='btn btn-success pull-right mbot25'>" . _l('detailed_overview') . "</a>";
+        echo "<a href='" . admin_url('tasks/list_tasks?event_manager_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
+        echo '<div class="clearfix"></div>';
+        echo $CI->load->view('admin/tasks/_bulk_actions', array('table'=>'.table-rel-tasks'), true);
+        echo $CI->load->view('admin/tasks/_summary', array('rel_id'=>$table_attributes['data-new-rel-id'], 'rel_type'=>'eventmanager', 'table'=>$table_name), true);
+        echo '<a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="hide bulk-actions-btn table-btn" data-table=".table-rel-tasks">'._l('bulk_actions').'</a>';
+    } elseif ($table_attributes['data-new-rel-type'] == 'customer') {
+        echo '<div class="clearfix"></div>';
+        echo '<div id="tasks_related_filter">';
+        echo '<p class="bold">'._l('task_related_to').': </p>';
+
+        echo '<div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" checked value="customer" disabled id="ts_rel_to_customer" name="tasks_related_to[]">
+        <label for="ts_rel_to_customer">'._l('client').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="eventmanager" id="ts_rel_to_eventmanager" name="tasks_related_to[]">
+        <label for="ts_rel_to_eventmanager">'._l('eventmanager').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="invoice" id="ts_rel_to_invoice" name="tasks_related_to[]">
+        <label for="ts_rel_to_invoice">'._l('invoices').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="estimate" id="ts_rel_to_estimate" name="tasks_related_to[]">
+        <label for="ts_rel_to_estimate">'._l('estimates').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="contract" id="ts_rel_to_contract" name="tasks_related_to[]">
+        <label for="ts_rel_to_contract">'._l('contracts').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="ticket" id="ts_rel_to_ticket" name="tasks_related_to[]">
+        <label for="ts_rel_to_ticket">'._l('tickets').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="expense" id="ts_rel_to_expense" name="tasks_related_to[]">
+        <label for="ts_rel_to_expense">'._l('expenses').'</label>
+        </div>
+
+        <div class="checkbox checkbox-inline mbot25">
+        <input type="checkbox" value="proposal" id="ts_rel_to_proposal" name="tasks_related_to[]">
+        <label for="ts_rel_to_proposal">'._l('proposals').'</label>
+        </div>';
+
+        echo '</div>';
+    }
+    echo "<div class='clearfix'></div>";
+    $table .= render_datatable($table_data, $name, array(), $table_attributes);
 
     return $table;
 }

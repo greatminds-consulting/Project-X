@@ -510,3 +510,30 @@ function project_file_url($file, $preview = false)
 
     return $url;
 }
+/**
+ * Custom event file url helper function
+ * @param  array  $file    file from database
+ * @param  boolean $preview is preview image, will return url with thumb
+ * @return string
+ */
+function eventmanager_file_url($file, $preview = false)
+{
+    $path = 'uploads/eventmanager/'.$file['event_manager_id'].'/';
+    $fullPath = FCPATH.$path.$file['file_name'];
+    $url = base_url($path.$file['file_name']);
+
+    if (!empty($file['external']) && !empty($file['thumbnail_link'])) {
+        $url = $file['thumbnail_link'];
+    } else {
+        if ($preview) {
+            $fname = pathinfo($fullPath, PATHINFO_FILENAME);
+            $fext = pathinfo($fullPath, PATHINFO_EXTENSION);
+            $thumbPath = pathinfo($fullPath, PATHINFO_DIRNAME).'/'.$fname.'_thumb.'.$fext;
+            if (file_exists($thumbPath)) {
+                $url = base_url('uploads/eventmanager/'.$file['event_manager_id'].'/'.$fname.'_thumb.'.$fext);
+            }
+        }
+    }
+
+    return $url;
+}

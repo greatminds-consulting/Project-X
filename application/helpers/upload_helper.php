@@ -175,6 +175,108 @@ function handle_project_file_uploads($project_id)
     return false;
 }
 /**
+ * Handles upload for eventmanager files
+ * @param  mixed $event_manager_id event_manager_id
+ * @return boolean
+ */
+function handle_eventmanager_file_uploads($event_manager_id)
+{
+    $filesIDS = array();
+    $errors = array();
+
+    if (isset($_FILES['file']['name'])
+        && ($_FILES['file']['name'] != '' || is_array($_FILES['file']['name']) && count($_FILES['file']['name']) > 0)) {
+        do_action('before_upload_eventmanager_attachment', $event_manager_id);
+
+        if (!is_array($_FILES['file']['name'])) {
+            $_FILES['file']['name'] = array($_FILES['file']['name']);
+            $_FILES['file']['type'] = array($_FILES['file']['type']);
+            $_FILES['file']['tmp_name'] = array($_FILES['file']['tmp_name']);
+            $_FILES['file']['error'] = array($_FILES['file']['error']);
+            $_FILES['file']['size'] = array($_FILES['file']['size']);
+        }
+
+        $path        = get_upload_path_by_type('eventmanager') . $event_manager_id . '/';
+
+        for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+            if (_perfex_upload_error($_FILES['file']['error'][$i])) {
+                $errors[$_FILES['file']['name'][$i]] = _perfex_upload_error($_FILES['file']['error'][$i]);
+                continue;
+            }
+
+            // Get the temp file path
+            $tmpFilePath = $_FILES['file']['tmp_name'][$i];
+            // Make sure we have a filepath
+            if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                _maybe_create_upload_path($path);
+                $filename    = unique_filename($path, $_FILES["file"]["name"][$i]);
+                $newFilePath = $path . $filename;
+                // Upload the file into the company uploads dir
+                if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    $CI =& get_instance();
+                    if (is_client_logged_in()) {
+                        $contact_id = get_contact_user_id();
+                        $staffid = 0;
+                    } else {
+                        $staffid = get_staff_user_id();
+                        $contact_id = 0;
+                    }
+                    $data = array(
+                        'event_manager_id' => $event_manager_id,
+                        'file_name' => $filename,
+                        'filetype' => $_FILES["file"]["type"][$i],
+                        'dateadded' => date('Y-m-d H:i:s'),
+                        'staffid' => $staffid,
+                        'contact_id' => $contact_id,
+                        'subject' => $filename,
+                    );
+                    if (is_client_logged_in()) {
+                        $data['visible_to_customer'] = 1;
+                    } else {
+                        $data['visible_to_customer'] = ($CI->input->post('visible_to_customer') == 'true' ? 1 : 0);
+                    }
+                    $CI->db->insert('tbleventfiles', $data);
+
+                    $insert_id = $CI->db->insert_id();
+                    if ($insert_id) {
+                        if (is_image($newFilePath)) {
+                            create_img_thumb($path, $filename);
+                        }
+                        array_push($filesIDS, $insert_id);
+                    } else {
+                        unlink($newFilePath);
+
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    if (count($filesIDS) > 0) {
+        $CI->load->model('eventmanager_model');
+        end($filesIDS);
+        $lastFileID = key($filesIDS);
+        $CI->eventmanager_model->new_eventmanager_file_notification($filesIDS[$lastFileID], $event_manager_id);
+    }
+
+    if(count($errors) > 0){
+        $message = '';
+        foreach($errors as $filename => $error_message){
+            $message .= $filename . ' - ' . $error_message .'<br />';
+        }
+        header('HTTP/1.0 400 Bad error');
+        echo $message;
+        die;
+    }
+
+    if(count($filesIDS) > 0){
+        return true;
+    }
+
+    return false;
+}
+/**
  * Handle contract attachments if any
  * @param  mixed $contractid
  * @return boolean
@@ -1021,6 +1123,9 @@ function get_upload_path_by_type($type)
         break;
         case 'project':
             return PROJECT_ATTACHMENTS_FOLDER;
+        break;
+        case 'eventmanager':
+            return EVENTMANAGER_ATTACHMENTS_FOLDER;
         break;
         case 'proposal':
             return PROPOSAL_ATTACHMENTS_FOLDER;

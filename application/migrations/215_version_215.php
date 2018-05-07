@@ -19,7 +19,7 @@ class Migration_Version_210 extends CI_Migration
                 'url'=> 'eventmanager',
                 'permission' => '',
                 'icon' => 'fa fa-bars',
-                'id' => 'recycle_bin'
+                'id' => 'eventmanager'
             );
         }
         $menu = json_encode($menu);
