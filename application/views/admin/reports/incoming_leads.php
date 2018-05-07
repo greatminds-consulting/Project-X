@@ -65,16 +65,16 @@
                 options:{
                     responsive:true,
                     legend: {
-                        display: false,
+                        display: false
                     },
                     scales: {
                         yAxes: [{
                           ticks: {
-                            beginAtZero: true,
+                            beginAtZero: true
                         }
                     }]
-                },
-            },
+                }
+            }
         });
         }, 'json');
         $('select[name="month"]').on('change', function() {
@@ -88,16 +88,16 @@
                         responsive:true,
                         maintainAspectRatio:false,
                         legend: {
-                            display: false,
+                            display: false
                         },
                         scales: {
                             yAxes: [{
                               ticks: {
-                                beginAtZero: true,
+                                beginAtZero: true
                             }
                         }]
-                    },
-                },
+                    }
+                }
             });
             }, 'json');
         });
@@ -114,16 +114,16 @@
             options:{
                 responsive:true,
                 legend: {
-                    display: false,
+                    display: false
                 },
                 scales: {
                     yAxes: [{
                       ticks: {
-                        beginAtZero: true,
+                        beginAtZero: true
                     }
                 }]
-            },
-        },
+            }
+        }
     });
     });
 </script>
