@@ -641,7 +641,7 @@ class Reports_model extends CRM_Model
      * @return array  chart data
      */
     public function incoming_leads_this_week_report() {
-        $this->db->where('CAST(dateadded as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(dateadded as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '" AND status = 1 and lost = 0');
+        $this->db->where('CAST(dateadded as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(dateadded as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '"');
         $weekly = $this->db->get('tblleads')->result_array();
         $colors = get_system_favourite_colors();
         $chart  = array(
