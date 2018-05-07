@@ -5,7 +5,7 @@
             <div class="col-md-6 animated fadeIn">
                 <div class="panel_s">
                     <div class="panel-heading">
-                        <?php echo _l('report_this_week_leads_conversions'); ?>
+                        <?php echo _l('report_this_week_leads_incoming'); ?>
                     </div>
                     <div class="panel-body">
                         <canvas class="leads-this-week" height="150" id="leads-this-week"></canvas>
@@ -15,7 +15,7 @@
             <div class="col-md-6 animated fadeIn">
                 <div class="panel_s">
                     <div class="panel-heading">
-                        <?php echo _l('report_leads_sources_conversions'); ?>
+                        <?php echo _l('report_leads_sources_incoming'); ?>
                     </div>
                     <div class="panel-body">
                        <canvas class="leads-sources-report" height="150" id="leads-sources-report"></canvas>
@@ -104,7 +104,7 @@
 
         new Chart($("#leads-this-week"),{
             type:'pie',
-            data:<?php echo $leads_this_week_report; ?>,
+            data:<?php echo $incoming_leads_this_week_report; ?>,
             option:{responsive:true}
         });
 
