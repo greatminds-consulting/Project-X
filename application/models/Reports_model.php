@@ -593,4 +593,46 @@ class Reports_model extends CRM_Model
     {
         return $this->db->query('SELECT DISTINCT(YEAR(date)) as year FROM tblinvoices WHERE clientid=' . get_client_user_id())->result_array();
     }
+
+    /**
+     *  Incoming Leads  monthly report
+     * @param   mixed $month  which month / chart
+     * @return  array          chart data
+     */
+    public function incoming_leads_monthly_report($month) {
+        $result      = $this->db->query('select dateadded from tblleads where MONTH(dateadded) = ' . $month . ' ')->result_array();
+        $month_dates = array();
+        $data        = array();
+        for ($d = 1; $d <= 31; $d++) {
+            $time = mktime(12, 0, 0, $month, $d, date('Y'));
+            if (date('m', $time) == $month) {
+                $month_dates[] = _d(date('Y-m-d', $time));
+                $data[]        = 0;
+            }
+        }
+        $chart = array(
+            'labels' => $month_dates,
+            'datasets' => array(
+                array(
+                    'label' => _l('leads'),
+                    'backgroundColor' => 'rgba(197, 61, 169, 0.5)',
+                    'borderColor' => '#c53da9',
+                    'borderWidth' => 1,
+                    'tension' => false,
+                    'data' => $data
+                )
+            )
+        );
+        foreach ($result as $lead) {
+            $i = 0;
+            foreach ($chart['labels'] as $date) {
+                if (_d(date('Y-m-d', strtotime($lead['dateadded']))) == $date) {
+                    $chart['datasets'][0]['data'][$i]++;
+                }
+                $i++;
+            }
+        }
+
+        return $chart;
+    }
 }
