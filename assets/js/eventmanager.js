@@ -510,7 +510,7 @@ function invoice_eventmanager(event_manager_id) {
         return $(this).val();
     }).get();
 
-    $.post(admin_url + 'eventmanager/get_invoice_eventmanager_data/', data).done(function(response) {
+    $.post(admin_url + 'eventmanager/get_invoice_event_manager_data/', data).done(function(response) {
         $('#invoice_eventmanager').html(response);
         $('#invoice-eventmanager-modal').modal({
             show: true,

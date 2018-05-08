@@ -821,11 +821,12 @@ class Eventmanager extends Admin_controller
     public function get_pre_invoice_eventmanager_info($event_manager_id)
     {
         if (has_permission('invoices', '', 'create')) {
-            $data['billable_tasks']     = $this->eventmanager_model->get_tasks($event_manager_id, array(
+           $data['billable_tasks']     = $this->eventmanager_model->get_tasks($event_manager_id, array(
                 'billable' => 1,
                 'billed' => 0,
                 'startdate <=' => date('Y-m-d'),
             ));
+
 
             $data['not_billable_tasks'] = $this->eventmanager_model->get_tasks($event_manager_id, array(
                 'billable' => 1,
@@ -842,7 +843,6 @@ class Eventmanager extends Admin_controller
                 'event_manager_id' => $event_manager_id,
                 'billable' => 1,
             ));
-
             $this->load->view('admin/events/event_pre_invoice_settings', $data);
         }
     }

@@ -16,9 +16,9 @@
               <div class="col-md-8 eventmanager-heading">
                 <h3 class="hide eventmanager-name"><?php echo $eventmanager->name; ?></h3>
                 <div id="eventmanager_view_name">
-                 <select class="selectpicker" id="eventmanager_top" data-width="fit"<?php if(count($other_eventmanager) > 4){ ?> data-live-search="true" <?php } ?>>
+                 <select class="selectpicker" id="eventmanager_top" data-width="fit"<?php if(count($other_event_manager) > 4){ ?> data-live-search="true" <?php } ?>>
                    <option value="<?php echo $eventmanager->id; ?>" selected><?php echo $eventmanager->name; ?></option>
-                   <?php foreach($other_eventmanager as $op){ ?>
+                   <?php foreach($other_event_manager as $op){ ?>
                    <option value="<?php echo $op['id']; ?>" data-subtext="<?php echo $op['company']; ?>">#<?php echo $op['id']; ?> - <?php echo $op['name']; ?></option>
                    <?php } ?>
                  </select>

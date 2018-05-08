@@ -82,7 +82,7 @@ class Eventmanager_model extends CRM_Model
 
     public function get_distinct_tasks_timesheets_staff($eventmanager_id)
     {
-        return $this->db->query('SELECT DISTINCT staff_id FROM tbltaskstimers LEFT JOIN tblstafftasks ON tblstafftasks.id = tbltaskstimers.task_id WHERE rel_type="project" AND rel_id=' . $eventmanager_id)->result_array();
+        return $this->db->query('SELECT DISTINCT staff_id FROM tbltaskstimers LEFT JOIN tblstafftasks ON tblstafftasks.id = tbltaskstimers.task_id WHERE rel_type="eventmanager" AND rel_id=' . $eventmanager_id)->result_array();
     }
 
     public function get_most_used_billing_type()
@@ -94,7 +94,7 @@ class Eventmanager_model extends CRM_Model
                 LIMIT 1")->row();
     }
 
-    public function timers_started_for_project($eventmanager_id, $where = array(), $task_timers_where = array())
+    public function timers_started_for_eventmanager($eventmanager_id, $where = array(), $task_timers_where = array())
     {
         $this->db->where($where);
         $this->db->where('end_time IS NULL');
@@ -130,7 +130,7 @@ class Eventmanager_model extends CRM_Model
     public function get_currency($id)
     {
         $this->load->model('currencies_model');
-        $customer_currency = $this->clients_model->get_customer_default_currency(get_client_id_by_project_id($id));
+        $customer_currency = $this->clients_model->get_customer_default_currency(get_client_id_by_eventmanager_id($id));
         if ($customer_currency != 0) {
             $currency = $this->currencies_model->get($customer_currency);
         } else {
@@ -185,9 +185,9 @@ class Eventmanager_model extends CRM_Model
         $this->db->select('id');
         $this->db->order_by('id', 'DESC');
         $this->db->limit(1);
-        $last_project = $this->db->get('tbleventmanager')->row();
-        if ($last_project) {
-            return $this->get_eventmanager_settings($last_project->id);
+        $last_eventmanager = $this->db->get('tbleventmanager')->row();
+        if ($last_eventmanager) {
+            return $this->get_eventmanager_settings($last_eventmanager->id);
         }
 
         return array();
@@ -329,7 +329,6 @@ class Eventmanager_model extends CRM_Model
             END) FROM tbltaskstimers WHERE task_id=tblstafftasks.id) as total_logged_time,
            '.get_sql_select_task_assignees_ids().' as assignees_ids
         ';
-
         if(!is_client_logged_in() && is_staff_logged_in()) {
             $select .= ',(SELECT staffid FROM tblstafftaskassignees WHERE taskid=tblstafftasks.id AND staffid='.get_staff_user_id().') as current_user_is_assigned';
         }
@@ -350,13 +349,11 @@ class Eventmanager_model extends CRM_Model
         }
         $this->db->order_by('milestone_order', 'asc');
         $this->db->where($where);
-
         if ($count == false) {
             $tasks = $this->db->get('tblstafftasks')->result_array();
         } else {
             $tasks = $this->db->count_all_results('tblstafftasks');
         }
-
         return $tasks;
     }
 
@@ -429,7 +426,7 @@ class Eventmanager_model extends CRM_Model
 
     public function remove_file($id)
     {
-        $id = do_action('before_remove_project_file', $id);
+        $id = do_action('before_remove_eventmanager_file', $id);
 
         $this->db->where('id', $id);
         $file = $this->db->get('tbleventfiles')->row();
@@ -471,11 +468,11 @@ class Eventmanager_model extends CRM_Model
 
     public function get_eventmanager_overview_weekly_chart_data($id, $type = 'this_week')
     {
-        $billing_type = get_project_billing_type($id);
+        $billing_type = get_eventmanager_billing_type($id);
         $chart = array();
 
         $has_permission_create = has_permission('event', '', 'create');
-        // If don't have permission for projects create show only bileld time
+        // If don't have permission for eventmanagers create show only bileld time
         if (!$has_permission_create) {
             $timesheets_type = 'total_logged_time_only';
         } else {
@@ -796,7 +793,7 @@ class Eventmanager_model extends CRM_Model
                 ELSE end_time-start_time
                 END) as total_logged_time
             FROM tbltaskstimers
-            WHERE task_id IN (SELECT id FROM tblstafftasks WHERE rel_type="project" AND rel_id='.$id.')')
+            WHERE task_id IN (SELECT id FROM tblstafftasks WHERE rel_type="eventmanager" AND rel_id='.$id.')')
             ->row();
 
         return $q->total_logged_time;
@@ -2333,7 +2330,7 @@ class Eventmanager_model extends CRM_Model
         }
         $this->db->order_by('dateadded', 'desc');
         $this->db->get('tbleventactivity');
-         $activities = $this->db->get('tbleventactivity')->result_array();
+        $activities = $this->db->get('tbleventactivity')->result_array();
 
 
         $i          = 0;

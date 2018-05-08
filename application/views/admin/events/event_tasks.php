@@ -5,5 +5,6 @@
     }
 ?>
 <div class="tasks-table">
-    <?php init_relation_eventmanagertasks_table(array( 'data-new-rel-id'=>$eventmanager->id,'data-new-rel-type'=>'eventmanager')); ?>
+
+    <?php init_relation_tasks_table(array( 'data-new-rel-id'=>$eventmanager->id,'data-new-rel-type'=>'eventmanager')); ?>
 </div>

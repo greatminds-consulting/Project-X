@@ -2644,7 +2644,7 @@ function init_rel_tasks_table(rel_id, rel_type, selector) {
 
     not_sortable_tasks = [($selector.find('th').length - 1)];
 
-    if ($selector.attr('data-new-rel-type') == 'project') {
+    if (($selector.attr('data-new-rel-type') == 'project') || ($selector.attr('data-new-rel-type') == 'eventmanager')){
         not_sortable_tasks.push(0);
         url += '?bulk_actions=true';
     }
