@@ -423,6 +423,7 @@
         </div>
 
     </div>
+</div>
 <?php if(isset($lead) && $lead_locked == true){ ?>
 <script>
   $(function() {
