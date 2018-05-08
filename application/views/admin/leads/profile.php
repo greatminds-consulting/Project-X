@@ -26,7 +26,8 @@
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_lost'); ?>
             </a>
-         </li>
+           <span>(<b>Reason</b> : <?php $reason = json_decode($lead->lead_data); echo $reason->lost_reason ?>)</span>
+       </li>
          <?php } ?>
          <?php } ?>
          <!-- mark as junk -->
@@ -399,16 +400,16 @@
                 <?php
                 $type = array(
                     0 => array(
-                        'id' => 'CoupleBrokeup',
+                        'id' => 'Couple Brokeup',
                         'name' => 'Couple Broke up'
                     ),1 => array(
-                        'id' => 'Tooexpensive',
+                        'id' => 'Too expensive',
                         'name' => 'Too expensive'
                     ),2 => array(
-                        'id' => 'Datenotavailable',
+                        'id' => 'Date not available',
                         'name' => 'Date not available'
                     ),3 => array(
-                        'id' => 'Roomnotavailable',
+                        'id' => 'Room not available',
                         'name' => 'Room not available'
                     )
                 );
