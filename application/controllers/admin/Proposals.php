@@ -155,7 +155,7 @@ class Proposals extends Admin_controller
         } else {
             $data['proposal'] = $this->proposals_model->get($id);
 
-            if (!$data['proposal'] || !$this->user_can_view_proposal($id)) {
+            if (!$data['proposal'] || !$this->user_can_view_proposal($id) || ($data['proposal'] && $data['proposal']->is_delete ==1)) {
                 blank_page(_l('proposal_not_found'));
             }
 

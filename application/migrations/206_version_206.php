@@ -23,6 +23,7 @@ class Migration_Version_206 extends CI_Migration
         $this->db->query("ALTER TABLE `tblclients` ADD COLUMN `is_delete` TINYINT(1) DEFAULT 0 NULL AFTER `addedfrom`; ");
         $this->db->query("ALTER TABLE `tblestimates` ADD COLUMN `is_delete` TINYINT(1) DEFAULT 0 NULL AFTER `addedfrom`; ");
         $this->db->query("ALTER TABLE `tblcontracts` ADD COLUMN `is_delete` TINYINT(1) DEFAULT 0 NULL AFTER `not_visible_to_client`; ");
+        $this->db->query("ALTER TABLE `tblknowledgebase` ADD COLUMN `is_delete` TINYINT(1) DEFAULT 0 NULL AFTER `views`; ");
 
         if (file_exists(FCPATH.'pipe.php')) {
             @chmod(FCPATH.'pipe.php', 0755);

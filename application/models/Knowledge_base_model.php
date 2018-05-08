@@ -15,7 +15,7 @@ class Knowledge_base_model extends CRM_Model
      */
     public function get($id = '', $slug = '')
     {
-        $this->db->select('slug,articleid, articlegroup, subject,tblknowledgebase.description,tblknowledgebase.active as active_article,tblknowledgebasegroups.active as active_group,name as group_name,staff_article');
+        $this->db->select('slug,articleid,is_delete, articlegroup, subject,tblknowledgebase.description,tblknowledgebase.active as active_article,tblknowledgebasegroups.active as active_group,name as group_name,staff_article');
         $this->db->from('tblknowledgebase');
         $this->db->join('tblknowledgebasegroups', 'tblknowledgebasegroups.groupid = tblknowledgebase.articlegroup', 'left');
         $this->db->order_by('article_order', 'asc');
@@ -180,24 +180,44 @@ class Knowledge_base_model extends CRM_Model
      * @param  mixed $id article ID
      * @return boolean
      */
-    public function delete_article($id)
-    {
-        $this->db->where('articleid', $id);
-        $this->db->delete('tblknowledgebase');
-        if ($this->db->affected_rows() > 0) {
+    public function delete_article($id) {
+
+        $this->db->from('tblknowledgebase');
+        $this->db->where('articleid',$id);
+        $query = $this->db->get()->row();
+        if ($query->is_delete == 1) {
             $this->db->where('articleid', $id);
-            $this->db->delete('tblknowledgebasearticleanswers');
+            $this->db->delete('tblknowledgebase');
+            if ($this->db->affected_rows() > 0) {
+                $this->db->where('articleid', $id);
+                $this->db->delete('tblknowledgebasearticleanswers');
 
-            $this->db->where('rel_type', 'kb_article');
-            $this->db->where('rel_id', $id);
-            $this->db->delete('tblviewstracking');
+                $this->db->where('rel_type', 'kb_article');
+                $this->db->where('rel_id', $id);
+                $this->db->delete('tblviewstracking');
 
-            logActivity('Article Deleted [ArticleID: ' . $id . ']');
+                logActivity('Article Deleted [ArticleID: ' . $id . ']');
 
-            return true;
+                return true;
+            }
+
+            return false;
+        } else {
+            $this->db->where('articleid',$id);
+            $this->db->update('tblknowledgebase',array('is_delete' => 1));
+            if ($this->db->affected_rows() > 0) {
+                $recycleData['item_id'] = $id;
+                $recycleData['item_name'] = $query->subject;
+                $recycleData['item_type'] = 'KnowledgeBase';
+                $this->db->insert('tblrecyclebin', $recycleData);
+                $insert_id = $this->db->insert_id();
+                if ($insert_id) {
+                    return true;
+                }
+                return false;
+            }
+            return false;
         }
-
-        return false;
     }
 
     /**

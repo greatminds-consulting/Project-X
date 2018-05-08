@@ -74,6 +74,7 @@ $has_permission_create = has_permission('knowledge_base','','create');
                   if(!$has_permission_create && !$has_permission_edit) {
                     $this->db->where('active',1);
                   }
+                  $this->db->where('(is_delete = 0 or is_delete is null)');
                   $articles = $this->db->get()->result_array();
                   ?>
                   <div class="kan-ban-content-wrapper">
@@ -123,6 +124,7 @@ $has_permission_create = has_permission('knowledge_base','','create');
       </div>
     </div>
   </div>
+</div>
 </div>
 <?php include_once(APPPATH.'views/admin/knowledge_base/group.php'); ?>
 <?php init_tail(); ?>
