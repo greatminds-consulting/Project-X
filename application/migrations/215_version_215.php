@@ -17,7 +17,7 @@ class Migration_Version_215 extends CI_Migration
             foreach($menu['aside_menu_active'] as $key => $item){
                 if($item['id'] == 'reports') {
                     $menu['aside_menu_active'][$key]['children'][] = array(
-                        'name' => 'Incoming Report',
+                        'name' => 'Incoming Leads',
                         'url'=> 'reports/incoming_leads',
                         'permission' => '',
                         'icon' => '',
