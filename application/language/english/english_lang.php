@@ -360,6 +360,7 @@ $lang['report_kb_no_votes']                 = 'No votes yet';
 $lang['report_this_week_leads_conversions'] = 'This Week Leads Conversions';
 $lang['report_this_week_leads_incoming'] = 'This Week Incoming Leads';
 $lang['report_leads_sources_conversions']   = 'Sources Conversion';
+$lang['reason_for_lost_lead']   = 'Reason for Lost Lead';
 $lang['report_leads_sources_incoming']   = 'Incoming Leads Sources';
 $lang['report_leads_monthly_conversions']   = 'Monthly';
 $lang['sales_report_heading']               = 'Sales Report';

@@ -54,6 +54,7 @@ class Reports extends Admin_controller
         $data['statuses']               = $this->leads_model->get_status();
         $data['leads_this_week_report'] = json_encode($this->reports_model->leads_this_week_report());
         $data['leads_sources_report']   = json_encode($this->reports_model->leads_sources_report());
+        $data['leads_lost_report']   = json_encode($this->reports_model->leads_lost_report());
         $this->load->view('admin/reports/' . $type, $data);
     }
 

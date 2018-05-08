@@ -30,6 +30,16 @@
                    </div>
                </div>
            </div>
+            <div class="col-md-6 animated fadeIn">
+                <div class="panel_s">
+                    <div class="panel-heading">
+                        <?php echo _l('reason_for_lost_lead'); ?>
+                    </div>
+                    <div class="panel-body">
+                       <canvas class="leads-lost-report" height="150" id="leads-lost-report"></canvas>
+                   </div>
+               </div>
+           </div>
            <div class="col-md-12 animated fadeIn">
             <div class="panel_s">
 
@@ -73,16 +83,16 @@
                 options:{
                     responsive:true,
                     legend: {
-                        display: false,
+                        display: false
                     },
                     scales: {
                         yAxes: [{
                           ticks: {
-                            beginAtZero: true,
+                            beginAtZero: true
                         }
                     }]
-                },
-            },
+                }
+            }
         });
         }, 'json');
         $('select[name="month"]').on('change', function() {
@@ -96,16 +106,16 @@
                         responsive:true,
                         maintainAspectRatio:false,
                         legend: {
-                            display: false,
+                            display: false
                         },
                         scales: {
                             yAxes: [{
                               ticks: {
-                                beginAtZero: true,
+                                beginAtZero: true
                             }
                         }]
-                    },
-                },
+                    }
+                }
             });
             }, 'json');
         });
@@ -122,16 +132,32 @@
             options:{
                 responsive:true,
                 legend: {
-                    display: false,
+                    display: false
                 },
                 scales: {
                     yAxes: [{
                       ticks: {
-                        beginAtZero: true,
+                        beginAtZero: true
                     }
                 }]
-            },
-        },
+            }
+        }
+    });new Chart($('#leads-lost-report'),{
+            type:'bar',
+            data:<?php echo $leads_lost_report; ?>,
+            options:{
+                responsive:true,
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
     });
     });
 </script>

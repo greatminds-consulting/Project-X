@@ -726,4 +726,44 @@ class Reports_model extends CRM_Model
         }
         return $chart;
     }
+
+    /**
+     * Leads lost report / chart
+     * @return array chart data
+     */
+    public function leads_lost_report() {
+        $this->load->model('leads_model');
+        $lostReasons = array(
+            0 => array(
+                'id' => 'Couple Brokeup',
+                'name' => 'Couple Brokeup'
+            ),1 => array(
+                'id' => 'Too expensive',
+                'name' => 'Too expensive'
+            ),2 => array(
+                'id' => 'Date not available',
+                'name' => 'Date not available'
+            ),3 => array(
+                'id' => 'Room not available',
+                'name' => 'Room not available'
+            )
+        );
+        $chart   = array(
+            'labels' => array(),
+            'datasets' => array(
+                array(
+                    'label' => _l('report_leads_sources_incoming'),
+                    'backgroundColor' => 'rgba(124, 179, 66, 0.5)',
+                    'borderColor' => '#7cb342',
+                    'data' => array()
+                )
+            )
+        );
+        foreach ($lostReasons as $lost) {
+            array_push($chart['labels'], $lost['name']);
+            $result      = $this->db->query('select COUNT(tblleads.id) as total from tblleads where lead_data LIKE "%'.$lost['name'].'%" ')->result_array();
+            array_push($chart['datasets'][0]['data'], $result[0]['total']);
+        }
+        return $chart;
+    }
 }
