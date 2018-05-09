@@ -1388,6 +1388,10 @@ class Leads_model extends CRM_Model
                                 $new_value = get_source_name($value);
                                 $current_value = get_source_name($current[$key]);
                                 break;
+                            case 'country':
+                                $new_value = get_country_name($value);
+                                $current_value = get_country_name($current[$key]);
+                                break;
                             case 'is_public':
                                 $new_value = $value == 1? ' public' : ' not public';
                                 $current_value = $current[$key] == 1? ' public' : ' not public';
