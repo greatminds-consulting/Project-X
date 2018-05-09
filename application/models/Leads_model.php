@@ -328,7 +328,7 @@ class Leads_model extends CRM_Model
         $affectedRows = 0;
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
-            if (handle_custom_fields_post($id, $custom_fields)) {
+            if (handle_custom_fields_post($id, $custom_fields,'', 'lead')) {
                 $affectedRows++;
             }
             unset($data['custom_fields']);
