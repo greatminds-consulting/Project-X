@@ -13,7 +13,7 @@
         <div class="panel_s eventmanager-top-panel panel-full">
           <div class="panel-body _buttons">
             <div class="row">
-              <div class="col-md-8 eventmanager-heading">
+              <div class="col-md-6 eventmanager-heading">
                 <h3 class="hide eventmanager-name"><?php echo $eventmanager->name; ?></h3>
                 <div id="eventmanager_view_name">
                  <select class="selectpicker" id="eventmanager_top" data-width="fit"<?php if(count($other_event_manager) > 4){ ?> data-live-search="true" <?php } ?>>
@@ -24,7 +24,7 @@
                  </select>
                </div>
              </div>
-             <div class="col-md-4 text-right">
+             <div class="col-md-6 text-right">
               <?php if(has_permission('tasks','','create')){ ?>
               <a href="#" onclick="new_task_from_relation(undefined,'eventmanager',<?php echo $eventmanager->id; ?>); return false;" class="btn btn-info"><?php echo _l('new_task'); ?></a>
               <?php } ?>
@@ -59,7 +59,7 @@
                 <?php } ?>
                 <?php if(has_permission('events','','create')){ ?>
                 <li>
-                  <a href="#" onclick="copy_eventmger(); return false;">
+                  <a href="#" onclick="copy_eventmanager(); return false;">
                     <?php echo _l('copy_eventmanager'); ?>
                   </a>
                 </li>

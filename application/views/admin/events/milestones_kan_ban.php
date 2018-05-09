@@ -1,4 +1,5 @@
 <?php
+
 foreach ($milestones as $milestone) {
  $milestonesTasksWhere = array();
  if ($milestones_exclude_completed_tasks) {
@@ -27,7 +28,7 @@ foreach ($milestones as $milestone) {
     continue;
  }
  ?>
- <ul class="kan-ban-col milestone-column<?php if(!has_permission('eventmanager','','edit') || $milestone['id'] == 0){echo ' milestone-not-sortable';}; ?>" data-col-status-id="<?php echo $milestone['id']; ?>" data-total-pages="<?php echo $total_pages; ?>">
+ <ul class="kan-ban-col milestone-column<?php if(!has_permission('events','','edit') || $milestone['id'] == 0){echo ' milestone-not-sortable';}; ?>" data-col-status-id="<?php echo $milestone['id']; ?>" data-total-pages="<?php echo $total_pages; ?>">
    <li class="kan-ban-col-wrapper">
     <div class="border-right panel_s">
      <div class="panel-heading panel-heading-bg <?php if ($milestone_color != '') {
@@ -37,7 +38,7 @@ foreach ($milestones as $milestone) {
     } else {
       echo 'info-bg';
     } ?>"<?php echo $milestone_color; ?>>
-    <?php if ($milestone['id'] != 0 && has_permission('eventmanager','','edit')) { ?>
+    <?php if ($milestone['id'] != 0 && has_permission('events','','edit')) { ?>
     <i class="fa fa-reorder pointer"></i>&nbsp;
     <?php } ?>
     <?php if ($milestone['id'] != 0 && has_permission('events', '', 'edit')) { ?>
@@ -74,7 +75,7 @@ foreach ($milestones as $milestone) {
    <ul class="status eventmanager-milestone milestone-tasks-wrapper sortable relative" data-task-status-id="<?php echo $milestone['id']; ?>">
     <?php
     foreach ($tasks as $task) {
-     $this->load->view('admin/eventmanager/_milestone_kanban_card', array('task'=>$task, 'milestone'=>$milestone['id']));
+     $this->load->view('admin/events/_milestone_kanban_card', array('task'=>$task, 'milestone'=>$milestone['id']));
    } ?>
    <?php if ($total_tasks > 0) { ?>
    <li class="text-center not-sortable kanban-load-more" data-load-status="<?php echo $milestone['id']; ?>">

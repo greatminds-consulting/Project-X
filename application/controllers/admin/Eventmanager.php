@@ -387,11 +387,9 @@ class Eventmanager extends Admin_controller
 
             // Add <br /> tag and wrap over div element every image to prevent overlaping over text
             $eventmanager->description = preg_replace('/(<img[^>]+>(?:<\/img>)?)/i', '<br><br><div>$1</div><br><br>', $eventmanager->description);
-
             $data['eventmanager']    = $eventmanager;
             $data['milestones'] = $this->eventmanager_model->get_milestones($id);
             $data['timesheets'] = $this->eventmanager_model->get_timesheets($id);
-
             $data['tasks']             = $this->eventmanager_model->get_tasks($id, array(), false);
             $data['total_logged_time'] = seconds_to_time_format($this->eventmanager_model->total_logged_time($eventmanager->id));
             if ($eventmanager->deadline) {
@@ -526,7 +524,7 @@ class Eventmanager extends Admin_controller
         $message    = _l('event_discussion_failed_to_delete');
         if ($success) {
             $alert_type = 'success';
-            $message    = _l('event_discussion_deleted');
+            $message    = _l('eventmanager_discussion_deleted');
         }
         echo json_encode(array(
             'alert_type' => $alert_type,

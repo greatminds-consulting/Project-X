@@ -110,19 +110,17 @@ class Eventmanager_model extends CRM_Model
     {
         if (total_rows('tblpinnedevents', array(
                 'staff_id' => get_staff_user_id(),
-                'eventmanager_id' => $id,
+                'event_manager_id' => $id,
             )) == 0) {
             $this->db->insert('tblpinnedevents', array(
                 'staff_id' => get_staff_user_id(),
-                'eventmanager_id_id' => $id,
+                'event_manager_id' => $id,
             ));
-
             return true;
         } else {
-            $this->db->where('eventmanager_id', $id);
+            $this->db->where('event_manager_id', $id);
             $this->db->where('staff_id', get_staff_user_id());
             $this->db->delete('tblpinnedevents');
-
             return true;
         }
     }
@@ -781,7 +779,6 @@ class Eventmanager_model extends CRM_Model
         foreach ($tasks as $task) {
             $total[] = $task['total_logged_time'];
         }
-
         return array_sum($total);
     }
 
@@ -835,7 +832,7 @@ class Eventmanager_model extends CRM_Model
             } else {
                 $show_to_customer = 0;
             }
-            $this->log_activity($milestone->event_manager_id, 'event_activity_created_milestone', $milestone->name, $show_to_customer);
+            $this->log_activity($milestone->event_manager_id, 'eventmanager_activity_created_milestone', $milestone->name, $show_to_customer);
             logActivity('Event Milestone Created [ID:' . $insert_id . ']');
 
             return $insert_id;
@@ -1795,7 +1792,7 @@ class Eventmanager_model extends CRM_Model
                 $discussion->show_to_customer = $discussion->visible_to_customer;
             }
 
-            $this->send_eventmanager_email_template($discussion->event_manager_id, 'new-eventmanager-discussion-comment-to-staff', 'new-eventmanager-discussion-comment-to-customer', $discussion->show_to_customer, array(
+           $this->send_eventmanager_email_template($discussion->event_manager_id, 'new-eventmanager-discussion-comment-to-staff', 'new-eventmanager-discussion-comment-to-customer', $discussion->show_to_customer, array(
                 'staff' => array(
                     'discussion_id' => $discussion_id,
                     'discussion_comment_id' => $insert_id,
@@ -1808,7 +1805,6 @@ class Eventmanager_model extends CRM_Model
                     'discussion_type' => $type,
                 ),
             ));
-
 
             $this->log_activity($discussion->event_manager_id, 'eventmanager_activity_commented_on_discussion', $discussion->subject, $discussion->show_to_customer);
 
@@ -1938,11 +1934,12 @@ class Eventmanager_model extends CRM_Model
             );
 
             if (is_client_logged_in()) {
+
                 $notification_data['fromclientid'] = get_contact_user_id();
             } else {
+
                 $notification_data['fromuserid'] = get_staff_user_id();
             }
-
             $notifiedUsers = array();
             foreach ($members as $member) {
                 if ($member['staff_id'] == get_staff_user_id() && !is_client_logged_in()) {
@@ -1966,7 +1963,6 @@ class Eventmanager_model extends CRM_Model
                 ),
             ));
             $this->log_activity($data['event_manager_id'], 'eventmanager_activity_created_discussion', $data['subject'], $data['show_to_customer']);
-
             return $insert_id;
         }
 
@@ -2477,7 +2473,6 @@ class Eventmanager_model extends CRM_Model
 
         $eventmanager = $this->get($event_manager_id);
         $members = $this->get_eventmanager_members($event_manager_id);
-
         $this->load->model('emails_model');
         foreach ($members as $member) {
             if (is_staff_logged_in()) {
@@ -2491,7 +2486,9 @@ class Eventmanager_model extends CRM_Model
             $merge_fields = array_merge($merge_fields, get_eventmanager_merge_fields($eventmanager->id, $additional_data['staff']));
             $this->emails_model->send_email_template($staff_template, $member['email'], $merge_fields);
         }
+
         if ($action_visible_to_customer == 1) {
+
             $contacts = $this->clients_model->get_contacts($eventmanager->clientid, array('active'=>1, 'eventmanager_emails'=>1));
             foreach ($contacts as $contact) {
                 if (is_client_logged_in()) {
@@ -2499,6 +2496,7 @@ class Eventmanager_model extends CRM_Model
                         continue;
                     }
                 }
+
                 $merge_fields = array();
                 $merge_fields = array_merge($merge_fields, get_client_contact_merge_fields($eventmanager->clientid, $contact['id']));
                 $merge_fields = array_merge($merge_fields, get_eventmanager_merge_fields($eventmanager->id, $additional_data['customers']));

@@ -154,14 +154,6 @@ function get_customer_profile_tabs($customer_id)
     'order'=>11,
     ),
     array(
-        'name'=>'eventmanager',
-        'url'=>admin_url('clients/client/'.$customer_id.'?group=eventmanager'),
-        'icon'=>'fa fa-bars',
-        'lang'=>_l('eventmanager'),
-        'visible'=>true,
-        'order'=>11,
-    ),
-    array(
     'name'=>'tasks',
     'url'=>admin_url('clients/client/'.$customer_id.'?group=tasks'),
     'icon'=>'fa fa-tasks',
@@ -210,8 +202,17 @@ function get_customer_profile_tabs($customer_id)
     'visible'=>true,
     'order'=>17,
     ),
+  array(
+    'name'=>'eventmanager',
+    'url'=>admin_url('clients/client/'.$customer_id.'?group=eventmanager'),
+    'icon'=>'fa fa-bars',
+    'lang'=>_l('eventmanager'),
+    'visible'=>true,
+    'order'=>18,
+     ),
 
-  );
+
+    );
 
     $hook_data = do_action('customer_profile_tabs', array('tabs'=>$customer_tabs, 'customer_id'=>$customer_id));
     $customer_tabs = $hook_data['tabs'];

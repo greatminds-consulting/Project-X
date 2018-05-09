@@ -790,8 +790,7 @@ $(function() {
     });
     // Creates new task in specific milestones, the milestone is auto selected on the new task modal
     $("body").on('click', '.new-eventtask-to-milestone', function(e) {
-        alert()
-        e.preventDefault();
+       e.preventDefault();
         var milestone_id = $(this).parents('.milestone-column').data('col-status-id');
         new_task(admin_url + 'tasks/task?rel_type=eventmanager&rel_id=' + eventmanager_id + '&milestone_id=' + milestone_id);
         $('body [data-toggle="popover"]').popover('hide');

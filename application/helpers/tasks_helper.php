@@ -349,10 +349,10 @@ function init_relation_tasks_table($table_attributes = array())
         echo '<a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="hide bulk-actions-btn table-btn" data-table=".table-rel-tasks">'._l('bulk_actions').'</a>';
     } elseif($table_attributes['data-new-rel-type'] == 'eventmanager'){
         echo "<a href='" . admin_url('tasks/detailed_overview?event_manager_id=' . $table_attributes['data-new-rel-id']) . "' class='btn btn-success pull-right mbot25'>" . _l('detailed_overview') . "</a>";
-        echo "<a href='" . admin_url('tasks/list_tasks?event_manager_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
+        echo "<a href='" . admin_url('tasks/list_tasks?event_manager_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true&event=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
         echo '<div class="clearfix"></div>';
         echo $CI->load->view('admin/tasks/_bulk_actions', array('table'=>'.table-rel-tasks'), true);
-        echo $CI->load->view('admin/tasks/event_summary', array('rel_id'=>$table_attributes['data-new-rel-id'], 'rel_type'=>'project', 'table'=>$table_name), true);
+        echo $CI->load->view('admin/tasks/event_summary', array('rel_id'=>$table_attributes['data-new-rel-id'], 'rel_type'=>'eventmanager', 'table'=>$table_name), true);
         echo '<a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="hide bulk-actions-btn table-btn" data-table=".table-rel-tasks">'._l('bulk_actions').'</a>';
 
     } elseif ($table_attributes['data-new-rel-type'] == 'customer') {
