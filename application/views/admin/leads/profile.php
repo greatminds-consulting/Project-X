@@ -145,6 +145,8 @@
                   <?php echo _l('lead_general_info'); ?>
                </h4>
             </div>
+             <p class="text-muted lead-field-heading no-mtop">Venues</p>
+             <p class="bold font-medium-xs"><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
             <p class="text-muted lead-field-heading no-mtop"><?php echo _l('lead_add_edit_status'); ?></p>
             <p class="bold font-medium-xs mbot15"><?php echo (isset($lead) && $lead->status_name != '' ? $lead->status_name : '-') ?></p>
             <p class="text-muted lead-field-heading"><?php echo _l('lead_add_edit_source'); ?></p>
@@ -200,8 +202,7 @@
             </div>
 
 
-                <p class="text-muted lead-field-heading no-mtop">Venues</p>
-                 <p class="bold font-medium-xs"><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
+
                 <?php
             $custom_fields = get_custom_fields('leads');
             foreach ($custom_fields as $field) {

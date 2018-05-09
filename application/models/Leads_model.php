@@ -408,9 +408,14 @@ class Leads_model extends CRM_Model
         $data['address']    = nl2br($data['address']);
         $data['email']      = trim($data['email']);
 
+        $this->db->select('*');
+        $this->db->from('tblleads');
+        $this->db->where('id', $id);
+        $currentlead = $this->db->get()->row();
+        $this->fieldCheck($data, $currentlead);
+
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
-
 
         $this->db->select('venue_id');
         $this->db->from('tblvenues_in');
@@ -1347,5 +1352,52 @@ class Leads_model extends CRM_Model
         }
 
         return $data;
+    }
+
+    function add_lead_activity_fields($leadId , $activityText,$current_value = '',$new_value = '') {
+        $this->log_lead_activity($leadId, $activityText, false, serialize(array(
+            get_staff_full_name(),
+            $current_value ? $current_value : $new_value,
+            $new_value,
+        )));
+    }
+
+    public function fieldCheck($new, $current) {
+        $current = (array) $current;
+        $removeArray = array("status");
+        foreach ($new as $key => $value) {
+            if (is_array($value)) {
+
+            } else {
+                if (isset($current[$key]) && $current[$key] != $value) {
+                    if (!in_array($key ,$removeArray)) {
+                        $new_value = $value ? $value : '' ;
+                        $current_value = $current[$key] ? $current[$key] : '';
+                        $type = '_changed';
+                        if ($value && !$current_value) {
+                            $type = '_added';
+                        } else if (!$value && $current_value) {
+                            $type = '_removed';
+                        } else if ($value && $current_value == '0000-00-00 00:00:00') {
+                            $type = '_added';
+                            $current_value = '';
+                        }
+                        $activityText =  'not_lead_activity_'.$key.$type;
+                        switch ($key) {
+                            case 'source':
+                                $new_value = get_source_name($value);
+                                $current_value = get_source_name($current[$key]);
+                                break;
+                            case 'is_public':
+                                $new_value = $value == 1? ' public' : ' not public';
+                                $current_value = $current[$key] == 1? ' public' : ' not public';
+                                $activityText =  'not_lead_activity_is_public_changed';
+                                break;
+                        }
+                        $this->add_lead_activity_fields($current['id'],$activityText,$current_value,$new_value);
+                    }
+                }
+            }
+        }
     }
 }

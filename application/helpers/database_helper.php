@@ -841,3 +841,17 @@ function get_venue_name($id) {
     $result = $CI->db->get()->result_array();
     return $result[0]['name'];
 }
+
+/**
+ * Get venue name by passed id
+ * @param  mixed $id county id
+ * @return mixed
+ */
+function get_source_name($id) {
+    $CI =& get_instance();
+    $CI->db->select('name');
+    $CI->db->from('tblleadssources');
+    $CI->db->where('id', $id);
+    $result = $CI->db->get()->result_array();
+    return $result[0]['name'];
+}
