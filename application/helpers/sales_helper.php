@@ -642,6 +642,32 @@ function _maybe_insert_post_item_tax($item_id, $post_item, $rel_id, $rel_type)
     return $affectedRows > 0 ? true : false;
 }
 
+function _maybe_insert_post_item_venue($item_id, $post_item, $rel_id, $rel_type)
+{
+    $affectedRows = 0;
+    if (isset($post_item['venue_items']) && is_array($post_item['venue_items'])) {
+        $CI = &get_instance();
+        foreach ($post_item['venue_items'] as $venue) {
+                    if (total_rows('tblitemsvenue', array(
+                            'itemid'=>$item_id,
+                            'venue_id'=>$venue,
+                            'rel_id'=>$rel_id,
+                            'rel_type'=>$rel_type,
+                        )) == 0) {
+                        $CI->db->insert('tblitemsvenue', array(
+                            'itemid' => $item_id,
+                            'venue_id' => $venue,
+                            'rel_id' => $rel_id,
+                            'rel_type' => $rel_type,
+                        ));
+                        $affectedRows++;
+                    }
+            }
+    }
+
+    return $affectedRows > 0 ? true : false;
+}
+
 /**
  * Add new item do database, used for proposals,estimates,credit notes,invoices
  * This is repetitive action, that's why this function exists
@@ -759,6 +785,16 @@ function delete_taxes_from_item($item_id, $rel_type)
     return $CI->db->affected_rows() > 0 ? true : false;
 }
 
+function delete_venue_from_item($item_id, $rel_type)
+{
+    $CI = &get_instance();
+    $CI->db->where('itemid', $item_id)
+        ->where('rel_type', $rel_type)
+        ->delete('tblitemsvenue');
+
+    return $CI->db->affected_rows() > 0 ? true : false;
+}
+
 function is_sale_discount_applied($data)
 {
     return $data->discount_total > 0;
@@ -788,10 +824,9 @@ if (!function_exists('get_table_items_and_taxes')) {
      */
     function get_table_items_and_taxes($items, $type, $admin_preview = false)
     {
+        $CI =& get_instance();
         $cf = count($items) > 0 ? get_items_custom_fields_for_table_html($items[0]['rel_id'], $type) : array();
-
         static $rel_data = null;
-
         $result['html']    = '';
         $result['taxes']   = array();
         $_calculated_taxes = array();
@@ -800,7 +835,13 @@ if (!function_exists('get_table_items_and_taxes')) {
             $_item             = '';
             $tr_attrs       = '';
             $td_first_sortable = '';
+            if($type=='estimate'){
+                $selectedvenues = get_item_venues( $item['id'],$type,$items[0]['rel_id'],'estimate');
 
+            } else {
+                $type='invoice';
+                $selectedvenues = get_item_venues( $item['id'],$type,$items[0]['rel_id'],'invoice');
+            }
             if ($admin_preview == true) {
                 $tr_attrs       = ' class="sortable" data-item-id="' . $item['id'] . '"';
                 $td_first_sortable = ' class="dragger item_no"';
@@ -822,7 +863,14 @@ if (!function_exists('get_table_items_and_taxes')) {
             foreach ($cf as $custom_field) {
                 $_item .= '<td align="left">' . get_custom_field_value($item['id'], $custom_field['id'], 'items') . '</td>';
             }
-
+//            if (isset($selectedvenues)) {
+//
+//                foreach($selectedvenues as $selectedvenue){
+//                    $venueslist[] = $selectedvenue->name;}
+//                    $venues=implode(',', $venueslist);
+//                    $_item .= '<td class="amount" align="right">'.$venues.'</td>';
+//            }
+            $_item .= '<td align="right">' . $selectedvenues.'</td>';
             $_item .= '<td align="right">' . floatVal($item['qty']);
             if ($item['unit']) {
                 $_item .= ' ' . $item['unit'];

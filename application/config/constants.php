@@ -117,6 +117,8 @@ define('STAFF_PROFILE_IMAGES_FOLDER',FCPATH .'uploads/staff_profile_images' . '/
 define('CONTACT_PROFILE_IMAGES_FOLDER',FCPATH .'uploads/client_profile_images' . '/');
 // Newsfeed attachments
 define('NEWSFEED_FOLDER',FCPATH . 'uploads/newsfeed' . '/');
+// items images
+define('ITEM_FOLDER',FCPATH . 'uploads/items' . '/');
 // Contracts attachments
 define('CONTRACTS_UPLOADS_FOLDER',FCPATH . 'uploads/contracts' . '/');
 // Tasks attachments
@@ -137,3 +139,7 @@ define('PROJECT_ATTACHMENTS_FOLDER',FCPATH . 'uploads/projects' . '/');
 define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/discussions' . '/');
 // Credit notes attachment folder
 define('CREDIT_NOTES_ATTACHMENTS_FOLDER',FCPATH.'uploads/credit_notes' . '/');
+// Event files attachments
+define('EVENTMANAGER_ATTACHMENTS_FOLDER',FCPATH . 'uploads/eventmanager' . '/');
+// Eventdiscussions attachments
+define('EVENTMANAGER_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/eventmanagerdiscussions' . '/');

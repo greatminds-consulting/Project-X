@@ -37,6 +37,9 @@ function is_client_id_used($id)
     $total += total_rows('tblprojects', array(
         'clientid' => $id,
     ));
+    $total += total_rows('tbleventmanager', array(
+        'clientid' => $id,
+    ));
 
     $total += total_rows('tblstafftasks', array(
         'rel_id' => $id,
@@ -62,145 +65,154 @@ function is_client_id_used($id)
 function get_customer_profile_tabs($customer_id)
 {
     $customer_tabs = array(
-  array(
-    'name'=>'profile',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=profile'),
-    'icon'=>'fa fa-user-circle',
-    'lang'=>_l('client_add_edit_profile'),
-    'visible'=>true,
-    'order'=>1,
-    ),
-  array(
-    'name'=>'notes',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=notes'),
-    'icon'=>'fa fa-sticky-note-o',
-    'lang'=>_l('contracts_notes_tab'),
-    'visible'=>true,
-    'order'=>2,
-    ),
-  array(
-    'name'=>'statement',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=statement'),
-    'icon'=>'fa fa-area-chart',
-    'lang'=>_l('customer_statement'),
-    'visible'=>(has_permission('invoices', '', 'view') && has_permission('payments', '', 'view')),
-    'order'=>3,
-    ),
-  array(
-    'name'=>'invoices',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=invoices'),
-    'icon'=>'fa fa-file-text',
-    'lang'=>_l('client_invoices_tab'),
-    'visible'=>(has_permission('invoices', '', 'view') || has_permission('invoices', '', 'view_own')),
-    'order'=>4,
-    ),
-  array(
-    'name'=>'payments',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=payments'),
-    'icon'=>'fa fa-line-chart',
-    'lang'=>_l('client_payments_tab'),
-    'visible'=>(has_permission('payments', '', 'view') || has_permission('invoices', '', 'view_own')),
-    'order'=>5,
-    ),
-  array(
-    'name'=>'proposals',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=proposals'),
-    'icon'=>'fa fa-file-powerpoint-o',
-    'lang'=>_l('proposals'),
-    'visible'=>(has_permission('proposals', '', 'view') || has_permission('proposals', '', 'view_own') || (get_option('allow_staff_view_proposals_assigned') == 1 && total_rows('tblproposals', array('assigned'=>get_staff_user_id())) > 0)),
-    'order'=>6,
-    ),
-    array(
-    'name'=>'credit_notes',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=credit_notes'),
-    'icon'=>'fa fa-sticky-note-o',
-    'lang'=>_l('credit_notes'),
-    'visible'=>(has_permission('credit_notes', '', 'view') || has_permission('credit_notes', '', 'view_own')),
-    'order'=>7,
-    ),
-  array(
-    'name'=>'estimates',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=estimates'),
-    'icon'=>'fa fa-clipboard',
-    'lang'=>_l('estimates'),
-    'visible'=>(has_permission('estimates', '', 'view') || has_permission('estimates', '', 'view_own')),
-    'order'=>8,
-    ),
-  array(
-    'name'=>'expenses',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=expenses'),
-    'icon'=>'fa fa-file-text-o',
-    'lang'=>_l('expenses'),
-    'visible'=>(has_permission('expenses', '', 'view') || has_permission('expenses', '', 'view_own')),
-    'order'=>9,
-    ),
-  array(
-    'name'=>'contracts',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=contracts'),
-    'icon'=>'fa fa-file',
-    'lang'=>_l('contracts'),
-    'visible'=>(has_permission('contracts', '', 'view') || has_permission('contracts', '', 'view_own')),
-    'order'=>10,
-    ),
-  array(
-    'name'=>'projects',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=projects'),
-    'icon'=>'fa fa-bars',
-    'lang'=>_l('projects'),
-    'visible'=>true,
-    'order'=>11,
-    ),
-    array(
-    'name'=>'tasks',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=tasks'),
-    'icon'=>'fa fa-tasks',
-    'lang'=>_l('tasks'),
-    'visible'=>true,
-    'order'=>12,
-    ),
-  array(
-    'name'=>'tickets',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=tickets'),
-    'icon'=>'fa fa-ticket',
-    'lang'=>_l('tickets'),
-    'visible'=>((get_option('access_tickets_to_none_staff_members') == 1 && !is_staff_member()) || is_staff_member()),
-    'order'=>13,
-    ),
-  array(
-    'name'=>'attachments',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=attachments'),
-    'icon'=>'fa fa-paperclip',
-    'lang'=>_l('customer_attachments'),
-    'visible'=>true,
-    'order'=>14,
-    ),
-  array(
-    'name'=>'vault',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=vault'),
-    'icon'=>'fa fa-lock',
-    'lang'=>_l('vault'),
-    'visible'=>true,
-    'order'=>15,
-    ),
-  array(
-    'name'=>'reminders',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=reminders'),
-    'icon'=>'fa fa-clock-o',
-    'lang'=>_l('client_reminders_tab'),
-    'visible'=>true,
-    'order'=>16,
-    'id'=>'reminders',
-    ),
-  array(
-    'name'=>'map',
-    'url'=>admin_url('clients/client/'.$customer_id.'?group=map'),
-    'icon'=>'fa fa-map-marker',
-    'lang'=>_l('customer_map'),
-    'visible'=>true,
-    'order'=>17,
-    ),
+        array(
+            'name'=>'profile',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=profile'),
+            'icon'=>'fa fa-user-circle',
+            'lang'=>_l('client_add_edit_profile'),
+            'visible'=>true,
+            'order'=>1,
+        ),
+        array(
+            'name'=>'notes',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=notes'),
+            'icon'=>'fa fa-sticky-note-o',
+            'lang'=>_l('contracts_notes_tab'),
+            'visible'=>true,
+            'order'=>2,
+        ),
+        array(
+            'name'=>'statement',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=statement'),
+            'icon'=>'fa fa-area-chart',
+            'lang'=>_l('customer_statement'),
+            'visible'=>(has_permission('invoices', '', 'view') && has_permission('payments', '', 'view')),
+            'order'=>3,
+        ),
+        array(
+            'name'=>'invoices',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=invoices'),
+            'icon'=>'fa fa-file-text',
+            'lang'=>_l('client_invoices_tab'),
+            'visible'=>(has_permission('invoices', '', 'view') || has_permission('invoices', '', 'view_own')),
+            'order'=>4,
+        ),
+        array(
+            'name'=>'payments',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=payments'),
+            'icon'=>'fa fa-line-chart',
+            'lang'=>_l('client_payments_tab'),
+            'visible'=>(has_permission('payments', '', 'view') || has_permission('invoices', '', 'view_own')),
+            'order'=>5,
+        ),
+        array(
+            'name'=>'proposals',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=proposals'),
+            'icon'=>'fa fa-file-powerpoint-o',
+            'lang'=>_l('proposals'),
+            'visible'=>(has_permission('proposals', '', 'view') || has_permission('proposals', '', 'view_own') || (get_option('allow_staff_view_proposals_assigned') == 1 && total_rows('tblproposals', array('assigned'=>get_staff_user_id())) > 0)),
+            'order'=>6,
+        ),
+        array(
+            'name'=>'credit_notes',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=credit_notes'),
+            'icon'=>'fa fa-sticky-note-o',
+            'lang'=>_l('credit_notes'),
+            'visible'=>(has_permission('credit_notes', '', 'view') || has_permission('credit_notes', '', 'view_own')),
+            'order'=>7,
+        ),
+        array(
+            'name'=>'estimates',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=estimates'),
+            'icon'=>'fa fa-clipboard',
+            'lang'=>_l('estimates'),
+            'visible'=>(has_permission('estimates', '', 'view') || has_permission('estimates', '', 'view_own')),
+            'order'=>8,
+        ),
+        array(
+            'name'=>'expenses',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=expenses'),
+            'icon'=>'fa fa-file-text-o',
+            'lang'=>_l('expenses'),
+            'visible'=>(has_permission('expenses', '', 'view') || has_permission('expenses', '', 'view_own')),
+            'order'=>9,
+        ),
+        array(
+            'name'=>'contracts',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=contracts'),
+            'icon'=>'fa fa-file',
+            'lang'=>_l('contracts'),
+            'visible'=>(has_permission('contracts', '', 'view') || has_permission('contracts', '', 'view_own')),
+            'order'=>10,
+        ),
+        array(
+            'name'=>'projects',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=projects'),
+            'icon'=>'fa fa-bars',
+            'lang'=>_l('projects'),
+            'visible'=>true,
+            'order'=>11,
+        ),
+        array(
+            'name'=>'tasks',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=tasks'),
+            'icon'=>'fa fa-tasks',
+            'lang'=>_l('tasks'),
+            'visible'=>true,
+            'order'=>12,
+        ),
+        array(
+            'name'=>'tickets',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=tickets'),
+            'icon'=>'fa fa-ticket',
+            'lang'=>_l('tickets'),
+            'visible'=>((get_option('access_tickets_to_none_staff_members') == 1 && !is_staff_member()) || is_staff_member()),
+            'order'=>13,
+        ),
+        array(
+            'name'=>'attachments',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=attachments'),
+            'icon'=>'fa fa-paperclip',
+            'lang'=>_l('customer_attachments'),
+            'visible'=>true,
+            'order'=>14,
+        ),
+        array(
+            'name'=>'vault',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=vault'),
+            'icon'=>'fa fa-lock',
+            'lang'=>_l('vault'),
+            'visible'=>true,
+            'order'=>15,
+        ),
+        array(
+            'name'=>'reminders',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=reminders'),
+            'icon'=>'fa fa-clock-o',
+            'lang'=>_l('client_reminders_tab'),
+            'visible'=>true,
+            'order'=>16,
+            'id'=>'reminders',
+        ),
+        array(
+            'name'=>'map',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=map'),
+            'icon'=>'fa fa-map-marker',
+            'lang'=>_l('customer_map'),
+            'visible'=>true,
+            'order'=>17,
+        ),
+        array(
+            'name'=>'eventmanager',
+            'url'=>admin_url('clients/client/'.$customer_id.'?group=eventmanager'),
+            'icon'=>'fa fa-bars',
+            'lang'=>_l('eventmanager_uppercase'),
+            'visible'=>true,
+            'order'=>18,
+        ),
 
-  );
+
+    );
 
     $hook_data = do_action('customer_profile_tabs', array('tabs'=>$customer_tabs, 'customer_id'=>$customer_id));
     $customer_tabs = $hook_data['tabs'];
@@ -239,8 +251,8 @@ function is_primary_contact($contact_id = '')
     }
 
     if (total_rows('tblcontacts', array(
-        'id' => $contact_id,
-        'is_primary' => 1,
+            'id' => $contact_id,
+            'is_primary' => 1,
         )) > 0) {
         return true;
     }
@@ -401,6 +413,46 @@ function contact_profile_image_url($contact_id, $type = 'small')
 
     return $url;
 }
+
+/**
+ * Return item image url
+ * @param  mixed $item_id
+ * @param  string $type
+ * @return string
+ */
+function contact_item_image_url($item_id, $type = 'small')
+{
+    $url = base_url('assets/images/user-placeholder.jpg');
+    $CI =& get_instance();
+    $CI->db->select('item_image');
+    $CI->db->from('tblitems');
+    $CI->db->where('id', $item_id);
+    $contact = $CI->db->get()->row();
+    if ($contact) {
+        if (!empty($contact->item_image)) {
+            $path = 'uploads/items/' . $item_id . '/' . $type . '_' . $contact->item_image;
+            if (file_exists($path)) {
+                $url = base_url($path);
+            }
+        }
+    }
+
+    return $url;
+}
+
+function suppliers_image() {
+    $image = base_url('assets/images/user-placeholder.jpg');
+    $url = '<img src="' . $image . '"  class="client-profile-image-small mright5">';
+    $CI =& get_instance();
+    $CI->db->select('businessname');
+    $CI->db->from('tblsuppliers');
+    $CI->db->where('supplierid', get_supplier_user_id());
+    $supplier = $CI->db->get()->row();
+    if ($supplier->businessname) {
+        $url = '<span class="profile-initials" style="">'.strtoupper(substr($supplier->businessname, 0, 2)).'</span>';
+    }
+    return $url;
+}
 /**
  * Used in:
  * Search contact tickets
@@ -420,10 +472,10 @@ function get_company_name($userid, $prevent_empty_company = false)
     $select = ($prevent_empty_company == false ? get_sql_select_client_company() : 'company');
 
     $client = $CI->db->select($select)
-    ->where('userid', $_userid)
-    ->from('tblclients')
-    ->get()
-    ->row();
+        ->where('userid', $_userid)
+        ->from('tblclients')
+        ->get()
+        ->row();
     if ($client) {
         return $client->company;
     } else {
@@ -463,8 +515,8 @@ function get_client_default_language($clientid = '')
 function is_customer_admin($id, $staff_id = '')
 {
     return total_rows('tblcustomeradmins', array(
-            'customer_id' => $id,
-            'staff_id' => is_numeric($staff_id) ? $staff_id : get_staff_user_id(),
+        'customer_id' => $id,
+        'staff_id' => is_numeric($staff_id) ? $staff_id : get_staff_user_id(),
     )) > 0 ? true : false;
 }
 /**
@@ -500,7 +552,34 @@ function has_contact_permission($permission, $contact_id = '')
     }
     foreach ($permissions as $_permission) {
         if ($_permission['short_name'] == $permission) {
-           return total_rows('tblcontactpermissions', array(
+            return total_rows('tblcontactpermissions', array(
+                'permission_id' => $_permission['id'],
+                'userid' => $_contact_id,
+            )) > 0;
+        }
+    }
+
+    return false;
+}
+
+function has_supplier_permission($permission, $contact_id = '')
+{
+    $CI =& get_instance();
+    if (!class_exists('app')) {
+        $CI->load->library('app');
+    }
+    $permissions = get_supplier_permissions();
+    // Contact id passed form function
+    if ($contact_id != '') {
+        $_contact_id = $contact_id;
+    } else {
+        // Current logged in contact
+        $_contact_id     = get_supplier_user_id();
+    }
+
+    foreach ($permissions as $_permission) {
+        if ($_permission['short_name'] == $permission) {
+            return total_rows('tblsupplierpermissions', array(
                 'permission_id' => $_permission['id'],
                 'userid' => $_contact_id,
             )) > 0;
@@ -547,25 +626,25 @@ function client_have_transactions($id)
 
     $total_transactions += total_rows('tblinvoices', array(
         'clientid' => $id,
-        ));
+    ));
 
     $total_transactions += total_rows('tblcreditnotes', array(
         'clientid' => $id,
-        ));
+    ));
 
     $total_transactions += total_rows('tblestimates', array(
         'clientid' => $id,
-        ));
+    ));
 
     $total_transactions += total_rows('tblexpenses', array(
         'clientid' => $id,
         'billable' => 1,
-        ));
+    ));
 
     $total_transactions += total_rows('tblproposals', array(
         'rel_id' => $id,
         'rel_type' => 'customer',
-        ));
+    ));
 
     if ($total_transactions > 0) {
         return true;
@@ -576,43 +655,66 @@ function client_have_transactions($id)
 
 
 /**
-* Predefined contact permission
-* @return array
-*/
+ * Predefined contact permission
+ * @return array
+ */
 function get_contact_permissions()
 {
     $permissions = array(
-            array(
-                'id' => 1,
-                'name' => _l('customer_permission_invoice'),
-                'short_name' => 'invoices',
-            ),
-            array(
-                'id' => 2,
-                'name' => _l('customer_permission_estimate'),
-                'short_name' => 'estimates',
-            ),
-            array(
-                'id' => 3,
-                'name' => _l('customer_permission_contract'),
-                'short_name' => 'contracts',
-            ),
-            array(
-                'id' => 4,
-                'name' => _l('customer_permission_proposal'),
-                'short_name' => 'proposals',
-            ),
-            array(
-                'id' => 5,
-                'name' => _l('customer_permission_support'),
-                'short_name' => 'support',
-            ),
-            array(
-                'id' => 6,
-                'name' => _l('customer_permission_projects'),
-                'short_name' => 'projects',
-            ),
-        );
+        array(
+            'id' => 1,
+            'name' => _l('customer_permission_invoice'),
+            'short_name' => 'invoices',
+        ),
+        array(
+            'id' => 2,
+            'name' => _l('customer_permission_estimate'),
+            'short_name' => 'estimates',
+        ),
+        array(
+            'id' => 3,
+            'name' => _l('customer_permission_contract'),
+            'short_name' => 'contracts',
+        ),
+        array(
+            'id' => 4,
+            'name' => _l('customer_permission_proposal'),
+            'short_name' => 'proposals',
+        ),
+        array(
+            'id' => 5,
+            'name' => _l('customer_permission_support'),
+            'short_name' => 'support',
+        ),
+        array(
+            'id' => 6,
+            'name' => _l('customer_permission_projects'),
+            'short_name' => 'projects',
+        ),
+        array(
+            'id' => 7,
+            'name' => _l('customer_permission_eventmanager'),
+            'short_name' => 'events',
+        ),
+    );
+
+    return do_action('get_contact_permissions', $permissions);
+}
+
+function get_supplier_permissions()
+{
+    $permissions = array(
+        array(
+            'id' => 1,
+            'name' => 'Profile',
+            'short_name' => 'Profile',
+        ),
+        array(
+            'id' => 2,
+            'name' => 'Items',
+            'short_name' => 'Items',
+        )
+    );
 
     return do_action('get_contact_permissions', $permissions);
 }
@@ -624,7 +726,7 @@ function get_contact_permissions()
  */
 function can_contact_view_email_notifications_options()
 {
-    if (has_contact_permission('invoices') || has_contact_permission('estimates') || has_contact_permission('projects') || has_contact_permission('contracts')) {
+    if (has_contact_permission('invoices') || has_contact_permission('estimates') || has_contact_permission('projects') || has_contact_permission('eventmanager')|| has_contact_permission('contracts')) {
         return true;
     }
 
@@ -632,16 +734,16 @@ function can_contact_view_email_notifications_options()
 }
 
 /**
-* With this function staff can login as client in the clients area
-* @param  mixed $id client id
-*/
+ * With this function staff can login as client in the clients area
+ * @param  mixed $id client id
+ */
 function login_as_client($id)
 {
     $CI = &get_instance();
 
     $CI->db->select('tblcontacts.id')
-    ->where('userid', $id)
-    ->where('is_primary', 1);
+        ->where('userid', $id)
+        ->where('is_primary', 1);
 
     $primary = $CI->db->get('tblcontacts')->row();
 
@@ -651,20 +753,20 @@ function login_as_client($id)
     }
 
     $user_data = array(
-            'client_user_id' => $id,
-            'contact_user_id' => $primary->id,
-            'client_logged_in' => true,
-            'logged_in_as_client' => true,
-        );
+        'client_user_id' => $id,
+        'contact_user_id' => $primary->id,
+        'client_logged_in' => true,
+        'logged_in_as_client' => true,
+    );
 
     $CI->session->set_userdata($user_data);
 }
 
 /**
-*  Get customer attachment
-* @param   mixed $id   customer id
-* @return  array
-*/
+ *  Get customer attachment
+ * @param   mixed $id   customer id
+ * @return  array
+ */
 function get_all_customer_attachments($id)
 {
     $CI = &get_instance();
@@ -827,7 +929,7 @@ function get_all_customer_attachments($id)
     }
 
     $CI->db->select('leadid')
-    ->where('userid', $id);
+        ->where('userid', $id);
     $customer = $CI->db->get('tblclients')->row();
 
     if ($customer->leadid != null) {

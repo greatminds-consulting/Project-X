@@ -7,6 +7,7 @@ class Proposals extends Admin_controller
         parent::__construct();
         $this->load->model('proposals_model');
         $this->load->model('currencies_model');
+        $this->load->model('venues_model');
     }
 
     public function index($proposal_id = '')
@@ -181,6 +182,8 @@ class Proposals extends Admin_controller
         $data['staff']      = $this->staff_model->get('', 1);
         $data['currencies'] = $this->currencies_model->get();
         $data['base_currency'] = $this->currencies_model->get_base_currency();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['proposal_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Proposal');
 
         $data['title']      = $title;
         $this->load->view('admin/proposals/proposal', $data);

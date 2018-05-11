@@ -17,14 +17,14 @@ class Cron extends CRM_Controller
         }
 
         $last_cron_run = get_option('last_cron_run');
-        if ($last_cron_run == '' || (time() > ($last_cron_run + do_action('cron_functions_execute_seconds',300)))) {
+        //if ($last_cron_run == '' || (time() > ($last_cron_run + do_action('cron_functions_execute_seconds',300)))) {
             do_action('before_cron_run');
 
             $this->load->model('cron_model');
             $this->cron_model->run();
 
             do_action('after_cron_run');
-        }
+      //  }
 
     }
 }

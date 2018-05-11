@@ -256,6 +256,18 @@ function get_client_id_by_project_id($id)
 
     return false;
 }
+function get_client_id_by_eventmanager_id($id)
+{
+    $CI =& get_instance();
+    $CI->db->select('clientid');
+    $CI->db->where('id', $id);
+    $eventmanager = $CI->db->get('tbleventmanager')->row();
+    if ($eventmanager) {
+        return $eventmanager->clientid;
+    }
+
+    return false;
+}
 
 /**
  * Check if customer has project assigned

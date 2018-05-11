@@ -126,6 +126,15 @@ class Proposals_model extends CRM_Model
             unset($data['custom_fields']);
         }
 
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
+
         $data['address'] = trim($data['address']);
         $data['address'] = nl2br($data['address']);
 
@@ -160,12 +169,19 @@ class Proposals_model extends CRM_Model
         ));
 
         $data  = $hook_data['data'];
+        unset($data['venue_items']);
+
         $items = $hook_data['items'];
 
         $this->db->insert('tblproposals', $data);
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Proposal', 'venue_id' => $venue_id));
+                }
+            }
             if (isset($custom_fields)) {
                 handle_custom_fields_post($insert_id, $custom_fields);
             }
@@ -175,6 +191,7 @@ class Proposals_model extends CRM_Model
             foreach ($items as $key => $item) {
                 if ($itemid = add_new_sales_item_post($item, $insert_id, 'proposal')) {
                     _maybe_insert_post_item_tax($itemid, $item, $insert_id, 'proposal');
+                    _maybe_insert_post_item_venue($itemid, $item, $insert_id, 'proposal');
                 }
             }
 
@@ -244,6 +261,14 @@ class Proposals_model extends CRM_Model
             }
         }
 
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
             if (handle_custom_fields_post($id, $custom_fields)) {
@@ -297,6 +322,14 @@ class Proposals_model extends CRM_Model
 
         $this->db->where('id', $id);
         $this->db->update('tblproposals', $data);
+        $this->db->where('type_id', $id);
+        $this->db->where('type', 'Proposal');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Proposal', 'venue_id' => $venue_id));
+            }
+        }
         if ($this->db->affected_rows() > 0) {
             $affectedRows++;
             $proposal_now = $this->get($id);
@@ -354,11 +387,26 @@ class Proposals_model extends CRM_Model
                     $affectedRows++;
                 }
             }
+
+            if (!isset($item['venue_items']) || (isset($item['venue_items']) && count($item['venue_items']) == 0)) {
+                if (delete_venue_from_item($item['itemid'], 'proposal')) {
+                    $affectedRows++;
+                }
+            } else {
+                $this->db->where('itemid', $item['itemid']);
+                $this->db->where('rel_id', $id);
+                $this->db->where('rel_type', 'proposal');
+                $this->db->delete('tblitemsvenue');
+                if (_maybe_insert_post_item_venue($item['itemid'], $item, $id, 'proposal')) {
+                    $affectedRows++;
+                }
+            }
         }
 
         foreach ($newitems as $key => $item) {
             if ($new_item_added = add_new_sales_item_post($item, $id, 'proposal')) {
                 _maybe_insert_post_item_tax($new_item_added, $item, $id, 'proposal');
+                _maybe_insert_post_item_venue($new_item_added, $item, $id, 'proposal');
                 $affectedRows++;
             }
         }
@@ -1071,9 +1119,11 @@ class Proposals_model extends CRM_Model
         return false;
     }
 
+
     public function lead_rel_details($rel_id) {
         $this->db->where('rel_id', $rel_id);
         $_data       = $this->db->get('tblproposals')->result_array();
         return $_data;
     }
+
 }

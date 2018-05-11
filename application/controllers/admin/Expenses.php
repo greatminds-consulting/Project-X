@@ -6,6 +6,7 @@ class Expenses extends Admin_controller
     {
         parent::__construct();
         $this->load->model('expenses_model');
+        $this->load->model('venues_model');
     }
 
     public function index($id = '')
@@ -21,10 +22,10 @@ class Expenses extends Admin_controller
             access_denied('expenses');
         }
 
-        $data['expenseid'] = $id;
-        $data['categories'] = $this->expenses_model->get_category();
-        $data['years']      = $this->expenses_model->get_expenses_years();
-        $data['title']      = _l('expenses');
+        $data['expenseid']      = $id;
+        $data['categories']     = $this->expenses_model->get_category();
+        $data['years']          = $this->expenses_model->get_expenses_years();
+        $data['title']          = _l('expenses');
 
         $this->load->view('admin/expenses/manage', $data);
     }
@@ -108,6 +109,8 @@ class Expenses extends Admin_controller
         $data['payment_modes'] = $this->payment_modes_model->get('', array(
             'invoices_only !=' => 1
         ));
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['expense_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Expenses');
         $data['bodyclass'] = 'expense';
         $data['currencies']    = $this->currencies_model->get();
         $data['title']         = $title;
@@ -226,6 +229,7 @@ class Expenses extends Admin_controller
 
         $data['child_expenses'] = $this->expenses_model->get_child_expenses($id);
         $data['members'] = $this->staff_model->get('', 1);
+        $data['selectedvenues'] = $this->expenses_model->selectedvenues($id);
         $this->load->view('admin/expenses/expense_preview_template', $data);
     }
 

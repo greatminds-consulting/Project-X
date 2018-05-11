@@ -215,6 +215,8 @@ function task_rel_link($rel_id, $rel_type)
         $link = admin_url('invoices/list_invoices/'.$rel_id);
     } elseif ($rel_type == 'project') {
         $link = admin_url('projects/view/'.$rel_id);
+    }elseif ($rel_type == 'eventmanager') {
+        $link = admin_url('event/view/'.$rel_id);
     } elseif ($rel_type == 'estimate') {
         $link = admin_url('estimates/list_estimates/'.$rel_id);
     } elseif ($rel_type == 'contract') {
@@ -293,7 +295,7 @@ function init_relation_tasks_table($table_attributes = array())
         _l('task_status'),
     );
 
-    if ($table_attributes['data-new-rel-type'] == 'project') {
+    if (($table_attributes['data-new-rel-type'] == 'project') || ($table_attributes['data-new-rel-type'] == 'eventmanager')) {
         array_unshift($table_data, '<span class="hide"> - </span><div class="checkbox mass_select_all_wrap"><input type="checkbox" id="mass_select_all" data-to-table="rel-tasks"><label></label></div>');
     }
 
@@ -332,23 +334,31 @@ function init_relation_tasks_table($table_attributes = array())
             }
         }
         // projects have button on top
-        if ($table_attributes['data-new-rel-type'] != 'project') {
+        if (($table_attributes['data-new-rel-type'] != 'project')||($table_attributes['data-new-rel-type'] != 'eventmanager')) {
             echo "<a href='#' class='btn btn-info pull-left mbot25 mright5 new-task-relation" . $disabled . "' onclick=\"new_task_from_relation('$table_name'); return false;\" data-rel-id='".$table_attributes['data-new-rel-id']."' data-rel-type='".$table_attributes['data-new-rel-type']."'>" . _l('new_task') . "</a>";
         }
     }
 
     if ($table_attributes['data-new-rel-type'] == 'project') {
+
         echo "<a href='" . admin_url('tasks/detailed_overview?project_id=' . $table_attributes['data-new-rel-id']) . "' class='btn btn-success pull-right mbot25'>" . _l('detailed_overview') . "</a>";
-          echo "<a href='" . admin_url('tasks/list_tasks?project_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
+        echo "<a href='" . admin_url('tasks/list_tasks?project_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
         echo '<div class="clearfix"></div>';
         echo $CI->load->view('admin/tasks/_bulk_actions', array('table'=>'.table-rel-tasks'), true);
         echo $CI->load->view('admin/tasks/_summary', array('rel_id'=>$table_attributes['data-new-rel-id'], 'rel_type'=>'project', 'table'=>$table_name), true);
         echo '<a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="hide bulk-actions-btn table-btn" data-table=".table-rel-tasks">'._l('bulk_actions').'</a>';
+    } elseif($table_attributes['data-new-rel-type'] == 'eventmanager'){
+        echo "<a href='" . admin_url('tasks/detailed_overview?event_manager_id=' . $table_attributes['data-new-rel-id']) . "' class='btn btn-success pull-right mbot25'>" . _l('detailed_overview') . "</a>";
+        echo "<a href='" . admin_url('tasks/list_tasks?event_manager_id=' . $table_attributes['data-new-rel-id'] . '&kanban=true&event=true') . "' class='btn btn-default pull-right mbot25 mright5 hidden-xs'>" . _l('view_kanban') . "</a>";
+        echo '<div class="clearfix"></div>';
+        echo $CI->load->view('admin/tasks/_bulk_actions', array('table'=>'.table-rel-tasks'), true);
+        echo $CI->load->view('admin/tasks/event_summary', array('rel_id'=>$table_attributes['data-new-rel-id'], 'rel_type'=>'eventmanager', 'table'=>$table_name), true);
+        echo '<a href="#" data-toggle="modal" data-target="#tasks_bulk_actions" class="hide bulk-actions-btn table-btn" data-table=".table-rel-tasks">'._l('bulk_actions').'</a>';
+
     } elseif ($table_attributes['data-new-rel-type'] == 'customer') {
         echo '<div class="clearfix"></div>';
         echo '<div id="tasks_related_filter">';
         echo '<p class="bold">'._l('task_related_to').': </p>';
-
         echo '<div class="checkbox checkbox-inline mbot25">
         <input type="checkbox" checked value="customer" disabled id="ts_rel_to_customer" name="tasks_related_to[]">
         <label for="ts_rel_to_customer">'._l('client').'</label>
@@ -393,10 +403,8 @@ function init_relation_tasks_table($table_attributes = array())
     }
     echo "<div class='clearfix'></div>";
     $table .= render_datatable($table_data, $name, array(), $table_attributes);
-
-    return $table;
+return $table;
 }
-
 /**
  * Return tasks summary formated data
  * @param  string $where additional where to perform
@@ -424,6 +432,46 @@ function tasks_summary_data($rel_id = null, $rel_type = null)
             END';
             $tasks_where .= $sqlProjectTasksWhere;
             $tasks_my_where .= $sqlProjectTasksWhere;
+        }
+
+        $summary = array();
+        $summary['total_tasks'] = total_rows('tblstafftasks', $tasks_where);
+        $summary['total_my_tasks'] = total_rows('tblstafftasks', $tasks_my_where);
+        $summary['color'] = $status['color'];
+        $summary['name'] = $status['name'];
+        $summary['status_id'] = $status['id'];
+        $tasks_summary[] = $summary;
+    }
+
+    return $tasks_summary;
+}
+/**
+ * Return eventtasks summary formated data
+ * @param  string $where additional where to perform
+ * @return array
+ */
+function tasks_eventsummary_data($rel_id = null, $rel_type = null)
+{
+    $CI = &get_instance();
+    $tasks_summary = array();
+    $statuses = $CI->tasks_model->get_statuses();
+    foreach ($statuses as $status) {
+        $tasks_where = 'status = ' .$status['id'];
+        if (!has_permission('tasks', '', 'view')) {
+            $tasks_where .= ' ' . get_tasks_where_string();
+        }
+        $tasks_my_where = 'id IN(SELECT taskid FROM tblstafftaskassignees WHERE staffid='.get_staff_user_id().') AND status='.$status['id'];
+        if ($rel_id && $rel_type) {
+            $tasks_where .= ' AND rel_id='.$rel_id.' AND rel_type="'.$rel_type.'"';
+            $tasks_my_where .= ' AND rel_id='.$rel_id.' AND rel_type="'.$rel_type.'"';
+        } else {
+            $sqlEventmanagerTasksWhere = ' AND CASE
+            WHEN rel_type="eventmanager" AND rel_id IN (SELECT event_manager_id FROM tbleventsettings WHERE event_manager_id=rel_id AND name="hide_tasks_on_main_tasks_table" AND value=1)
+            THEN rel_type != "eventmanager"
+            ELSE 1=1
+            END';
+            $tasks_where .= $sqlEventmanagerTasksWhere;
+            $tasks_my_where .= $sqlEventmanagerTasksWhere;
         }
 
         $summary = array();

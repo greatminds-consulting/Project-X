@@ -5,6 +5,7 @@ class Staff extends Admin_controller
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('venues_model');
     }
 
     /* List all staff members */
@@ -98,6 +99,8 @@ class Staff extends Admin_controller
         $data['user_notes'] = $this->misc_model->get_notes($id, 'staff');
         $data['departments'] = $this->departments_model->get();
         $data['title']       = $title;
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['staff_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Staff');
         $this->load->view('admin/staff/member', $data);
     }
 

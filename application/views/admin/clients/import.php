@@ -31,10 +31,13 @@ if($this->input->post('download_sample') === 'true'){
     echo '"'.ucfirst($field).'",';
     $_total_sample_fields++;
   }
+echo '"Venue",';
+$_total_sample_fields++;
   foreach($custom_fields as $field){
     echo '"'.$field['name'].'",';
     $_total_sample_fields++;
   }
+
   echo "\n";
   $sample_data = 'Sample Data';
   for($f = 0;$f<$_total_sample_fields;$f++){
@@ -96,6 +99,8 @@ if($this->input->post('download_sample') === 'true'){
                     <?php $total_fields++; ?>
                     <th class="bold"> <?php if($field == 'company' && get_option('company_is_required') == 1){echo '<span class="text-danger">* </span>';} ?><?php echo str_replace('_',' ',ucfirst($field)); ?></th>
                     <?php } ?>
+                    <th class="bold">Venue</th>
+                    <?php $total_fields++; ?>
                     <?php foreach($custom_fields as $field){ ?>
                     <?php $total_fields++; ?>
                     <th class="bold"><?php echo $field['name']; ?></th>

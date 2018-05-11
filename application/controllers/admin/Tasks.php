@@ -6,6 +6,7 @@ class Tasks extends Admin_controller
     {
         parent::__construct();
         $this->load->model('projects_model');
+        $this->load->model('venues_model');
     }
 
     /* Open also all taks if user access this /tasks url */
@@ -35,7 +36,11 @@ class Tasks extends Admin_controller
         }
 
         $data['title']       = _l('tasks');
+        if ($this->input->get('event')) {
+            $this->load->view('admin/tasks/eventmanage', $data);
+        } else {
         $this->load->view('admin/tasks/manage', $data);
+        }
     }
 
     public function table()
@@ -367,6 +372,8 @@ class Tasks extends Admin_controller
                 );
             }
         }
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['task_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Tasks');
         $data['id']    = $id;
         $data['title'] = $title;
         $this->load->view('admin/tasks/task', $data);
@@ -425,6 +432,8 @@ class Tasks extends Admin_controller
         $data['id']             = $task->id;
         $data['staff']          = $this->staff_model->get('', 1);
         $data['task_is_billed'] = $this->tasks_model->is_task_billed($taskid);
+        $data['selectedvenues']     = $this->tasks_model->selectedvenues($taskid);
+
         if ($return == false) {
             $this->load->view('admin/tasks/view_task_template', $data);
         } else {

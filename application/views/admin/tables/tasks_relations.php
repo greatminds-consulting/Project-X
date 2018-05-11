@@ -50,6 +50,9 @@ if (!$this->ci->input->post('tasks_related_to')) {
         } elseif ($rel_to == 'project') {
             $rel_to_query .= '(rel_id IN (SELECT id FROM tblprojects WHERE clientid=' . $rel_id . ')';
         }
+        elseif ($rel_to == 'eventmanager') {
+            $rel_to_query .= '(rel_id IN (SELECT id FROM tbleventmanager WHERE clientid=' . $rel_id . ')';
+        }
 
         $rel_to_query .= ' AND rel_type="'.$rel_to.'")';
         if ($rel_to != $lastElement) {

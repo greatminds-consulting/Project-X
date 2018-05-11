@@ -26,6 +26,9 @@
         <?php if(has_contact_permission('projects')){ ?>
         <li class="customers-nav-item-projects"><a href="<?php echo site_url('clients/projects'); ?>"><?php echo _l('clients_nav_projects'); ?></a></li>
         <?php } ?>
+        <?php if(has_contact_permission('events')){ ?>
+        <li class="customers-nav-item-eventmanager"><a href="<?php echo site_url('clients/eventmanagers'); ?>"><?php echo _l('clients_nav_eventmanager'); ?></a></li>
+        <?php } ?>
         <?php if(has_contact_permission('invoices')){ ?>
         <li class="customers-nav-item-invoices"><a href="<?php echo site_url('clients/invoices'); ?>"><?php echo _l('clients_nav_invoices'); ?></a></li>
         <?php } ?>

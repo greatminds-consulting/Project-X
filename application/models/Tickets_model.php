@@ -278,7 +278,8 @@ class Tickets_model extends CRM_Model
             return $this->db->get('tbltickets')->row();
         }
         $this->db->order_by('lastreply', 'asc');
-
+//        $this->db->get('tbltickets');
+//        echo $this->db->last_query();exit;
         return $this->db->get('tbltickets')->result_array();
     }
 
@@ -404,7 +405,14 @@ class Tickets_model extends CRM_Model
         if (isset($data['status'])) {
             unset($data['status']);
         }
-
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
         $cc = '';
         if (isset($data['cc'])) {
             $cc = $data['cc'];
@@ -439,6 +447,15 @@ class Tickets_model extends CRM_Model
         $data  = $_data['data'];
         $this->db->insert('tblticketreplies', $data);
         $insert_id = $this->db->insert_id();
+        $this->db->where('type_id', $id);
+        $this->db->where('type', 'Ticket');
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            foreach ($venueArray as $key=> $venue_id) {
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Ticket', 'venue_id' => $venue_id));
+            }
+        }
+
         if ($insert_id) {
             if (isset($assigned)) {
                 $this->db->where('ticketid', $id);
@@ -666,6 +683,9 @@ class Tickets_model extends CRM_Model
         if (isset($data['project_id']) && $data['project_id'] == '') {
             $data['project_id'] = 0;
         }
+        if (isset($data['event_manager_id']) && $data['event_manager_id'] == '') {
+            $data['event_manager_id'] = 0;
+        }
 
         if ($admin == null) {
             if (isset($data['email'])) {
@@ -680,6 +700,15 @@ class Tickets_model extends CRM_Model
             }
             $data['status'] = 1;
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+            }
+            unset($data['venue']);
+        }
+
 
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
@@ -730,6 +759,12 @@ class Tickets_model extends CRM_Model
         $this->db->insert('tbltickets', $data);
         $ticketid = $this->db->insert_id();
         if ($ticketid) {
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $ticketid, 'type' => 'Ticket', 'venue_id' => $venue_id));
+                }
+            }
+
             handle_tags_save($tags, $ticketid, 'ticket');
             if (isset($custom_fields)) {
                 handle_custom_fields_post($ticketid, $custom_fields);
@@ -968,6 +1003,15 @@ class Tickets_model extends CRM_Model
             $tags = $data['tags'];
             unset($data['tags']);
         }
+        if (isset($data['venue'])) {
+            if ($data['venue']) {
+                foreach ($data['venue'] as $key => $value) {
+                    $venueArray[] = $value;
+                }
+                $affectedRows++;
+            }
+            unset($data['venue']);
+        }
 
         if (handle_tags_save($tags, $data['ticketid'], 'ticket')) {
             $affectedRows++;
@@ -1055,6 +1099,13 @@ class Tickets_model extends CRM_Model
             $this->emails_model->send_email_template('ticket-assigned-to-admin', $assignedEmail, $merge_fields, $data['ticketid']);
         }
         if ($affectedRows > 0) {
+            $this->db->where('type', 'Ticket');
+            $this->db->delete('tblvenues_in');
+            if ($venueArray) {
+                foreach ($venueArray as $key=> $venue_id) {
+                    $this->db->insert('tblvenues_in', array('type_id' => $data['ticketid'], 'type' => 'Ticket', 'venue_id' => $venue_id));
+                }
+            }
             logActivity('Ticket Updated [ID: ' . $data['ticketid'] . ']');
 
             return true;

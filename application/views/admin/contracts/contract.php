@@ -71,7 +71,8 @@
         </div>
         <?php $value = (isset($contract) ? $contract->description : ''); ?>
         <?php echo render_textarea('description','contract_description',$value,array('rows'=>10)); ?>
-        <?php $rel_id = (isset($contract) ? $contract->id : false); ?>
+        <?php $rel_id = (isset($contract) ? $contract->id : false);
+        echo render_select('venue[]',$venues,array('id','name'),'venues',$lead_venues,array('multiple'=>true,'required'=>true),array(), '', 'selclass',false);?>
         <?php echo render_custom_fields('contracts',$rel_id); ?>
         <div class="btn-bottom-toolbar text-right">
           <button type="submit" class="btn btn-info"><?php echo _l('submit'); ?></button>
@@ -303,7 +304,7 @@
      }));
     }
 
-    _validate_form($('#contract-form'),{client:'required',datestart:'required',subject:'required'});
+    _validate_form($('#contract-form'),{client:'required',datestart:'required',subject:'required',venue:'required'});
     _validate_form($('#renew-contract-form'),{new_start_date:'required'});
 
     var _templates = [];
@@ -370,13 +371,20 @@
         icon: false,
         id: 'inline-editor-save-btn',
         onclick: function() {
+
          var data = {};
+            var selectArr = [];
+
+            $('.selclass option:selected').each(function() {
+                selectArr.push($(this).val());
+            });
+         data.selectVenues = selectArr;
          data.contract_id = contract_id;
          data.content = editor.getContent();
          $.post(admin_url + 'contracts/save_contract_data', data).done(function(response) {
-          response = JSON.parse(response);
+           response = JSON.parse(response);
           if (response.success == true) {
-           alert_float('success', response.message);
+             alert_float('success', response.message);
          }
        }).fail(function(error){
         var response = JSON.parse(error.responseText);

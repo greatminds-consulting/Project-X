@@ -7,6 +7,7 @@ class Invoices extends Admin_controller
         parent::__construct();
         $this->load->model('invoices_model');
         $this->load->model('credit_notes_model');
+        $this->load->model('venues_model');
     }
 
     /* Get all invoices in case user go on index page */
@@ -339,6 +340,8 @@ class Invoices extends Admin_controller
         $data['staff']             = $this->staff_model->get('', 1);
         $data['title']             = $title;
         $data['bodyclass']         = 'invoice';
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['invoice_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Invoice');
         $this->load->view('admin/invoices/invoice', $data);
     }
 
@@ -414,7 +417,7 @@ class Invoices extends Admin_controller
                 $data['customer_currency'] = $this->currencies_model->get_base_currency();
             }
         }
-
+        $data['selectedvenues'] =$this->invoices_model->selectedvenues($id);
         $data['invoice'] = $invoice;
         $this->load->view('admin/invoices/invoice_preview_template', $data);
     }

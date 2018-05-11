@@ -21,7 +21,7 @@
     <?php if(isset($form_builder_assets)){ ?>
     <link href='<?php echo base_url('assets/plugins/form-builder/form-builder.min.css'); ?>' rel='stylesheet' />
     <?php } ?>
-    <?php if(isset($projects_assets)){ ?>
+    <?php if(isset($projects_assets) ||($eventmanager_assets)){ ?>
     <link href='<?php echo base_url('assets/plugins/jquery-comments/css/jquery-comments.css'); ?>' rel='stylesheet' />
     <link href='<?php echo base_url('assets/plugins/gantt/css/style.css'); ?>' rel='stylesheet' />
     <?php } ?>

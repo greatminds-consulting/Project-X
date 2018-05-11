@@ -17,7 +17,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 
-define('APP_BASE_URL','https://app.navarravenues.com.au/');
+define('APP_BASE_URL','http://navarralive.dev.xminds/');
 
 /*
 |--------------------------------------------------------------------------
@@ -38,13 +38,23 @@ define('APP_ENC_KEY','a9f3f5c1ac5955b981cfb5cb6d1af5b7');
 /* Database credentials - Auto added on install */
 
 /* The hostname of your database server. */
+//define('APP_DB_HOSTNAME','35.189.48.165');
+///* The username used to connect to the database */
+//define('APP_DB_USERNAME','navarra_venues_s');
+///* The password used to connect to the database */
+//define('APP_DB_PASSWORD','sn7M4ZCw62');
+///* The name of the database you want to connect to */
+//define('APP_DB_NAME','navarra_venues_s');
+
+
+/* The hostname of your database server. */
 define('APP_DB_HOSTNAME','localhost');
 /* The username used to connect to the database */
-define('APP_DB_USERNAME','navarrav_db');
+define('APP_DB_USERNAME','root');
 /* The password used to connect to the database */
-define('APP_DB_PASSWORD','n#iv!cH{qoVU');
+define('APP_DB_PASSWORD','');
 /* The name of the database you want to connect to */
-define('APP_DB_NAME','navarrav_db');
+define('APP_DB_NAME','navarra_venues_s');
 
 
 /**

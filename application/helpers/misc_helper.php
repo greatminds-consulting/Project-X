@@ -361,6 +361,14 @@ function get_permission_conditions()
             'delete' => true,
             'help' => _l('help_project_permissions'),
         ),
+        'events' => array(
+            'view' => true,
+            'view_own' => false,
+            'edit' => true,
+            'create' => true,
+            'delete' => true,
+            'help' => _l('help_eventmanager_permissions'),
+        ),
         'surveys' => array(
             'view' => true,
             'view_own' => false,

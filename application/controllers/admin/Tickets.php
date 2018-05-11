@@ -9,6 +9,7 @@ class Tickets extends Admin_controller
             redirect(admin_url());
         }
         $this->load->model('tickets_model');
+        $this->load->model('venues_model');
     }
 
     public function index($status = '', $userid = '')
@@ -83,6 +84,8 @@ class Tickets extends Admin_controller
         $data['articles']           = $this->knowledge_base_model->get();
         $data['bodyclass']          = 'ticket';
         $data['title']              = _l('new_ticket');
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['tickets_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Ticket');
 
         if ($this->input->get('project_id') && $this->input->get('project_id') > 0) {
             // request from project area to create new ticket
@@ -94,7 +97,19 @@ class Tickets extends Admin_controller
                     $data['contact'] = $contact[0];
                 }
             }
-        } elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
+        }
+        elseif ($this->input->get('event_manager_id') && $this->input->get('event_manager_id') > 0) {
+            // request from event area to create new ticket
+            $data['event_manager_id'] = $this->input->get('event_manager_id');
+            $data['userid'] = get_client_id_by_project_id($data['event_manager_id']);
+            if (total_rows('tblcontacts', array('active'=>1, 'userid'=>$data['userid'])) == 1) {
+                $contact = $this->clients_model->get_contacts($data['userid']);
+                if (isset($contact[0])) {
+                    $data['contact'] = $contact[0];
+                }
+            }
+        }
+        elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
             $contact_id = $this->input->get('contact_id');
             if (total_rows('tblcontacts', array('active'=>1, 'id'=>$contact_id)) == 1) {
                 $contact = $this->clients_model->get_contact($contact_id);
@@ -187,6 +202,8 @@ class Tickets extends Admin_controller
         $data['ticket_replies']       = $this->tickets_model->get_ticket_replies($id);
         $data['bodyclass']            = 'top-tabs ticket single-ticket';
         $data['title']                = $data['ticket']->subject;
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['tickets_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Ticket');
         $data['ticket']->ticket_notes = $this->misc_model->get_notes($id, 'ticket');
         $this->load->view('admin/tickets/single', $data);
     }

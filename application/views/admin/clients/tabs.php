@@ -1,5 +1,6 @@
 <?php
     $customer_tabs = get_customer_profile_tabs($client->userid);
+
 ?>
 <ul class="nav navbar-pills nav-tabs nav-stacked customer-tabs" role="tablist">
    <?php
@@ -9,10 +10,11 @@
    }
    foreach($customer_tabs as $tab){
       if((isset($tab['visible']) && $tab['visible'] == true) || !isset($tab['visible'])){
-
-        // Check visibility from settings too
+          // Check visibility from settings too
         if(is_array($visible_customer_profile_tabs) && $tab['name'] != 'profile') {
+
           if(!in_array($tab['name'], $visible_customer_profile_tabs)) {
+             // print_r($tab['name']);
             continue;
           }
         }
