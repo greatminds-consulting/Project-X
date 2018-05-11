@@ -5,6 +5,7 @@ class Leads_model extends CRM_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('venues_model');
     }
 
     /**
@@ -1198,8 +1199,36 @@ class Leads_model extends CRM_Model
             }
         }
 
+        $venues = $this->venues_model->getvenues();
+        if ($venues) {
+            foreach ($venues as $venue) {
+                $this->db->where('venue_id', $venue['id']);
+                $this->db->delete('tblvenuesstaffs_in');
+                if (isset($data['staffs_'.$venue['id']])) {
+                    foreach ($data['staffs_'.$venue['id']] as $key => $staff) {
+                        $this->db->insert('tblvenuesstaffs_in', array('staff_id' => $staff, 'venue_id' => $venue['id']));
+                    }
+                    unset($data['staffs_'.$venue['id']]);
+                }
+            }
+        }
+
+        $event_categories = get_custom_fields_by_slug('leads_event_category');
+        if ($event_categories) {
+            foreach ($event_categories as $event_category) {
+                $this->db->where('event_category', strtolower($event_category));
+                $this->db->delete('tbleventcategorystaffs_in');
+                if (isset($data['staffs_'.strtolower($event_category)])) {
+                    foreach ($data['staffs_'.strtolower($event_category)] as $key => $staff) {
+                        $this->db->insert('tbleventcategorystaffs_in', array('staff_id' => $staff, 'event_category' => strtolower($event_category)));
+                    }
+                    unset($data['staffs_'.strtolower($event_category)]);
+                }
+            }
+        }
         $this->db->where('id', 1);
         $this->db->update('tblleadsintegration', $data);
+
         if ($this->db->affected_rows() > 0) {
             return true;
         }
@@ -1372,6 +1401,106 @@ class Leads_model extends CRM_Model
         return $data;
     }
 
+
+    public function venues_in_leads($insert_id, $val) {
+        $values = explode(",",$val);
+        $staffs = array();
+        $flag = false;
+        foreach ($values as $value) {
+            $value = trim($value);
+            $this->db->where('name', $value);
+            $venue = $this->db->get('tblvenues')->row();
+            if ($venue) {
+                $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue->id));
+
+                // assign leads staff automatically from venue
+                $this->db->where('venue_id', $venue->id);
+                $venueStaffs= $this->db->get('tblvenuesstaffs_in')->result_array();
+                if ($venueStaffs) {
+                    foreach ($venueStaffs as $venueStaff) {
+                        $this->db->where('lead_id', $insert_id);
+                        $this->db->where('staff_id', $venueStaff['staff_id']);
+                        $leadStaffs = $this->db->get('tblleadstaffs')->result_array();
+                        if (!$leadStaffs) {
+                            $data_staff['lead_id'] = $insert_id;
+                            $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                            $data_staff['staff_id'] = $venueStaff['staff_id'];
+                            $staffs[] = $venueStaff['staff_id'];
+                            $this->db->insert('tblleadstaffs', $data_staff);
+                        } else {
+                            $flag = true;
+                        }
+                    }
+                }
+            }
+        }
+        if ($values) {
+            if (!$staffs && !$flag) {
+                $mail = $this->get_email_integration();
+                $staffs[] = $mail->responsible;
+            }
+            if ($staffs) {
+                $this->lead_assigned_member_notification($insert_id, $staffs, true);
+            }
+        }
+    }
+
+    public function venues_in_staffs() {
+        $venue_staffs =  $this->db->get('tblvenuesstaffs_in')->result_array();
+        $result = array();
+        foreach($venue_staffs as $staff) {
+            $result[$staff['venue_id']][] = $staff['staff_id'];
+        }
+        return $result;
+    }
+
+    public function event_categories_in_staffs() {
+        $event_categories_staffs =  $this->db->get('tbleventcategorystaffs_in')->result_array();
+        $result = array();
+        foreach($event_categories_staffs as $staff) {
+            $result[$staff['event_category']][] = $staff['staff_id'];
+        }
+        return $result;
+    }
+
+    public function event_categories_in_leads($insert_id, $val) {
+        $values = explode(",",$val);
+        $staffs = array();
+        $flag = false;
+        foreach ($values as $value) {
+            $value = trim($value);
+            // assign leads staff automatically from event category
+            $this->db->where('event_category', strtolower($value));
+            $eventStaffs = $this->db->get('tbleventcategorystaffs_in')->result_array();
+            if ($eventStaffs) {
+                foreach ($eventStaffs as $eventStaff) {
+                    $this->db->where('lead_id', $insert_id);
+                    $this->db->where('staff_id', $eventStaff['staff_id']);
+                    $leadStaffs = $this->db->get('tblleadstaffs')->result_array();
+                    if (!$leadStaffs) {
+                        $data_staff['lead_id'] = $insert_id;
+                        $data_staff['datecreated'] = date("Y/m/d H:i:s");
+                        $data_staff['staff_id'] = $eventStaff['staff_id'];
+                        $staffs[] = $eventStaff['staff_id'];
+                        $this->db->insert('tblleadstaffs', $data_staff);
+                    } else {
+                        $flag = true;
+                    }
+                }
+                if ($values) {
+                    if (!$staffs && !$flag) {
+                        $mail = $this->get_email_integration();
+                        $staffs[] = $mail->responsible;
+                    }
+                    if ($staffs) {
+                        $this->lead_assigned_member_notification($insert_id, $staffs, true);
+                    }
+                }
+            }
+        }
+    }
+
+
     function add_lead_activity_fields($leadId , $activityText,$current_value = '',$new_value = '') {
         $this->log_lead_activity($leadId, $activityText, false, serialize(array(
             get_staff_full_name(),
@@ -1420,6 +1549,7 @@ class Leads_model extends CRM_Model
                     }
                 }
             }
+
         }
     }
 }

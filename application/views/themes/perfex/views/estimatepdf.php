@@ -97,7 +97,9 @@ $tblhtml .= '<th width="'.$item_width.'%" align="left">' . _l('estimate_table_it
 foreach ($custom_fields_items as $cf) {
     $tblhtml .= '<th width="'.$headings_width.'%" align="left">' . $cf['name'] . '</th>';
 }
-$tblhtml .= '<th width="10%;" align="center">Venues</th>';
+
+
+$tblhtml .= '<th width="8%;" align="center">Venues</th>';
 $tblhtml .= '<th width="'.$headings_width.'%" align="right">' . $qty_heading . '</th>';
 $tblhtml .= '<th width="'.$headings_width.'%" align="right">' . _l('estimate_table_rate_heading') . '</th>';
 

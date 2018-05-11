@@ -600,3 +600,17 @@ function get_custom_fields_hyperlink_js_function()
 
     return $contents;
 }
+
+function get_custom_fields_by_slug($slug) {
+    $CI =& get_instance();
+    $CI->db->where('slug', $slug);
+    $result = $CI->db->get('tblcustomfields')->row();
+    $options = array();
+    if ($result) {
+        $values = explode(",",$result->options);
+        foreach ($values as $value) {
+            $options[] = trim($value);
+        }
+    }
+    return $options;
+}
