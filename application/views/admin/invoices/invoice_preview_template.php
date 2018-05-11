@@ -332,7 +332,8 @@
                                        } else if($invoice->show_quantity_as == 3){
                                          $qty_heading = _l('invoice_table_quantity_heading') .'/'._l('invoice_table_hours_heading');
                                        }
-                                       ?>
+                                        ?>
+                                     <th align="right">Venue</th>
                                     <th align="right"><?php echo $qty_heading; ?></th>
                                     <th align="right"><?php echo _l('invoice_table_rate_heading'); ?></th>
                                     <?php if(get_option('show_tax_per_item') == 1){ ?>

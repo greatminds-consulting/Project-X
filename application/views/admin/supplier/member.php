@@ -25,7 +25,7 @@
     </div>
 <?php } ?>
 <?php echo form_open_multipart($this->uri->uri_string(),array('class'=>'staff-form','autocomplete'=>'off')); ?>
-<div class="col-md-8 col-md-offset-2" id="small-table">
+ <div class="col-md-<?php if(!isset($member)){echo '8 col-md-offset-2';} else {echo '5';} ?>" id="small-table">
 <div class="panel_s">
 <div class="panel-body">
     <h2>Supplier Profile</h2>
@@ -41,6 +41,10 @@
     <?php echo render_input('businessname','supplier_add_edit_businessname',$value,'text',$attrs); ?>
     <?php $value = (isset($member) ? $member->email : ''); ?>
     <?php echo render_input('email','supplier_add_edit_email',$value,'email',array('autocomplete'=>'off')); ?>
+    <div class="form-group">
+        <label for="margin" class="control-label"> Margin</label>
+        <input type="text" class="form-control" name="margin" value="<?php if(isset($member)){echo $member->margin;} ?>">
+    </div>
     <div class="form-group">
         <label for="abn" class="control-label"> <i class="fa fa-question-circle pull-left" data-toggle="tooltip" data-title="Australian Business Number"></i>ABN</label>
         <input type="text" class="form-control" name="abn" value="<?php if(isset($member)){echo $member->abn;} ?>">
@@ -134,7 +138,60 @@
     <button type="submit" class="btn btn-info"><?php echo _l('submit'); ?></button>
 </div>
 <?php echo form_close(); ?>
+    <?php if(isset($member)){ ?>
+        <div class="col-md-7 small-table-right-col">
+            <div class="panel_s">
+                <div class="panel-body">
+                    <h4 class="no-margin">
+                        <?php echo _l('supplier_items'); ?>
+                    </h4>
+                    <hr class="hr-panel-heading" />
+                    <?php
+                    $data['id']=$member->supplierid;
+                    $data['margin']=$member->margin;
+                    ?>
+                    <a href="#" class="btn btn-info pull-left" data-toggle="modal" data-target="#sales_item_modal"><?php echo _l('new_invoice_item'); ?></a>
+                    <?php $this->load->view('admin/invoice_items/item',$data); ?>
+                    <div class="clearfix"></div>
+                    <hr class="hr-panel-heading" />
 
+                    <div class="clearfix"></div>
+                    <div class="mtop15">
+                        <table class="table dt-table scroll-responsive" data-order-col="2" data-order-type="desc">
+                            <thead>
+                            <tr>
+                                <th width="50%"><?php echo _l('item_description'); ?></th>
+                                <th><?php echo _l('item_long_description'); ?></th>
+                                <th><?php echo _l('item_rate'); ?></th>
+                                <th><?php echo _l('item_tax1'); ?></th>
+                                <th><?php echo _l('item_tax2'); ?></th>
+                                <th><?php echo _l('item_groupname'); ?></th>
+                                <th><?php echo _l('options'); ?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach($items as $temdetails){ ?>
+                                <tr>
+                                    <td><?php echo $temdetails['description']; ?></td>
+                                    <td><?php echo $temdetails['long_description']; ?></td>
+                                    <td><?php echo $temdetails['rate']; ?></td>
+                                    <td><?php echo $temdetails['taxrate']; ?></td>
+                                    <td><?php echo $temdetails['taxrate_2']; ?></td>
+                                    <td><?php echo $temdetails['group_name']; ?></td>
+                                    <?php foreach ($custom_fields as $field) { ?>
+                                        <td><?php echo get_custom_field_value($temdetails['itemid'],$field['itemid'],'items'); ?></td>
+                                    <?php } ?>
+                                    <td><a href="<?php echo admin_url('#'.$temdetails['itemid']); ?>"  class="btn btn-default btn-icon" data-toggle="modal" data-target="#sales_item_modal" data-id="<?php echo $temdetails['itemid']?>"><i class="fa fa-pencil-square-o"></i></a>
+                                        <a href="<?php echo admin_url('supplier/delete_item/'.$temdetails['itemid'].'/'.$member->supplierid); ?>" class="btn btn-danger _delete btn-icon"><i class="fa fa-remove"></i></a></td>
+                                </tr>
+                            <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 </div>
 <div class="btn-bottom-pusher"></div>
 </div>
@@ -169,6 +226,7 @@ init_roles_permissions();
                 }
             }
         });
+
     });
 
 </script>

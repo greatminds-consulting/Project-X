@@ -36,7 +36,11 @@ class Tasks extends Admin_controller
         }
 
         $data['title']       = _l('tasks');
+        if ($this->input->get('event')) {
+            $this->load->view('admin/tasks/eventmanage', $data);
+        } else {
         $this->load->view('admin/tasks/manage', $data);
+        }
     }
 
     public function table()

@@ -352,7 +352,7 @@ function get_custom_field_value($rel_id, $field_id, $field_to, $format = true)
  * @param  array $custom_fields all custom fields with id and values
  * @return boolean
  */
-function handle_custom_fields_post($rel_id, $custom_fields, $is_cf_items = false)
+function handle_custom_fields_post($rel_id, $custom_fields, $is_cf_items = false, $rel_type = false)
 {
     $affectedRows = 0;
     $CI =& get_instance();
@@ -399,6 +399,12 @@ function handle_custom_fields_post($rel_id, $custom_fields, $is_cf_items = false
                 ));
                 if ($CI->db->affected_rows() > 0) {
                     $affectedRows++;
+                    if ($rel_type == 'lead') {
+                        $CI->leads_model->log_lead_activity($rel_id, 'not_lead_activity_custom_'.$field_checker->name.'_changed', false, serialize(array(
+                            get_staff_full_name(),
+                            $field_value
+                        )));
+                    }
                 }
             } else {
                 if ($field_value != '') {
@@ -411,6 +417,12 @@ function handle_custom_fields_post($rel_id, $custom_fields, $is_cf_items = false
                     $insert_id = $CI->db->insert_id();
                     if ($insert_id) {
                         $affectedRows++;
+                        if ($rel_type == 'lead') {
+                            $CI->leads_model->log_lead_activity($rel_id, 'not_lead_activity_custom_'.$field_checker->name.'_added', false, serialize(array(
+                                get_staff_full_name(),
+                                $field_value
+                            )));
+                        }
                     }
                 }
             }
@@ -587,4 +599,18 @@ function get_custom_fields_hyperlink_js_function()
     ob_end_clean();
 
     return $contents;
+}
+
+function get_custom_fields_by_slug($slug) {
+    $CI =& get_instance();
+    $CI->db->where('slug', $slug);
+    $result = $CI->db->get('tblcustomfields')->row();
+    $options = array();
+    if ($result) {
+        $values = explode(",",$result->options);
+        foreach ($values as $value) {
+            $options[] = trim($value);
+        }
+    }
+    return $options;
 }

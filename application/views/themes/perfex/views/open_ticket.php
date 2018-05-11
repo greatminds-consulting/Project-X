@@ -13,7 +13,8 @@
                      <input type="text" class="form-control" name="subject" id="subject" value="<?php echo set_value('subject'); ?>">
                      <?php echo form_error('subject'); ?>
                   </div>
-                  <?php if(total_rows('tblprojects',array('clientid'=>get_client_user_id())) > 0 && has_contact_permission('projects')){ ?>
+                  <?php if($this->input->get('project_id')!='') {
+                  if(total_rows('tblprojects',array('clientid'=>get_client_user_id())) > 0 && has_contact_permission('projects')){ ?>
                   <div class="form-group">
                      <label for="project_id"><?php echo _l('project'); ?></label>
                      <select data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" name="project_id" id="project_id" class="form-control selectpicker">
@@ -23,7 +24,19 @@
                         <?php } ?>
                      </select>
                   </div>
-                  <?php } ?>
+                  <?php } }?>
+                  <?php if($this->input->get('eventmanager_id')!='') {
+                  if(total_rows('tbleventmanager',array('clientid'=>get_client_user_id())) > 0 && has_contact_permission('events')){ ?>
+                  <div class="form-group">
+                     <label for="event_manager_id"><?php echo _l('eventmanager'); ?></label>
+                     <select data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>" name="event_manager_id" id="event_manager_id" class="form-control selectpicker">
+                        <option value=""></option>
+                        <?php foreach($eventmanager as $event){ ?>
+                        <option value="<?php echo $event['id']; ?>" <?php echo set_select('event_manager_id',$event['id']); ?><?php if($this->input->get('eventmanager_id') == $event['id']){echo ' selected';} ?>><?php echo $event['name']; ?></option>
+                        <?php } ?>
+                     </select>
+                  </div>
+                  <?php } }?>
                   <div class="row">
                      <div class="col-md-6">
                         <div class="form-group">

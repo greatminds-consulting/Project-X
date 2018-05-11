@@ -172,6 +172,7 @@ class Reports_model extends CRM_Model
     {
         $this->db->where('CAST(last_status_change as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(last_status_change as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '" AND status = 1 and lost = 0');
         $weekly = $this->db->get('tblleads')->result_array();
+
         $colors = get_system_favourite_colors();
         $chart  = array(
             'labels' => array(
@@ -329,7 +330,6 @@ class Reports_model extends CRM_Model
                 'lost' => 0
             )));
         }
-
         return $chart;
     }
 
@@ -592,5 +592,178 @@ class Reports_model extends CRM_Model
     public function get_distinct_customer_invoices_years()
     {
         return $this->db->query('SELECT DISTINCT(YEAR(date)) as year FROM tblinvoices WHERE clientid=' . get_client_user_id())->result_array();
+    }
+
+    /**
+     *  Incoming Leads  monthly report
+     * @param   mixed $month  which month / chart
+     * @return  array          chart data
+     */
+    public function incoming_leads_monthly_report($month) {
+        $result      = $this->db->query('select dateadded from tblleads where MONTH(dateadded) = ' . $month . ' ')->result_array();
+        $month_dates = array();
+        $data        = array();
+        for ($d = 1; $d <= 31; $d++) {
+            $time = mktime(12, 0, 0, $month, $d, date('Y'));
+            if (date('m', $time) == $month) {
+                $month_dates[] = _d(date('Y-m-d', $time));
+                $data[]        = 0;
+            }
+        }
+        $chart = array(
+            'labels' => $month_dates,
+            'datasets' => array(
+                array(
+                    'label' => _l('leads'),
+                    'backgroundColor' => 'rgba(197, 61, 169, 0.5)',
+                    'borderColor' => '#c53da9',
+                    'borderWidth' => 1,
+                    'tension' => false,
+                    'data' => $data
+                )
+            )
+        );
+        foreach ($result as $lead) {
+            $i = 0;
+            foreach ($chart['labels'] as $date) {
+                if (_d(date('Y-m-d', strtotime($lead['dateadded']))) == $date) {
+                    $chart['datasets'][0]['data'][$i]++;
+                }
+                $i++;
+            }
+        }
+
+        return $chart;
+    }
+
+    /**
+     * Chart incoming leads weeekly report
+     * @return array  chart data
+     */
+    public function incoming_leads_this_week_report() {
+        $this->db->where('CAST(dateadded as DATE) >= "' . date('Y-m-d', strtotime('monday this week')) . '" AND CAST(dateadded as DATE) <= "' . date('Y-m-d', strtotime('sunday this week')) . '"');
+        $weekly = $this->db->get('tblleads')->result_array();
+        $colors = get_system_favourite_colors();
+        $chart  = array(
+            'labels' => array(
+                _l('wd_monday'),
+                _l('wd_tuesday'),
+                _l('wd_wednesday'),
+                _l('wd_thursday'),
+                _l('wd_friday'),
+                _l('wd_saturday'),
+                _l('wd_sunday')
+            ),
+            'datasets' => array(
+                array(
+                    'data' => array(
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0
+                    ),
+                    'backgroundColor' => array(
+                        $colors[0],
+                        $colors[1],
+                        $colors[2],
+                        $colors[3],
+                        $colors[4],
+                        $colors[5],
+                        $colors[6]
+                    ),
+                    'hoverBackgroundColor' => array(
+                        adjust_color_brightness($colors[0], -20),
+                        adjust_color_brightness($colors[1], -20),
+                        adjust_color_brightness($colors[2], -20),
+                        adjust_color_brightness($colors[3], -20),
+                        adjust_color_brightness($colors[4], -20),
+                        adjust_color_brightness($colors[5], -20),
+                        adjust_color_brightness($colors[6], -20)
+                    )
+                )
+            )
+        );
+        foreach ($weekly as $weekly) {
+            $lead_status_day = _l(mb_strtolower('wd_' . date('l', strtotime($weekly['dateadded']))));
+            $i               = 0;
+            foreach ($chart['labels'] as $dat) {
+                if ($lead_status_day == $dat) {
+                    $chart['datasets'][0]['data'][$i]++;
+                }
+                $i++;
+            }
+        }
+
+        return $chart;
+    }
+
+    /**
+     * Incoming Leads by sources report / chart
+     * @return arrray chart data
+     */
+    public function incoming_leads_sources_report() {
+        $this->load->model('leads_model');
+        $sources = $this->leads_model->get_source();
+        $chart   = array(
+            'labels' => array(),
+            'datasets' => array(
+                array(
+                    'label' => _l('report_leads_sources_incoming'),
+                    'backgroundColor' => 'rgba(124, 179, 66, 0.5)',
+                    'borderColor' => '#7cb342',
+                    'data' => array()
+                )
+            )
+        );
+        foreach ($sources as $source) {
+            array_push($chart['labels'], $source['name']);
+            array_push($chart['datasets'][0]['data'], total_rows('tblleads', array(
+                'source' => $source['id']
+            )));
+        }
+        return $chart;
+    }
+
+    /**
+     * Leads lost report / chart
+     * @return array chart data
+     */
+    public function leads_lost_report() {
+        $this->load->model('leads_model');
+        $lostReasons = array(
+            0 => array(
+                'id' => 'Couple Brokeup',
+                'name' => 'Couple Brokeup'
+            ),1 => array(
+                'id' => 'Too expensive',
+                'name' => 'Too expensive'
+            ),2 => array(
+                'id' => 'Date not available',
+                'name' => 'Date not available'
+            ),3 => array(
+                'id' => 'Room not available',
+                'name' => 'Room not available'
+            )
+        );
+        $chart   = array(
+            'labels' => array(),
+            'datasets' => array(
+                array(
+                    'label' => _l('report_leads_sources_incoming'),
+                    'backgroundColor' => 'rgba(124, 179, 66, 0.5)',
+                    'borderColor' => '#7cb342',
+                    'data' => array()
+                )
+            )
+        );
+        foreach ($lostReasons as $lost) {
+            array_push($chart['labels'], $lost['name']);
+            $result      = $this->db->query('select COUNT(tblleads.id) as total from tblleads where lead_data LIKE "%'.$lost['name'].'%" ')->result_array();
+            array_push($chart['datasets'][0]['data'], $result[0]['total']);
+        }
+        return $chart;
     }
 }

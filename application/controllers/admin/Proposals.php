@@ -156,7 +156,7 @@ class Proposals extends Admin_controller
         } else {
             $data['proposal'] = $this->proposals_model->get($id);
 
-            if (!$data['proposal'] || !$this->user_can_view_proposal($id)) {
+            if (!$data['proposal'] || !$this->user_can_view_proposal($id) || ($data['proposal'] && $data['proposal']->is_delete ==1)) {
                 blank_page(_l('proposal_not_found'));
             }
 
@@ -422,6 +422,8 @@ class Proposals extends Admin_controller
         $data['proposal']       = $this->proposals_model->get($id);
         $data['billable_tasks'] = array();
         $data['add_items']      = $this->_parse_items($data['proposal']);
+        $data['venues'] = $this->venues_model->getvenues();
+
 
         if ($data['proposal']->rel_type == 'lead') {
             $this->db->where('leadid', $data['proposal']->rel_id);

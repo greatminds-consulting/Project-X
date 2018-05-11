@@ -178,6 +178,9 @@ class Clients extends Admin_controller
             } elseif ($group == 'projects') {
                 $this->load->model('projects_model');
                 $data['project_statuses'] = $this->projects_model->get_project_statuses();
+            }elseif ($group == 'eventmanager') {
+                $this->load->model('eventmanager_model');
+                $data['eventmanager_statuses'] = $this->eventmanager_model->get_eventmanager_statuses();
             } elseif ($group == 'statement') {
                 if (!has_permission('invoices', '', 'view') && !has_permission('payments', '', 'view')) {
                     set_alert('danger', _l('access_denied'));

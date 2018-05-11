@@ -25,6 +25,17 @@ class Estimates_model extends CRM_Model
     {
         return $this->db->query("SELECT DISTINCT(sale_agent) as sale_agent, CONCAT(firstname, ' ', lastname) as full_name FROM tblestimates JOIN tblstaff on tblstaff.staffid=tblestimates.sale_agent WHERE sale_agent != 0")->result_array();
     }
+    public function selectedvenues($id)
+    {
+        $this->db->select('tblvenues.name');
+        $this->db->from('tblvenues');
+        $this->db->join('tblvenues_in','tblvenues_in.venue_id=tblvenues.id','left');
+        $this->db->where('tblvenues_in.type_id',$id);
+        $this->db->where('tblvenues_in.type','Customers');
+        $query = $this->db->get();
+        return  $query->result();
+
+    }
 
     /**
      * Get estimate/s
@@ -637,6 +648,7 @@ class Estimates_model extends CRM_Model
         }
 
         unset($data['removed_items']);
+        unset($data['venue_items']);
 
         $this->db->where('id', $id);
         $this->db->update('tblestimates', $data);

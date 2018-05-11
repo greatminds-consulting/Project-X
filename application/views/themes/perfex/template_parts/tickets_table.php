@@ -1,9 +1,19 @@
-  <table class="table dt-table" data-order-col="<?php echo (get_option('services') == 1 ? 7 : 6); ?>" data-order-type="desc">
+<table class="table dt-table" data-order-col="<?php echo (get_option('services') == 1 ? 7 : 6); ?>" data-order-type="desc">
     <thead>
       <th width="10%"><?php echo _l('clients_tickets_dt_number'); ?></th>
       <th><?php echo _l('clients_tickets_dt_subject'); ?></th>
       <th><?php echo _l('clients_tickets_dt_department'); ?></th>
+      <?php
+      if($eventmanager->id!='' || $eventmanager->id!= 0){
+      ?>
+      <th><?php echo _l('eventmanager'); ?></th>
+      <?php
+      } else {
+      ?>
       <th><?php echo _l('project'); ?></th>
+      <?php
+      }
+      ?>
       <?php if(get_option('services') == 1){ ?>
       <th><?php echo _l('clients_tickets_dt_service'); ?></th>
       <?php } ?>
@@ -25,7 +35,9 @@
         <td><?php
             if($ticket['project_id'] != 0){
               echo '<a href="'.site_url('clients/project/'.$ticket['project_id']).'">'.get_project_name_by_id($ticket['project_id']).'</a>';
-            } ?></td>
+            } else {
+                echo '<a href="'.site_url('clients/eventmanager/'.$ticket['event_manager_id']).'">'.get_eventmanager_name_by_id($ticket['event_manager_id']).'</a>';
+            }?></td>
         <?php if(get_option('services') == 1){ ?>
         <td><?php echo $ticket['service_name']; ?></td>
         <?php } ?>

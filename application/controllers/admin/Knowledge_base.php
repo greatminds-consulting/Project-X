@@ -57,6 +57,10 @@ class Knowledge_base extends Admin_controller
             $title = _l('add_new', _l('kb_article_lowercase'));
         } else {
             $article         = $this->knowledge_base_model->get($id);
+
+            if (!$article || ($article && $article->is_delete ==1)) {
+                blank_page(_l('article_not_found'));
+            }
             $data['article'] = $article;
             $title           = _l('edit', _l('kb_article')) . ' ' . $article->subject;
         }

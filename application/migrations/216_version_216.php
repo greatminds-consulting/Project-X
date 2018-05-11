@@ -42,6 +42,7 @@ class Migration_Version_216 extends CI_Migration
         // eventsettings
         $this->db->query("CREATE TABLE `tbleventsettings`( `id` INT(11) NOT NULL AUTO_INCREMENT, `event_manager_id` INT(11) NOT NULL, `name` VARCHAR(100) NOT NULL, `value` TEXT NOT NULL, PRIMARY KEY (`id`) ); ");
         // pinnedevents
+
         $this->db->query("CREATE TABLE `tblpinnedevents`( `id` INT(11) NOT NULL AUTO_INCREMENT, `event_manager_id` INT(11) NOT NULL, `staff_id` INT(11) NOT NULL, PRIMARY KEY (`id`) ); ");
         // alter tblexpenses
         $this->db->query("ALTER TABLE `tblexpenses` ADD COLUMN `event_manager_id` INT(11) NULL AFTER `addedfrom`; ");
@@ -57,6 +58,7 @@ class Migration_Version_216 extends CI_Migration
         $this->db->query("INSERT INTO `tblpermissions` ( `name`, `shortname`) VALUES ('events', 'events');");
         // alter tblestimates
         $this->db->query("ALTER TABLE `tblestimates` ADD COLUMN `event_manager_id` INT(11) DEFAULT 0 NOT NULL AFTER `acceptance_ip`; ");
+
 
         if (file_exists(FCPATH.'pipe.php')) {
             @chmod(FCPATH.'pipe.php', 0755);

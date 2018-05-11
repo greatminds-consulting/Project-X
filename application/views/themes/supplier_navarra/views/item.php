@@ -1,4 +1,4 @@
-<?php echo form_open('suppliers/item'); ?>
+<?php echo form_open_multipart('suppliers/item',array('id'=>'supplier_item_form')); ?>
 <div class="row">
     <div class="col-md-6">
         <div class="panel_s">
@@ -27,12 +27,31 @@
                                 <input type="text" class="form-control" name="long_description" id="long_description" value="<?php echo $item_details->long_description ;?>">
                             </div>
                             <div class="form-group">
-                                <label for="rate" class="control-label">
-                                    <?php echo _l('invoice_item_add_edit_rate_currency',$base_currency->name . ' <small>('._l('base_currency_string').')</small>'); ?></label>
-                                <input type="number" id="rate" name="rate" class="form-control" value="<?php echo $item_details->rate ;?>">
-                                <?php echo form_error('rate'); ?>
+                                <label for="item_images" class="control-label">Item Image</label>
+                                <input type="file" name="item_images" class="form-control" id="item_images">
+                                <?php if($item_details->item_image!=''){?>
+                                <img src="<?php echo base_url()?>uploads/items/<?php echo $item_details->itemid ?>/thumb_<?php echo $item_details->item_image ?>"  width="42" height="42">
+                            <?php }
+                            ?>
                             </div>
-                        <?php
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <label for="rate" class="control-label">
+                                            <?php echo _l('invoice_item_add_edit_rate_currency',$base_currency->name . ' <small>('._l('base_currency_string').')</small>'); ?></label>
+                                        <input type="number" id="rate" name="rate" class="form-control" value="<?php echo $item_details->rate ;?>" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="margin" class="control-label">Margin</label>
+                                        <input type="text" class="form-control" name="margin" id="itemmargin" value="<?php if($item_details==''){ echo $suppliermargin->margin;} else {echo $item_details->margin;}?>" >
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="total" class="control-label">Total Amount</label>
+                                        <div name="total" class="control-label" id="total"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
                         foreach($currencies as $currency){
                             if($currency['isdefault'] == 0 && total_rows('tblclients',array('default_currency'=>$currency['id'])) > 0){ ?>
                                 <div class="form-group">
@@ -76,8 +95,7 @@
                             foreach ($item_packages as $item_package) {
                                 $packages[] = $item_package['id'];
                             }?>
-                        <?php echo render_select('group_id',$items_groups,array('id','name'),'item_group',$item_details->group_id); ?>
-                        <?php echo render_select('package_id[]',$items_packages,array('id','name'),'item_package',$packages,array('multiple'=>true),array(),'','item_packages',false); ?>
+
                     </div>
                 </div>
             </div>
@@ -89,3 +107,37 @@
     </div>
 </div>
 <?php echo form_close(); ?>
+<script>
+    $( document ).ready(function() {
+        $( '#supplier_item_form' ).validate(
+            {
+                rules: {
+                    stockinhand: 'required',
+                    description:'required',
+                    rate:'required'
+                }
+            });
+        var rate = parseInt($('input[name=rate]').val());
+        if (isNaN(rate)) {
+            rate=0;
+        }
+        var margin = parseInt($('#itemmargin').val());
+        if (isNaN(margin)) {
+            margin=0;
+        }
+        var total = rate + margin;
+        $('#total').html(total);
+        $("#rate, #itemmargin").keyup(function() {
+            var rate = parseInt($('input[name=rate]').val());
+            if (isNaN(rate)) {
+                rate=0;
+            }
+            var margin = parseInt($('#itemmargin').val());
+            if (isNaN(margin)) {
+                margin=0;
+            }
+            var total = rate + margin;
+            $('#total').html(total);
+        });
+    });
+</script>

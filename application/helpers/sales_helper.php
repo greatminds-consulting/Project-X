@@ -824,10 +824,9 @@ if (!function_exists('get_table_items_and_taxes')) {
      */
     function get_table_items_and_taxes($items, $type, $admin_preview = false)
     {
+        $CI =& get_instance();
         $cf = count($items) > 0 ? get_items_custom_fields_for_table_html($items[0]['rel_id'], $type) : array();
-
         static $rel_data = null;
-
         $result['html']    = '';
         $result['taxes']   = array();
         $_calculated_taxes = array();
@@ -836,7 +835,13 @@ if (!function_exists('get_table_items_and_taxes')) {
             $_item             = '';
             $tr_attrs       = '';
             $td_first_sortable = '';
+            if($type=='estimate'){
+                $selectedvenues = get_item_venues( $item['id'],$type,$items[0]['rel_id'],'estimate');
 
+            } else {
+                $type='invoice';
+                $selectedvenues = get_item_venues( $item['id'],$type,$items[0]['rel_id'],'invoice');
+            }
             if ($admin_preview == true) {
                 $tr_attrs       = ' class="sortable" data-item-id="' . $item['id'] . '"';
                 $td_first_sortable = ' class="dragger item_no"';
@@ -858,7 +863,14 @@ if (!function_exists('get_table_items_and_taxes')) {
             foreach ($cf as $custom_field) {
                 $_item .= '<td align="left">' . get_custom_field_value($item['id'], $custom_field['id'], 'items') . '</td>';
             }
-
+//            if (isset($selectedvenues)) {
+//
+//                foreach($selectedvenues as $selectedvenue){
+//                    $venueslist[] = $selectedvenue->name;}
+//                    $venues=implode(',', $venueslist);
+//                    $_item .= '<td class="amount" align="right">'.$venues.'</td>';
+//            }
+            $_item .= '<td align="right">' . $selectedvenues.'</td>';
             $_item .= '<td align="right">' . floatVal($item['qty']);
             if ($item['unit']) {
                 $_item .= ' ' . $item['unit'];
@@ -969,6 +981,51 @@ if (!function_exists('get_table_items_and_taxes')) {
             return $a['taxrate'] - $b['taxrate'];
         });
 
+        return do_action('before_return_table_items_html_and_taxes', $result);
+    }
+
+    function get_table_leads_data($items, $type ='', $admin_preview = false) {
+
+        static $rel_data = null;
+
+        $result['html']    = '';
+        $result['taxes']   = array();
+        $_calculated_taxes = array();
+        $i                 = 1;
+        foreach ($items as $item) {
+            $_item             = '';
+            $tr_attrs       = '';
+            $td_first_sortable = '';
+
+            if ($admin_preview == true) {
+                $tr_attrs       = ' class="sortable" data-item-id="' . $item->id . '"';
+                $td_first_sortable = ' class="dragger item_no"';
+            }
+
+            if (class_exists('pdf')) {
+                $font_size = get_option('pdf_font_size');
+                if ($font_size == '') {
+                    $font_size = 10;
+                }
+
+                $tr_attrs .= ' style="font-size:'.($font_size+4).'px;"';
+            }
+
+            $_item .= '<tr' . $tr_attrs . '>';
+            $_item .= '<td' . $td_first_sortable . ' align="center">' . $i . '</td>';
+            $_item .= '<td class="description" align="left;"><span style="font-size:'.(isset($font_size) ? $font_size+4 : '').'px;"><strong>' . $item['description'] . '</strong></span><br /><span style="color:#424242;">' . $item['long_description'] . '</span></td>';
+
+            $_item .= '<td align="right">' . floatVal($item['qty']);
+            if ($item['unit']) {
+                $_item .= ' ' . $item['unit'];
+            }
+
+            $_item .= '</td>';
+            $_item .= '<td align="right">' . _format_number($item['rate']) . '</td>';
+            if (get_option('show_tax_per_item') == 1) {
+                $_item .= '<td align="right">';
+            }
+        }
         return do_action('before_return_table_items_html_and_taxes', $result);
     }
 }

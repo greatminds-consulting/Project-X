@@ -139,7 +139,11 @@ class Admin_controller extends CRM_Controller
             'url' => 'projects/project',
             'permission' => 'projects'
             ));
-
+        $this->app->add_quick_actions_link(array(
+            'name' => _l('events'),
+            'url' => 'eventmanager/event',
+            'permission' => 'events'
+        ));
 
         $this->app->add_quick_actions_link(array(
             'name' => _l('task'),

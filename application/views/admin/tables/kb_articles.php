@@ -32,7 +32,7 @@ if(count($_groups) > 0){
 if(count($filter) > 0){
     array_push($where,'AND ('.prepare_dt_filter($filter).')');
 }
-
+array_push($where,' AND (tblknowledgebase.is_delete=0 OR tblknowledgebase.is_delete is null)');
 if(!has_permission('knowledge_base','','create') && !has_permission('knowledge_base','','edit')) {
     array_push($where,' AND tblknowledgebase.active=1');
 }

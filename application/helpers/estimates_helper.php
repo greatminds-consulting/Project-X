@@ -237,6 +237,16 @@ function format_estimate_number($id)
     return $number;
 }
 
+/**
+ * Format estimate number based on description
+ * @param  mixed $id
+ * @return string
+ */
+function format_leads_number($id) {
+    $prefixPadding = get_option('number_padding_prefixes');
+    return 'LDS' . str_pad($id, $prefixPadding, '0', STR_PAD_LEFT);
+}
+
 
 /**
  * Function that return estimate item taxes based on passed item id
@@ -258,19 +268,26 @@ function get_estimate_item_taxes($itemid)
     return $taxes;
 }
 
-function get_item_venues($itemid, $type, $relid)
+function get_item_venues($itemid, $type, $relid, $isString = false)
 {
     $CI =& get_instance();
     $CI->db->where('itemid', $itemid);
     $CI->db->where('rel_type', $type);
     $CI->db->where('rel_id', $relid);
-    $venues = $CI->db->get('tblitemsvenue')->result_array();
-    $i     = 0;
+    $venues = $CI->db->from('tblvenues')->join('tblitemsvenue', 'tblvenues.id=tblitemsvenue.venue_id')->get();
+    $venue_details=$venues->result_array();
     $return = array();
-    foreach ($venues as $venue) {
-        $return[] = $venue['venue_id'];
-    }
 
+    foreach ($venue_details as $venue) {
+        if ($isString) {
+            $return[] = $venue['name'];
+        } else {
+            $return[] = $venue['venue_id'];
+        }
+    }
+    if ($isString) {
+        return implode(',', $return);
+    }
     return $return;
 }
 

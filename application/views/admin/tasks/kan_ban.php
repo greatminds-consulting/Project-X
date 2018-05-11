@@ -1,5 +1,9 @@
 <?php
 $where = array();
+if($this->input->get('event_manager_id')){
+    $where['rel_id'] = $this->input->get('event_manager_id');
+    $where['rel_type'] = 'eventmanager';
+}
 if($this->input->get('project_id')){
   $where['rel_id'] = $this->input->get('project_id');
   $where['rel_type'] = 'project';

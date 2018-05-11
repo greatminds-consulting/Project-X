@@ -65,6 +65,9 @@ class Contracts extends Admin_controller
             $title = _l('add_new', _l('contract_lowercase'));
         } else {
             $data['contract']                 = $this->contracts_model->get($id, array(), true);
+            if (!$data['contract'] ||  ($data['contract'] && $data['contract']->is_delete ==1)) {
+                blank_page(_l('contract_not_found'));
+            }
             $data['contract_renewal_history'] = $this->contracts_model->get_contract_renewal_history($id);
             if (!$data['contract'] || (!has_permission('contracts', '', 'view') && $data['contract']->addedfrom != get_staff_user_id())) {
                 blank_page(_l('contract_not_found'));
