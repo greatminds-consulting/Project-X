@@ -1402,6 +1402,11 @@ class Leads_model extends CRM_Model
     }
 
 
+    public function get_statuses() {
+        return $this->db->get('tblleadsstatus')->result_array();
+    }
+
+
     public function venues_in_leads($insert_id, $val) {
         $values = explode(",",$val);
         $staffs = array();
@@ -1499,7 +1504,6 @@ class Leads_model extends CRM_Model
             }
         }
     }
-
 
     function add_lead_activity_fields($leadId , $activityText,$current_value = '',$new_value = '') {
         $this->log_lead_activity($leadId, $activityText, false, serialize(array(

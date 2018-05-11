@@ -237,6 +237,16 @@ function format_estimate_number($id)
     return $number;
 }
 
+/**
+ * Format estimate number based on description
+ * @param  mixed $id
+ * @return string
+ */
+function format_leads_number($id) {
+    $prefixPadding = get_option('number_padding_prefixes');
+    return 'LDS' . str_pad($id, $prefixPadding, '0', STR_PAD_LEFT);
+}
+
 
 /**
  * Function that return estimate item taxes based on passed item id
