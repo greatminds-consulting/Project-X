@@ -3937,6 +3937,23 @@ function init_kanban(url, callbackUpdate, connect_with, column_px, container_px,
         parameters['sort'] = sort;
     }
 
+    var staff = $('select[name="assigned_staff"]').val();
+    if (staff != '') {
+        parameters['staff'] = staff;
+    }
+    var lead_status = $('select[name="lead_status[]"]').val().join(',');
+    if (lead_status != '') {
+        parameters['lead_status'] = lead_status;
+    }
+    var lead_source = $('select[name="lead_source"]').val();
+    if (lead_source != '') {
+        parameters['lead_source'] = lead_source;
+    }
+    var lead_custom_view = $('select[name="lead_custom_view"]').val();
+    if (lead_custom_view != '') {
+        parameters['lead_custom_view'] = lead_custom_view;
+    }
+
     parameters['kanban'] = true;
     var url = admin_url + url;
     url = buildUrl(url, parameters);

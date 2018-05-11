@@ -54,6 +54,7 @@ class Leads extends Admin_controller
         if (!is_staff_member()) {
             ajax_access_denied();
         }
+        $data['staff'] = $this->staff_model->get('', 1);
         $data['statuses'] = $this->leads_model->get_status();
 
         echo $this->load->view('admin/leads/kan-ban', $data, true);

@@ -39,13 +39,12 @@ class Leads_model extends CRM_Model
         return $this->db->get('tblleads')->result_array();
     }
 
-    public function do_kanban_query($status, $search = '', $page = 1, $sort = array(), $count = false)
+    public function do_kanban_query($status, $search = '', $page = 1, $sort = array(), $count = false,$staff = '',$lead_source = '',$lead_custom_view = '')
     {
         $limit                         = get_option('leads_kanban_limit');
         $default_leads_kanban_sort      = get_option('default_leads_kanban_sort');
         $default_leads_kanban_sort_type = get_option('default_leads_kanban_sort_type');
         $has_permission_view = has_permission('leads', '', 'view');
-
         $this->db->select('tblleads.name as lead_name,tblleadssources.name as source_name,tblleads.id as id,tblleadstaffs.staff_id,tblleads.email,tblleads.phonenumber,tblleads.company,tblleads.dateadded,tblleads.status,tblleads.lastcontact,(SELECT COUNT(*) FROM tblclients WHERE leadid=tblleads.id) as is_lead_client, (SELECT COUNT(id) FROM tblfiles WHERE rel_id=tblleads.id AND rel_type="lead") as total_files, (SELECT COUNT(id) FROM tblnotes WHERE rel_id=tblleads.id AND rel_type="lead") as total_notes,(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblleads.id and rel_type="lead" ORDER by tag_order ASC) as tags');
         $this->db->from('tblleads');
         $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
@@ -53,7 +52,27 @@ class Leads_model extends CRM_Model
         $this->db->join('tblstaff', 'tblstaff.staffid=tblleadstaffs.staff_id', 'left');
         $this->db->where('status', $status);
         if (!$has_permission_view) {
-            $this->db->where('(tblleadstaffs.staff_id = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
+                $this->db->where('(tblleadstaffs.staff_id = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
+        }
+        if ($staff) {
+            $this->db->where('(tblleadstaffs.staff_id = ' . $staff . ' OR addedfrom=' . $staff . ' OR is_public=1)');
+        }
+        if ($lead_source) {
+            $this->db->where('(tblleadssources.id = ' . $lead_source . ')');
+        }
+        if ($lead_custom_view == 'lost') {
+            $this->db->where('tblleads.lost = 1');
+        }
+        elseif ($lead_custom_view == 'junk') {
+            $this->db->where('tblleads.junk = 1');
+        } elseif ($lead_custom_view == 'not_assigned') {
+            $this->db->where('tblleads.staff_id = 1');
+        } elseif ($lead_custom_view == 'contacted_today') {
+            $this->db->where('tblleads.lastcontact LIKE "'.date('Y-m-d').'%"');
+        } elseif ($lead_custom_view == 'created_today') {
+            $this->db->where('tblleads.dateadded LIKE "'.date('Y-m-d').'%"');
+        } elseif ($lead_custom_view == 'public') {
+            $this->db->where('tblleads.is_public = 1');
         }
         if ($search != '') {
             if (!_startsWith($search, '#')) {
@@ -83,7 +102,6 @@ class Leads_model extends CRM_Model
                 $this->db->limit($limit);
             }
         }
-
         if ($count == false) {
             return $this->db->get()->result_array();
         } else {
