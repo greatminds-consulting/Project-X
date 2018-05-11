@@ -26,7 +26,8 @@
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_lost'); ?>
             </a>
-         </li>
+           <span>(<b>Reason</b> : <?php $reason = json_decode($lead->lead_data); echo $reason->lost_reason ?>)</span>
+       </li>
          <?php } ?>
          <?php } ?>
          <!-- mark as junk -->
@@ -144,6 +145,8 @@
                   <?php echo _l('lead_general_info'); ?>
                </h4>
             </div>
+             <p class="text-muted lead-field-heading no-mtop">Venues</p>
+             <p class="bold font-medium-xs"><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
             <p class="text-muted lead-field-heading no-mtop"><?php echo _l('lead_add_edit_status'); ?></p>
             <p class="bold font-medium-xs mbot15"><?php echo (isset($lead) && $lead->status_name != '' ? $lead->status_name : '-') ?></p>
             <p class="text-muted lead-field-heading"><?php echo _l('lead_add_edit_source'); ?></p>
@@ -199,8 +202,7 @@
             </div>
 
 
-                <p class="text-muted lead-field-heading no-mtop">Venues</p>
-                 <p class="bold font-medium-xs"><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
+
                 <?php
             $custom_fields = get_custom_fields('leads');
             foreach ($custom_fields as $field) {
@@ -402,16 +404,16 @@
                 <?php
                 $type = array(
                     0 => array(
-                        'id' => 'CoupleBrokeup',
+                        'id' => 'Couple Brokeup',
                         'name' => 'Couple Broke up'
                     ),1 => array(
-                        'id' => 'Tooexpensive',
+                        'id' => 'Too expensive',
                         'name' => 'Too expensive'
                     ),2 => array(
-                        'id' => 'Datenotavailable',
+                        'id' => 'Date not available',
                         'name' => 'Date not available'
                     ),3 => array(
-                        'id' => 'Roomnotavailable',
+                        'id' => 'Room not available',
                         'name' => 'Room not available'
                     )
                 );
@@ -426,6 +428,7 @@
         </div>
 
     </div>
+</div>
 <?php if(isset($lead) && $lead_locked == true){ ?>
 <script>
   $(function() {

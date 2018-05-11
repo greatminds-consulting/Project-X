@@ -229,7 +229,7 @@ class Leads extends Admin_controller
             $this->access_denied_ajax();
         }
         $message = '';
-        $success = $this->leads_model->mark_as_lost($id,$lost_reason);
+        $success = $this->leads_model->mark_as_lost($id,urldecode($lost_reason));
         if ($success) {
             $message = _l('lead_marked_as_lost');
         }
