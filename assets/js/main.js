@@ -788,6 +788,13 @@ $(function() {
         new_task(admin_url + 'tasks/task?rel_type=project&rel_id=' + project_id + '&milestone_id=' + milestone_id);
         $('body [data-toggle="popover"]').popover('hide');
     });
+    // Creates new task in specific milestones, the milestone is auto selected on the new task modal
+    $("body").on('click', '.new-eventtask-to-milestone', function(e) {
+       e.preventDefault();
+        var milestone_id = $(this).parents('.milestone-column').data('col-status-id');
+        new_task(admin_url + 'tasks/task?rel_type=eventmanager&rel_id=' + eventmanager_id + '&milestone_id=' + milestone_id);
+        $('body [data-toggle="popover"]').popover('hide');
+    });
 
     // On shown task add/edit modal
     $("body").on("shown.bs.modal", '#_task_modal', function(e) {
@@ -2636,7 +2643,7 @@ function init_rel_tasks_table(rel_id, rel_type, selector) {
 
     not_sortable_tasks = [($selector.find('th').length - 1)];
 
-    if ($selector.attr('data-new-rel-type') == 'project') {
+    if (($selector.attr('data-new-rel-type') == 'project') || ($selector.attr('data-new-rel-type') == 'eventmanager')){
         not_sortable_tasks.push(0);
         url += '?bulk_actions=true';
     }

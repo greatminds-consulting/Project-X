@@ -82,6 +82,7 @@
                 data:response,
                 options:{
                     responsive:true,
+                    maintainAspectRatio:false,
                     legend: {
                         display: false
                     },
@@ -95,6 +96,7 @@
             }
         });
         }, 'json');
+
         $('select[name="month"]').on('change', function() {
             MonthlyLeadsChart.destroy();
             $.get(admin_url + 'reports/leads_monthly_report/' + $('select[name="month"]').val(), function(response) {

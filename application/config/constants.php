@@ -139,3 +139,7 @@ define('PROJECT_ATTACHMENTS_FOLDER',FCPATH . 'uploads/projects' . '/');
 define('PROJECT_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/discussions' . '/');
 // Credit notes attachment folder
 define('CREDIT_NOTES_ATTACHMENTS_FOLDER',FCPATH.'uploads/credit_notes' . '/');
+// Event files attachments
+define('EVENTMANAGER_ATTACHMENTS_FOLDER',FCPATH . 'uploads/eventmanager' . '/');
+// Eventdiscussions attachments
+define('EVENTMANAGER_DISCUSSION_ATTACHMENT_FOLDER',FCPATH . 'uploads/eventmanagerdiscussions' . '/');

@@ -1143,6 +1143,55 @@ class Misc_model extends CRM_Model
         return $result;
     }
 
+    public function _search_eventmanager($q, $limit = 0, $where = false)
+    {
+        $result = array(
+            'result' => array(),
+            'type' => 'eventmanager',
+            'search_heading' => _l('eventmanager')
+        );
+
+        $projects = has_permission('events', '', 'view');
+        // Projects
+        $this->db->select();
+        $this->db->from('tbleventmanager');
+        $this->db->join('tblclients', 'tblclients.userid = tbleventmanager.clientid');
+        if (!$projects) {
+            $this->db->where('tbleventmanager.id IN (SELECT event_manager_id FROM tbleventmembers WHERE staff_id=' . get_staff_user_id() . ')');
+        }
+        if($where != false){
+            $this->db->where($where);
+        }
+        if (!_startsWith($q, '#')) {
+            $this->db->where('(company LIKE "%' . $q . '%"
+                OR description LIKE "%' . $q . '%"
+                OR name LIKE "%' . $q . '%"
+                OR vat LIKE "%' . $q . '%"
+                OR phonenumber LIKE "%' . $q . '%"
+                OR city LIKE "%' . $q . '%"
+                OR zip LIKE "%' . $q . '%"
+                OR state LIKE "%' . $q . '%"
+                OR zip LIKE "%' . $q . '%"
+                OR address LIKE "%' . $q . '%"
+                )');
+        } else {
+            $this->db->where('id IN
+                (SELECT rel_id FROM tbltags_in WHERE tag_id IN
+                (SELECT id FROM tbltags WHERE name="' . strafter($q, '#') . '")
+                AND tbltags_in.rel_type=\'eventmanager\' GROUP BY rel_id HAVING COUNT(tag_id) = 1)
+                ');
+        }
+
+        if ($limit != 0) {
+            $this->db->limit($limit);
+        }
+
+        $this->db->order_by('name', 'ASC');
+        $result['result'] = $this->db->get()->result_array();
+
+        return $result;
+    }
+
     public function _search_invoices($q, $limit = 0)
     {
         $result                           = array(

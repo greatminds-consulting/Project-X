@@ -208,6 +208,8 @@
         <option value=""></option>
         <option value="project"
         <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'project'){echo 'selected';}} ?>><?php echo _l('project'); ?></option>
+        <option value="eventmanager"
+        <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'eventmanager'){echo 'selected';}} ?>><?php echo _l('eventmanager'); ?></option>
         <option value="invoice" <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'invoice'){echo 'selected';}} ?>>
           <?php echo _l('invoice'); ?>
         </option>

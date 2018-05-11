@@ -29,6 +29,7 @@ class Migration_Version_215 extends CI_Migration
         $menu = json_encode($menu);
         update_option('aside_menu_active',$menu);
 
+
         if (file_exists(FCPATH.'pipe.php')) {
             @chmod(FCPATH.'pipe.php', 0755);
         }
