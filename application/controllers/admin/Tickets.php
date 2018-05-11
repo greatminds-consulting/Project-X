@@ -97,7 +97,19 @@ class Tickets extends Admin_controller
                     $data['contact'] = $contact[0];
                 }
             }
-        } elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
+        }
+        elseif ($this->input->get('event_manager_id') && $this->input->get('event_manager_id') > 0) {
+            // request from event area to create new ticket
+            $data['event_manager_id'] = $this->input->get('event_manager_id');
+            $data['userid'] = get_client_id_by_project_id($data['event_manager_id']);
+            if (total_rows('tblcontacts', array('active'=>1, 'userid'=>$data['userid'])) == 1) {
+                $contact = $this->clients_model->get_contacts($data['userid']);
+                if (isset($contact[0])) {
+                    $data['contact'] = $contact[0];
+                }
+            }
+        }
+        elseif ($this->input->get('contact_id') && $this->input->get('contact_id') > 0 && $this->input->get('userid')) {
             $contact_id = $this->input->get('contact_id');
             if (total_rows('tblcontacts', array('active'=>1, 'id'=>$contact_id)) == 1) {
                 $contact = $this->clients_model->get_contact($contact_id);

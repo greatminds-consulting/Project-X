@@ -417,7 +417,7 @@ class Invoices extends Admin_controller
                 $data['customer_currency'] = $this->currencies_model->get_base_currency();
             }
         }
-
+        $data['selectedvenues'] =$this->invoices_model->selectedvenues($id);
         $data['invoice'] = $invoice;
         $this->load->view('admin/invoices/invoice_preview_template', $data);
     }

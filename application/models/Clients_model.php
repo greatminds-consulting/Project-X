@@ -172,8 +172,7 @@ class Clients_model extends CRM_Model
                     }
                     unset($data['venue']);
                 }
-
-
+                $contact_id = $this->add_contact($contact_data, $userid, $client_or_lead_convert_request);
                 if (isset($venue_fields)) {
                     if ($venueArray) {
                         foreach ($venueArray as $key=> $venue_id) {
@@ -181,8 +180,6 @@ class Clients_model extends CRM_Model
                         }
                     }
                 }
-
-                $contact_id = $this->add_contact($contact_data, $userid, $client_or_lead_convert_request);
             }
 
 

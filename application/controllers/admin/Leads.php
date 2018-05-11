@@ -54,6 +54,7 @@ class Leads extends Admin_controller
         if (!is_staff_member()) {
             ajax_access_denied();
         }
+        $data['staff'] = $this->staff_model->get('', 1);
         $data['statuses'] = $this->leads_model->get_status();
 
         echo $this->load->view('admin/leads/kan-ban', $data, true);
@@ -224,13 +225,12 @@ class Leads extends Admin_controller
         redirect($ref);
     }
 
-    public function mark_as_lost($id)
-    {
+    public function mark_as_lost($id, $lost_reason) {
         if (!is_staff_member() || !$this->leads_model->staff_can_access_lead($id)) {
             $this->access_denied_ajax();
         }
         $message = '';
-        $success = $this->leads_model->mark_as_lost($id);
+        $success = $this->leads_model->mark_as_lost($id,urldecode($lost_reason));
         if ($success) {
             $message = _l('lead_marked_as_lost');
         }

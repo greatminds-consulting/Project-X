@@ -228,6 +228,107 @@ function get_project_merge_fields($project_id, $additional_data = array())
     return $fields;
 }
 
+
+function get_eventmanager_merge_fields($event_manager_id, $additional_data = array())
+{
+    $fields = array();
+
+    $fields['{eventmanager_name}']           = '';
+    $fields['eventmanager_deadline}']       = '';
+    $fields['{eventmanager_start_date}']     = '';
+    $fields['{eventmanager_description}']    = '';
+    $fields['{eventmanager_link}']           = '';
+    $fields['{discussion_link}']        = '';
+    $fields['{discussion_creator}']     = '';
+    $fields['{comment_creator}']        = '';
+    $fields['{file_creator}']           = '';
+    $fields['{discussion_subject}']     = '';
+    $fields['{discussion_description}'] = '';
+    $fields['{discussion_comment}']     = '';
+
+    $CI =& get_instance();
+
+    $CI->db->where('id', $event_manager_id);
+    $eventmanager = $CI->db->get('tbleventmanager')->row();
+
+    $fields['{eventmanager_name}']        = $eventmanager->name;
+    $fields['{eventmanager_deadline}']    = _d($eventmanager->deadline);
+    $fields['{eventmanager_start_date}']  = _d($eventmanager->start_date);
+    $fields['{eventmanager_description}'] = $eventmanager->description;
+
+    $custom_fields = get_custom_fields('eventmanager');
+    foreach ($custom_fields as $field) {
+        $fields['{' . $field['slug'] . '}'] = get_custom_field_value($event_manager_id, $field['id'], 'eventmanager');
+    }
+
+    if (is_client_logged_in()) {
+        $cf                             = get_contact_full_name(get_contact_user_id());
+    } else {
+        $cf                             = get_staff_full_name(get_staff_user_id());
+    }
+
+    $fields['{file_creator}']       = $cf;
+    $fields['{discussion_creator}'] = $cf;
+    $fields['{comment_creator}']    = $cf;
+
+    if (isset($additional_data['discussion_id'])) {
+        $CI->db->where('id', $additional_data['discussion_id']);
+
+        if (isset($additional_data['discussion_type']) && $additional_data['discussion_type'] == 'regular') {
+            $table = 'tbleventdiscussions';
+        } else {
+            // is file
+            $table = 'tbleventfiles';
+        }
+
+        $discussion = $CI->db->get($table)->row();
+
+        $fields['{discussion_subject}']     = $discussion->subject;
+        $fields['{discussion_description}'] = $discussion->description;
+
+        if (isset($additional_data['discussion_comment_id'])) {
+            $CI->db->where('id', $additional_data['discussion_comment_id']);
+            $discussion_comment             = $CI->db->get('tbleventdiscussioncomments')->row();
+            $fields['{discussion_comment}'] = $discussion_comment->content;
+        }
+    }
+    if (isset($additional_data['customer_template'])) {
+        $fields['{eventmanager_link}'] = site_url('clients/events/' . $event_manager_id);
+
+        if (isset($additional_data['discussion_id']) && isset($additional_data['discussion_type']) && $additional_data['discussion_type'] == 'regular') {
+            $fields['{discussion_link}'] = site_url('clients/events/' . $event_manager_id . '?group=project_discussions&discussion_id=' . $additional_data['discussion_id']);
+        } elseif (isset($additional_data['discussion_id']) && isset($additional_data['discussion_type']) && $additional_data['discussion_type'] == 'file') {
+            // is file
+            $fields['{discussion_link}'] = site_url('clients/events/' . $event_manager_id . '?group=project_files&file_id=' . $additional_data['discussion_id']);
+        }
+    } else {
+        $fields['{project_link}'] = admin_url('eventmanager/view/' . $event_manager_id);
+        if (isset($additional_data['discussion_type']) && $additional_data['discussion_type'] == 'regular' && isset($additional_data['discussion_id'])) {
+            $fields['{discussion_link}'] = admin_url('eventmanager/view/' . $event_manager_id . '?group=project_discussions&discussion_id=' . $additional_data['discussion_id']);
+        } else {
+            if (isset($additional_data['discussion_id'])) {
+                // is file
+                $fields['{discussion_link}'] = admin_url('eventmanager/view/' . $event_manager_id . '?group=project_files&file_id=' . $additional_data['discussion_id']);
+            }
+        }
+    }
+
+    $custom_fields = get_custom_fields('eventmanager');
+    foreach ($custom_fields as $field) {
+        $fields['{' . $field['slug'] . '}'] = get_custom_field_value($event_manager_id, $field['id'], 'projects');
+    }
+
+    $hook_data['merge_fields']    = $fields;
+    $hook_data['fields_to']       = 'eventmanager';
+    $hook_data['id']              = $event_manager_id;
+    $hook_data['additional_data'] = $additional_data;
+
+    $hook_data = do_action('eventmanager_merge_fields', $hook_data);
+    $fields    = $hook_data['merge_fields'];
+
+    return $fields;
+}
+
 /**
  * Password merge fields
  * @param  array $data

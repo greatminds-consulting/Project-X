@@ -788,6 +788,13 @@ $(function() {
         new_task(admin_url + 'tasks/task?rel_type=project&rel_id=' + project_id + '&milestone_id=' + milestone_id);
         $('body [data-toggle="popover"]').popover('hide');
     });
+    // Creates new task in specific milestones, the milestone is auto selected on the new task modal
+    $("body").on('click', '.new-eventtask-to-milestone', function(e) {
+       e.preventDefault();
+        var milestone_id = $(this).parents('.milestone-column').data('col-status-id');
+        new_task(admin_url + 'tasks/task?rel_type=eventmanager&rel_id=' + eventmanager_id + '&milestone_id=' + milestone_id);
+        $('body [data-toggle="popover"]').popover('hide');
+    });
 
     // On shown task add/edit modal
     $("body").on("shown.bs.modal", '#_task_modal', function(e) {
@@ -2636,7 +2643,7 @@ function init_rel_tasks_table(rel_id, rel_type, selector) {
 
     not_sortable_tasks = [($selector.find('th').length - 1)];
 
-    if ($selector.attr('data-new-rel-type') == 'project') {
+    if (($selector.attr('data-new-rel-type') == 'project') || ($selector.attr('data-new-rel-type') == 'eventmanager')){
         not_sortable_tasks.push(0);
         url += '?bulk_actions=true';
     }
@@ -3930,6 +3937,23 @@ function init_kanban(url, callbackUpdate, connect_with, column_px, container_px,
         parameters['sort'] = sort;
     }
 
+    var staff = $('select[name="assigned_staff"]').val();
+    if (staff != '') {
+        parameters['staff'] = staff;
+    }
+    var lead_status = $('select[name="lead_status[]"]').val().join(',');
+    if (lead_status != '') {
+        parameters['lead_status'] = lead_status;
+    }
+    var lead_source = $('select[name="lead_source"]').val();
+    if (lead_source != '') {
+        parameters['lead_source'] = lead_source;
+    }
+    var lead_custom_view = $('select[name="lead_custom_view"]').val();
+    if (lead_custom_view != '') {
+        parameters['lead_custom_view'] = lead_custom_view;
+    }
+
     parameters['kanban'] = true;
     var url = admin_url + url;
     url = buildUrl(url, parameters);
@@ -4620,8 +4644,8 @@ function delete_lead_note(wrapper, id) {
 }
 
 // Mark lead as lost function
-function lead_mark_as_lost(id) {
-    requestGetJSON('leads/mark_as_lost/' + id).done(function(response) {
+function lead_mark_as_lost(id,lost_reason) {
+    requestGetJSON('leads/mark_as_lost/' + id +'/' +lost_reason).done(function(response) {
         if (response.success == true) {
             alert_float('success', response.message);
             $("body").find('tr#lead_' + id).remove();
@@ -4631,6 +4655,15 @@ function lead_mark_as_lost(id) {
     }).fail(function(error) {
             alert_float('danger', error.responseText);
         });
+}
+
+function lead_mark_as_lost_reason(id) {
+    $('#lost_reason_modal').modal('show');
+    $('#lead_id').val(id);
+}
+function lead_mark_as_lost_reason_save() {
+    $('#lost_reason_modal').modal('hide');
+    lead_mark_as_lost($('#lead_id').val(),$('select[name="lost_reason"]').val());
 }
 
 // Unmark lead as lost function

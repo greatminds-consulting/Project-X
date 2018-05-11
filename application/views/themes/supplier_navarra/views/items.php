@@ -22,7 +22,6 @@
                 <th><?php echo _l('tax_1'); ?></th>
                 <th><?php echo _l('tax_2'); ?></th>
                 <th><?php echo _l('unit'); ?></th>
-                <th><?php echo _l('kb_group_add_edit_name'); ?></th>
                 <?php
                 $custom_fields = get_custom_fields('items',array('show_on_client_portal'=>1));
                 foreach($custom_fields as $field){ ?>
@@ -40,8 +39,7 @@
                     <td><?php echo $item['taxrate']; ?></td>
                     <td><?php echo $item['taxrate_2']; ?></td>
                     <td><?php echo $item['unit']; ?></td>
-                    <td><?php echo $item['group_name']; ?></td>
-                    <?php foreach ($custom_fields as $field) { ?>
+                   <?php foreach ($custom_fields as $field) { ?>
                         <td><?php echo get_custom_field_value($item['itemid'],$field['itemid'],'items'); ?></td>
                     <?php } ?>
                     <td>

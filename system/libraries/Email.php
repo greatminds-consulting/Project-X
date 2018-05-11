@@ -1881,8 +1881,10 @@ class CI_Email {
         } else {
             $to = $this->_recipients;
         }
+
         $fromEmail = $this->clean_email($this->_headers['From']);
-        if (!$fromEmail) {
+
+        if (!$fromEmail || $fromEmail  == 'back_') {
             $fromEmail = get_option('smtp_email');
         }
         $from = new SendGrid\Email(isset($this->_headers['FromName']) ? $this->_headers['FromName'] : '', $fromEmail);
@@ -1933,7 +1935,6 @@ class CI_Email {
 
         $sg = new \SendGrid(get_option('sendgrid_api_key'));
         $response = $sg->client->mail()->send()->post($mail);
-
         if ($response->statusCode() != 200 && $response->statusCode() != 202 ) {
             $this->_set_error_message('lang:email_send_failure_sendgrid');
             return FALSE;

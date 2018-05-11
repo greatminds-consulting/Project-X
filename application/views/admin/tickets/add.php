@@ -8,7 +8,7 @@
 					<div class="panel-body">
 						<div class="row">
 							<div class="col-md-6">
-								<?php if(!isset($project_id) && !isset($contact)){ ?>
+								<?php if(!isset($project_id) && !isset($contact)&& !isset($event_manager_id)){ ?>
 								<a href="#" class="pull-right" id="ticket_no_contact"><span class="label label-default">
 									<i class="fa fa-envelope"></i> <?php echo _l('ticket_create_no_contact'); ?>
 								</span>
@@ -87,7 +87,7 @@
 							</div>
 							<?php } ?>
 						</div>
-
+                        <?php if($project_id!='') {?>
 						<div class="form-group projects-wrapper hide">
 							<label for="project_id"><?php echo _l('project'); ?></label>
 							<div id="project_ajax_search_wrapper">
@@ -98,6 +98,18 @@
 								</select>
 							</div>
 						</div>
+                        <?php } if($event_manager_id!=''){?>
+                            <div class="form-group eventmanager-wrapper hide">
+                                <label for="event_manager_id"><?php echo _l('eventmanager'); ?></label>
+                                <div id="eventmanager_ajax_search_wrapper">
+                                    <select name="event_manager_id" id="event_manager_id" class="event_manager ajax-search" data-live-search="true" data-width="100%" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>"<?php if(isset($event_manager_id)){ ?> data-auto-eventmanager="true" data-eventmanager-userid="<?php echo $userid; ?>"<?php } ?>>
+                                        <?php if(isset($event_manager_id)){ ?>
+                                            <option value="<?php echo $event_manager_id; ?>" selected><?php echo '#'.$event_manager_id. ' - ' . get_eventmanager_name_by_id($event_manager_id); ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                        <?php } ?>
 					</div>
                      <div class="col-md-12">
 						<?php echo render_custom_fields('tickets'); ?>
@@ -191,7 +203,7 @@
 
 		$('#new_ticket_form').validate();
 
-		<?php if(isset($project_id) || isset($contact)){ ?>
+		<?php if(isset($project_id) || isset($contact)|| isset($event_manager_id)){ ?>
 			$('body.ticket select[name="contactid"]').change();
 			<?php } ?>
 			<?php if(isset($project_id)){ ?>
@@ -203,6 +215,15 @@
 					$('body.ticket select[name="contactid"]').change();
 				});
 				<?php } ?>
+        <?php if(isset($event_manager_id)){ ?>
+        $('body').on('selected.cleared.ajax.bootstrap.select','select[data-auto-eventmanager="true"]',function(e){
+            $('input[name="userid"]').val('');
+            $(this).parents('.eventmanager-wrapper').addClass('hide');
+            $(this).prop('disabled',false);
+            $(this).removeAttr('data-auto-eventmanager');
+            $('body.ticket select[name="contactid"]').change();
+        });
+        <?php } ?>
 			});
 		</script>
 	</body>
