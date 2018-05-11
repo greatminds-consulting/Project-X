@@ -134,6 +134,18 @@ function get_relation_data($type, $rel_id = '', $connection_type = '', $connecti
             $search = $CI->misc_model->_search_projects($q, 0, $where_projects);
             $data   = $search['result'];
         }
+    } elseif ($type == 'eventmanager') {
+        if ($rel_id != '') {
+            $CI->load->model('eventmanager_model');
+            $data = $CI->eventmanager_model->get($rel_id);
+        } else {
+            $where_eventmanager = '';
+            if ($CI->input->post('customer_id')) {
+                $where_eventmanager .= 'clientid='.$CI->input->post('customer_id');
+            }
+            $search = $CI->misc_model->_search_eventmanager($q, 0, $where_eventmanager);
+            $data   = $search['result'];
+        }
     } elseif ($type == 'staff') {
         if ($rel_id != '') {
             $CI->load->model('staff_model');
@@ -326,6 +338,21 @@ function get_relation_values($relation, $type)
         $name = '#' . $id . ' - '.$name . ' - '.get_company_name($clientId);
 
         $link = admin_url('projects/view/' . $id);
+    }
+elseif ($type == 'eventmanager') {
+        if (is_array($relation)) {
+            $id   = $relation['id'];
+            $name = $relation['name'];
+            $clientId = $relation['clientid'];
+        } else {
+            $id   = $relation->id;
+            $name = $relation->name;
+            $clientId = $relation->clientid;
+        }
+
+        $name = '#' . $id . ' - '.$name . ' - '.get_company_name($clientId);
+
+        $link = admin_url('eventmanager/view/' . $id);
     }
 
     return do_action('relation_values', array(

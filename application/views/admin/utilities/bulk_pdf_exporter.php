@@ -27,6 +27,9 @@
                                 <?php if(has_permission('proposals','','view') || has_permission('proposals','','view_own')){ ?>
                                 <option value="proposals"><?php echo _l('bulk_export_pdf_proposals'); ?></option>
                                 <?php } ?>
+                                <?php if(has_permission('leads','','view') || has_permission('leads','','view_own')){ ?>
+                                <option value="leads"><?php echo _l('bulk_export_pdf_leads'); ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                         <?php echo render_date_input('date-from','zip_from_date'); ?>
@@ -70,6 +73,19 @@
                             <div class="radio radio-primary">
                                 <input type="radio" id="invoice_<?php echo format_invoice_status($status,'',false); ?>" value="<?php echo $status; ?>" name="invoice_export_status">
                                 <label for="invoice_<?php echo format_invoice_status($status,'',false); ?>"><?php echo format_invoice_status($status,'',false); ?></label>
+                            </div>
+                            <?php } ?>
+                        </div>
+                        <div class="form-group hide shifter" id="leads_status">
+                            <label for="leads_export_status"><?php echo _l('bulk_export_status'); ?></label>
+                            <div class="radio radio-primary">
+                                <input type="radio" id="all" value="all" checked name="leads_export_status">
+                                <label for="all"><?php echo _l('bulk_export_status_all'); ?></label>
+                            </div>
+                            <?php foreach($leads_statuses as $status){ ?>
+                            <div class="radio radio-primary">
+                                <input type="radio" id="leads_<?php echo $status['id']; ?>" value="<?php echo $status['id']; ?>" name="leads_export_status">
+                                <label for="leads_<?php echo $status['id']; ?>"><?php echo $status['name']; ?></label>
                             </div>
                             <?php } ?>
                         </div>
@@ -119,6 +135,8 @@
                 $('#proposal_status').removeClass('hide');
             } else if(val == 'credit_notes'){
                 $('#credit_notes_status').removeClass('hide');
+            }else if(val == 'leads'){
+                $('#leads_status').removeClass('hide');
             }
         });
         });

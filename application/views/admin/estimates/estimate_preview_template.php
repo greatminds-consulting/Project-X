@@ -269,6 +269,7 @@
                                         $qty_heading = _l('estimate_table_quantity_heading') .'/'._l('estimate_table_hours_heading');
                                        }
                                        ?>
+                                     <th align="right">Venues</th>
                                     <th align="right"><?php echo $qty_heading; ?></th>
                                     <th align="right"><?php echo _l('estimate_table_rate_heading'); ?></th>
                                     <?php if(get_option('show_tax_per_item') == 1){ ?>

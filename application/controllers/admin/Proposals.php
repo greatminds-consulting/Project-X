@@ -7,6 +7,7 @@ class Proposals extends Admin_controller
         parent::__construct();
         $this->load->model('proposals_model');
         $this->load->model('currencies_model');
+        $this->load->model('venues_model');
     }
 
     public function index($proposal_id = '')
@@ -155,7 +156,7 @@ class Proposals extends Admin_controller
         } else {
             $data['proposal'] = $this->proposals_model->get($id);
 
-            if (!$data['proposal'] || !$this->user_can_view_proposal($id)) {
+            if (!$data['proposal'] || !$this->user_can_view_proposal($id) || ($data['proposal'] && $data['proposal']->is_delete ==1)) {
                 blank_page(_l('proposal_not_found'));
             }
 
@@ -181,6 +182,8 @@ class Proposals extends Admin_controller
         $data['staff']      = $this->staff_model->get('', 1);
         $data['currencies'] = $this->currencies_model->get();
         $data['base_currency'] = $this->currencies_model->get_base_currency();
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['proposal_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Proposal');
 
         $data['title']      = $title;
         $this->load->view('admin/proposals/proposal', $data);
@@ -419,6 +422,8 @@ class Proposals extends Admin_controller
         $data['proposal']       = $this->proposals_model->get($id);
         $data['billable_tasks'] = array();
         $data['add_items']      = $this->_parse_items($data['proposal']);
+        $data['venues'] = $this->venues_model->getvenues();
+
 
         if ($data['proposal']->rel_type == 'lead') {
             $this->db->where('leadid', $data['proposal']->rel_id);

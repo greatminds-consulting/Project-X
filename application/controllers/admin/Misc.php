@@ -35,6 +35,12 @@ class Misc extends Admin_controller
         $taxname = $this->input->post('taxname');
         echo $this->misc_model->get_taxes_dropdown_template($name, $taxname);
     }
+    public function get_venues_dropdown_template()
+    {
+        $venues    = $this->input->post('venues');
+        $name    = $this->input->post('name');
+        echo $this->misc_model->get_venues_dropdown_template($name,$venues);
+    }
 
     public function dismiss_cron_setup_message()
     {
@@ -400,6 +406,33 @@ class Misc extends Admin_controller
                 }
                 $this->db->where('email', $this->input->post('email'));
                 $total_rows = $this->db->count_all_results('tblstaff');
+                if ($total_rows > 0) {
+                    echo json_encode(false);
+                } else {
+                    echo json_encode(true);
+                }
+                die();
+            }
+        }
+    }
+
+    /* Check if supplier email exists / ajax */
+    public function supplier_email_exists()
+    {
+        if ($this->input->is_ajax_request()) {
+            if ($this->input->post()) {
+                // First we need to check if the email is the same
+                $member_id = $this->input->post('memberid');
+                if ($member_id != '') {
+                    $this->db->where('supplierid', $member_id);
+                    $_current_email = $this->db->get('tblsuppliers')->row();
+                    if ($_current_email->email == $this->input->post('email')) {
+                        echo json_encode(true);
+                        die();
+                    }
+                }
+                $this->db->where('email', $this->input->post('email'));
+                $total_rows = $this->db->count_all_results('tblsuppliers');
                 if ($total_rows > 0) {
                     echo json_encode(false);
                 } else {

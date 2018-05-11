@@ -112,7 +112,39 @@
                             <?php if(get_option('default_leads_kanban_sort') == 'lastcontact'){echo '<i class="kanban-sort-icon fa fa-sort-amount-'.strtolower(get_option('default_leads_kanban_sort_type')).'"></i> ';} ?><?php echo _l('leads_sort_by_lastcontact'); ?>
                             </a>
                         </div>
-                        <div class="row">
+                         <?php if(has_permission('leads','','view')){ ?>
+                             <div class="col-md-12">
+                                 <p class="bold"><?php echo _l('filter_by'); ?></p>
+                             </div>
+                             <div class="row">
+                                 <div class="col-md-3 leads-filter-column">
+                                     <?php echo render_select('assigned_staff',$staff,array('staffid',array('firstname','lastname')),'',get_staff_user_id(),array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot','select-filters'); ?>
+                                 </div>
+                                 <div class="col-md-3 leads-filter-column">
+                                     <?php echo render_select('lead_status[]',$statuses,array('id','name'),'',$selected,array('data-width'=>'100%','data-none-selected-text'=>_l('leads_all'),'multiple'=>true,'data-actions-box'=>true),array(),'no-mbot','select-filters',false);?>
+                                 </div>
+                                 <div class="col-md-3 leads-filter-column">
+                                     <?php  echo render_select('lead_source',$sources,array('id','name'),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_source')),array(),'no-mbot','select-filters');
+                                     ?>
+                                 </div>
+                                 <div class="col-md-3 leads-filter-column">
+                                     <select name="lead_custom_view" title="<?php echo _l('additional_filters'); ?>" id="lead_custom_view" class="selectpicker select-filters" data-width="100%">
+                                         <option value=""></option>
+                                         <option value="lost"><?php echo _l('lead_lost'); ?></option>
+                                         <option value="junk"><?php echo _l('lead_junk'); ?></option>
+                                         <option value="public"><?php echo _l('lead_public'); ?></option>
+                                         <option value="contacted_today"><?php echo _l('lead_add_edit_contacted_today'); ?></option>
+                                         <option value="created_today"><?php echo _l('created_today'); ?></option>
+                                         <?php if(has_permission('leads','','edit')){ ?>
+                                             <option value="not_assigned"><?php echo _l('leads_not_assigned'); ?></option>
+                                         <?php } ?>
+                                     </select>
+                                 </div>
+                             </div>
+                         <?php } ?>
+                         <div class="clearfix"></div>
+                         <hr class="hr-panel-heading">
+                         <div class="row">
                            <div class="container-fluid leads-kan-ban">
                               <div id="kan-ban"></div>
                            </div>
@@ -127,7 +159,7 @@
                               </div>
                               <?php if(has_permission('leads','','view')){ ?>
                                   <div class="col-md-3 leads-filter-column">
-                                      <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'','',array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
+                                      <?php echo render_select('view_assigned',$staff,array('staffid',array('firstname','lastname')),'',get_staff_user_id(),array('data-width'=>'100%','data-none-selected-text'=>_l('leads_dt_assigned')),array(),'no-mbot'); ?>
                                   </div>
                               <?php } ?>
                               <div class="col-md-3 leads-filter-column">
@@ -278,6 +310,9 @@
 <script>
    $(function(){
       leads_kanban();
+       $('select.select-filters').on('change', function() {
+           leads_kanban();
+       });
    });
 </script>
 </body>

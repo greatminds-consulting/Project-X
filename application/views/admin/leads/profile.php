@@ -1,3 +1,9 @@
+<style>
+    .more-links {
+        display: inline-block;
+        margin-left: 8px;
+    }
+</style>
 <div class="lead-wrapper" <?php if(isset($lead) && ($lead->junk == 1 || $lead->lost == 1)){ echo 'lead-is-junk-or-lost';} ?>>
    <?php if(isset($lead)){ ?>
    <div class="btn-group pull-left lead-actions-left">
@@ -5,39 +11,36 @@
          <?php echo _l('edit'); ?>
          <i class="fa fa-pencil-square-o"></i>
       </a>
-      <a href="#" class="font-medium-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-      <?php echo _l('more'); ?>
-      <span class="caret"></span>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-left">
+       <ul class="pull-left">
          <?php if($lead->junk == 0){
          if($lead->lost == 0 && (total_rows('tblclients',array('leadid'=>$lead->id)) == 0)){ ?>
-         <li>
-            <a href="#" onclick="lead_mark_as_lost(<?php echo $lead->id; ?>); return false;">
+         <li class="more-links">
+            <a href="#" onclick="lead_mark_as_lost_reason(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-mars"></i>
               <?php echo _l('lead_mark_as_lost'); ?>
             </a>
          </li>
          <?php } else if($lead->lost == 1){ ?>
-         <li>
+       <li class="more-links">
             <a href="#" onclick="lead_unmark_as_lost(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_lost'); ?>
             </a>
-         </li>
+           <span>(<b>Reason</b> : <?php $reason = json_decode($lead->lead_data); echo $reason->lost_reason ?>)</span>
+       </li>
          <?php } ?>
          <?php } ?>
          <!-- mark as junk -->
          <?php if($lead->lost == 0){
          if($lead->junk == 0 && (total_rows('tblclients',array('leadid'=>$lead->id)) == 0)){ ?>
-         <li>
+         <li class="more-links">
             <a href="#" onclick="lead_mark_as_junk(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa fa-times"></i>
               <?php echo _l('lead_mark_as_junk'); ?>
             </a>
          </li>
          <?php } else if($lead->junk == 1){ ?>
-         <li>
+         <li class="more-links">
             <a href="#" onclick="lead_unmark_as_junk(<?php echo $lead->id; ?>); return false;">
               <i class="fa fa-smile-o"></i>
               <?php echo _l('lead_unmark_as_junk'); ?>
@@ -46,7 +49,7 @@
          <?php } ?>
          <?php } ?>
          <?php if(((is_lead_creator($lead->id) || has_permission('leads','','delete')) && $lead_locked == false) || is_admin()){ ?>
-         <li>
+       <li class="more-links">
             <a href="<?php echo admin_url('leads/delete/'.$lead->id); ?>" class="text-danger delete-text _delete" data-toggle="tooltip" title="">
               <i class="fa fa-remove"></i>
               <?php echo _l('lead_edit_delete_tooltip'); ?>
@@ -142,6 +145,8 @@
                   <?php echo _l('lead_general_info'); ?>
                </h4>
             </div>
+             <p class="text-muted lead-field-heading no-mtop">Venues</p>
+             <p class="bold font-medium-xs"><?php if (isset($selectedvenues)) {foreach($selectedvenues as $selectedvenue){ $venueslist[] = $selectedvenue['name'];} echo implode(',', $venueslist);}?></p>
             <p class="text-muted lead-field-heading no-mtop"><?php echo _l('lead_add_edit_status'); ?></p>
             <p class="bold font-medium-xs mbot15"><?php echo (isset($lead) && $lead->status_name != '' ? $lead->status_name : '-') ?></p>
             <p class="text-muted lead-field-heading"><?php echo _l('lead_add_edit_source'); ?></p>
@@ -195,7 +200,10 @@
                   <?php echo _l('custom_fields'); ?>
                </h4>
             </div>
-            <?php
+
+
+
+                <?php
             $custom_fields = get_custom_fields('leads');
             foreach ($custom_fields as $field) {
                 $value = get_custom_field_value($lead->id, $field['id'], 'leads'); ?>
@@ -212,7 +220,7 @@
       </div>
       <div class="clearfix"></div>
       <div class="lead-edit<?php if(isset($lead)){echo ' hide';} ?>">
-         <div class="col-md-4 mtop15">
+         <div class="col-md-3 mtop15">
           <?php
             $selected = '';
             if(isset($lead)){
@@ -228,13 +236,18 @@
             echo render_leads_status_select($statuses, $selected,'lead_add_edit_status');
           ?>
          </div>
-         <div class="col-md-4 mtop15">
+         <div class="col-md-3 mtop15">
             <?php
                $selected = (isset($lead) ? $lead->source : get_option('leads_default_source'));
                echo render_leads_source_select($sources, $selected,'lead_add_edit_source');
             ?>
          </div>
-            <div class="col-md-4 mtop15">
+          <div class="col-md-3 mtop15">
+              <?php
+              echo render_select('venue[]',$venues,array('id','name'),'venues',$lead_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);
+              ?>
+              </div>
+            <div class="col-md-3 mtop15">
               <?php
               $selected = array();
               if(isset($assigners)){
@@ -375,6 +388,46 @@
    <?php } ?>
    <div class="clearfix"></div>
    <?php echo form_close(); ?>
+</div>
+
+<!-- Modal -->
+<div id="lost_reason_modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Reason to mark as lost</h4>
+            </div>
+            <div class="modal-body">
+                <?php
+                $type = array(
+                    0 => array(
+                        'id' => 'Couple Brokeup',
+                        'name' => 'Couple Broke up'
+                    ),1 => array(
+                        'id' => 'Too expensive',
+                        'name' => 'Too expensive'
+                    ),2 => array(
+                        'id' => 'Date not available',
+                        'name' => 'Date not available'
+                    ),3 => array(
+                        'id' => 'Room not available',
+                        'name' => 'Room not available'
+                    )
+                );
+                echo render_select('lost_reason',$type,array('id','name'),'Reason To Mark as lost','',array('required' => true));
+                ?>
+                <input type="hidden" id="lead_id" value="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" onclick="lead_mark_as_lost_reason_save(); return false;">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 <?php if(isset($lead) && $lead_locked == true){ ?>
 <script>

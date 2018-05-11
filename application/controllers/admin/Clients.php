@@ -9,7 +9,8 @@ class Clients extends Admin_controller
     {
         parent::__construct();
         $this->not_importable_clients_fields = do_action('not_importable_clients_fields',array('userid', 'id', 'is_primary', 'password', 'datecreated', 'last_ip', 'last_login', 'last_password_change', 'active', 'new_pass_key', 'new_pass_key_requested', 'leadid', 'default_currency', 'profile_image', 'default_language', 'direction', 'show_primary_contact', 'invoice_emails', 'estimate_emails', 'project_emails', 'task_emails', 'contract_emails', 'credit_note_emails','addedfrom','last_active_time'));
-        // last_active_time is from Chattr plugin, causing issue
+        // last_active_time is from Chattr plugin, causing issue $this->load->model('venues_model');
+        $this->load->model('venues_model');
     }
 
     /* List all clients */
@@ -39,7 +40,7 @@ class Clients extends Admin_controller
         $data['project_statuses'] = $this->projects_model->get_project_statuses();
 
         $data['customer_admins'] = $this->clients_model->get_customers_admin_unique_ids();
-
+ $this->load->model('venues_model');
         $whereContactsLoggedIn = '';
         if (!has_permission('customers', '', 'view')) {
             $whereContactsLoggedIn = ' AND userid IN (SELECT customer_id FROM tblcustomeradmins WHERE staff_id='.get_staff_user_id().')';
@@ -54,7 +55,7 @@ class Clients extends Admin_controller
 
     public function table()
     {
-        if (!has_permission('customers', '', 'view')) {
+        if (!has_permission('customers', '', 'view')) { $this->load->model('venues_model');
             if (!have_assigned_customers() && !has_permission('customers', '', 'create')) {
                 ajax_access_denied();
             }
@@ -177,6 +178,9 @@ class Clients extends Admin_controller
             } elseif ($group == 'projects') {
                 $this->load->model('projects_model');
                 $data['project_statuses'] = $this->projects_model->get_project_statuses();
+            }elseif ($group == 'eventmanager') {
+                $this->load->model('eventmanager_model');
+                $data['eventmanager_statuses'] = $this->eventmanager_model->get_eventmanager_statuses();
             } elseif ($group == 'statement') {
                 if (!has_permission('invoices', '', 'view') && !has_permission('payments', '', 'view')) {
                     set_alert('danger', _l('access_denied'));
@@ -248,7 +252,8 @@ class Clients extends Admin_controller
 
             $data['customer_currency'] = $customer_currency;
         }
-
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['customer_venues'] = $this->venues_model->get_type_details_from_venue_map($id, 'Customers');
         $data['bodyclass'] = 'customer-profile dynamic-create-groups';
         $data['title'] = $title;
 
@@ -862,6 +867,7 @@ class Clients extends Admin_controller
             access_denied('customers');
         }
         $country_fields = array('country', 'billing_country', 'shipping_country');
+        $venue_fields =array('venue');
 
         $simulate_data  = array();
         $total_imported = 0;
@@ -905,18 +911,22 @@ class Clients extends Admin_controller
                         foreach ($client_contacts_fields as $cf) {
                             if ($cf == 'phonenumber') {
                                 $client_contacts_fields[$i] = 'contact_phonenumber';
+
                             }
                             $i++;
                         }
                         $db_temp_fields = $this->db->list_fields('tblclients');
                         $db_temp_fields = array_merge($client_contacts_fields, $db_temp_fields);
                         $db_fields      = array();
+
+
                         foreach ($db_temp_fields as $field) {
                             if (in_array($field, $this->not_importable_clients_fields)) {
                                 continue;
                             }
                             $db_fields[] = $field;
                         }
+                        $db_fields[] = 'venue';
                         $custom_fields = get_custom_fields('customers');
                         $_row_simulate = 0;
 
@@ -938,6 +948,8 @@ class Clients extends Admin_controller
                                 if (!isset($row[$i])) {
                                     continue;
                                 }
+
+
                                 if ($db_fields[$i] == 'email') {
                                     $email_exists = total_rows('tblcontacts', array(
                                         'email' => $row[$i],
@@ -945,6 +957,29 @@ class Clients extends Admin_controller
                                     // don't insert duplicate emails
                                     if ($email_exists > 0) {
                                         $duplicate = true;
+                                    }
+                                }
+                                if ($db_fields[$i] == 'venue') {
+                                    if ($row[$i] != '') {
+                                        if (!is_numeric($row[$i])) {
+                                           $venueList= explode(",",$row[$i]);
+                                            $venueItems = array();
+                                            foreach($venueList as $venues){
+                                                $this->db->where('name', $venues);
+                                                $venue = $this->db->get('tblvenues')->row();
+                                                if ($venue) {
+                                                    $venueItems[] = $venue->id;
+
+                                                } else {
+                                                    $this->db->insert('tblvenues', array(
+                                                        'name' => $venues
+                                                    ));
+                                                    $venueItems[] = $this->db->insert_id();
+                                                }
+                                            }
+                                            $row[$i] = $venueItems;
+
+                                        }
                                     }
                                 }
                                 // Avoid errors on required fields;
@@ -971,24 +1006,26 @@ class Clients extends Admin_controller
                                     $row[$i] = '';
                                 }
                                 $insert[$db_fields[$i]] = $row[$i];
-                            }
-
-
+                             }
                             if ($duplicate == true) {
                                 continue;
                             }
+
                             if (count($insert) > 0) {
                                 $total_imported++;
+
                                 $insert['datecreated'] = date('Y-m-d H:i:s');
                                 if ($this->input->post('default_pass_all')) {
                                     $insert['password'] = $this->input->post('default_pass_all',false);
                                 }
+                                $listinsert=$insert;
                                 if (!$this->input->post('simulate')) {
+                                    unset($insert['venue']);
                                     $insert['donotsendwelcomeemail'] = true;
                                     foreach ($insert as $key =>$val) {
+
                                         $insert[$key] = trim($val);
                                     }
-
                                     if (isset($insert['company']) && $insert['company'] != '' && $insert['company'] != '/') {
                                         if (total_rows('tblclients', array('company'=>$insert['company'])) === 1) {
                                             $this->db->where('company', $insert['company']);
@@ -1012,9 +1049,12 @@ class Clients extends Admin_controller
                                             continue;
                                         }
                                     }
+
                                     $insert['is_primary'] = 1;
 
-                                    $clientid                        = $this->clients_model->add($insert, true);
+                                    $clientid = $this->clients_model->add($insert, true);
+                                    $venues=$listinsert['venue'];
+                                    $this->clients_model->add_itemvenues($venues,$clientid);
                                     if ($clientid) {
                                         if ($this->input->post('groups_in[]')) {
                                             $groups_in = $this->input->post('groups_in[]');
@@ -1047,7 +1087,9 @@ class Clients extends Admin_controller
                                     $simulate_data[$_row_simulate] = $insert;
                                     $clientid                      = true;
                                 }
+
                                 if ($clientid) {
+
                                     $insert = array();
                                     foreach ($custom_fields as $field) {
                                         if (!$this->input->post('simulate')) {

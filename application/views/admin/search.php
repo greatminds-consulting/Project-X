@@ -80,6 +80,9 @@
                 case 'projects':
                 $output = '<a href="'.admin_url('projects/view/'.$_result['id']).'">'.$_result['name'].'</a>';
                 break;
+                case 'eventmanager':
+                $output = '<a href="'.admin_url('events/view/'.$_result['id']).'">'.$_result['name'].'</a>';
+                break;
             }
             ?>
             <li><?php echo $output; ?></li>

@@ -19,7 +19,7 @@
 <script src="<?php echo base_url('assets/plugins/elFinder/js/i18n/elfinder.'.get_media_locale($locale).'.js'); ?>"></script>
 <?php } ?>
 <?php } ?>
-<?php if(isset($projects_assets)){ ?>
+<?php if(isset($projects_assets) ||($eventmanager_assets)){ ?>
 <script src="<?php echo base_url('assets/plugins/jquery-comments/js/jquery-comments.min.js'); ?>"></script>
 <script src="<?php echo base_url('assets/plugins/gantt/js/jquery.fn.gantt.min.js'); ?>"></script>
 <?php } ?>

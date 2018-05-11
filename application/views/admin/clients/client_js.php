@@ -161,6 +161,10 @@ $(function() {
     var notSortableProjects = $('.table-projects-single-client').find('th').length - 1;
     initDataTable('.table-projects-single-client', admin_url + 'projects/table/' + customer_id, [notSortableProjects], [notSortableProjects], 'undefined', <?php echo do_action('projects_table_default_order',json_encode(array(5,'ASC'))); ?>);
 
+    /* Custome profile projects table */
+    var notSortableeventmanager = $('.table-eventmanager-single-client').find('th').length - 1;
+    initDataTable('.table-eventmanager-single-client', admin_url + 'eventmanager/table/' + customer_id, [notSortableeventmanager], [notSortableeventmanager], 'undefined', <?php echo do_action('eventmanager_table_default_order',json_encode(array(5,'ASC'))); ?>);
+
     var vRules = {};
     if (app_company_is_required == 1) {
         vRules = {

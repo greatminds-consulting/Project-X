@@ -2910,6 +2910,10 @@ body.rtl.hide-sidebar #wrapper {
         margin-bottom: 15px;
         text-align: center;
     }
+    .eventmanager-heading {
+        margin-bottom: 15px;
+        text-align: center;
+    }
     .post-image-wrapper-1,
     .post-image-wrapper-2,
     .post-image-wrapper-3 {
@@ -2974,6 +2978,9 @@ body.rtl.hide-sidebar #wrapper {
         line-height: 20px;
     }
     .project-progress-bars {
+        margin-top: 20px;
+    }
+    .eventmanager-progress-bars {
         margin-top: 20px;
     }
     body.show-sidebar .screen-options-area,
@@ -4747,11 +4754,13 @@ table.items tr.main td {
 .table-rel-tasks thead tr th:last-child,
 .table-tasks thead tr th:last-child,
 .table-projects thead tr th:last-child,
+.table-eventmanager thead tr th:last-child,
 .table-payments thead tr th:last-child,
 .table-invoice-items thead tr th:last-child,
 .tickets-table thead tr th:last-child,
 .table-contacts thead tr th:last-child,
-.table-clients thead tr th:last-child {
+.table-clients thead tr th:last-child
+.table-eventmanager thead tr th:last-child,{
     width: 90px;
 }
 
@@ -5375,6 +5384,7 @@ a>.label-default:focus {
 
 .proposal-convert-modal .panel_s,
 .invoice-project .panel_s,
+.invoice-eventmanager .panel_s,
 .estimate-pipeline .panel_s,
 .proposal-pipeline-modal .panel_s {
     -webkit-box-shadow: none;
@@ -5383,6 +5393,7 @@ a>.label-default:focus {
 
 .proposal-convert-modal .panel_s .panel-body,
 .invoice-project .panel_s .panel-body,
+.invoice-eventmanager .panel_s .panel-body,
 .estimate-pipeline .panel_s .panel-body,
 .proposal-pipeline-modal .panel_s .panel-body {
     padding: 5px;
@@ -5401,6 +5412,7 @@ a>.label-default:focus {
 
 .proposal-convert-modal .btn-tr,
 .invoice-project .btn-tr,
+.invoice-eventmanager .btn-tr,
 .estimate-pipeline .panel_s .panel-body .single-option-buttons,
 .proposals-pipeline .panel_s .panel-body .single-option-buttons {
     display: none;
@@ -5408,6 +5420,7 @@ a>.label-default:focus {
 
 .proposal-convert-modal .modal-lg,
 .invoice-project .modal-lg,
+.invoice-eventmanager .modal-lg,
 .estimate-pipeline .modal-lg,
 .proposal-pipeline-modal .modal-lg {
     width: 1100px;
@@ -5420,6 +5433,7 @@ a>.label-default:focus {
 @media (max-width: 768px) {
     .proposal-convert-modal .modal-lg,
     .invoice-project .modal-lg,
+    .invoice-eventmanager .modal-lg,
     .estimate-pipeline .modal-lg,
     .proposal-pipeline-modal .modal-lg {
         width: auto;
@@ -5435,6 +5449,7 @@ a>.label-default:focus {
 @media only screen and (max-width: 1200px) {
     .proposal-convert-modal .modal-lg,
     .invoice-project .modal-lg,
+    .invoice-eventmanager .modal-lg,
     .estimate-pipeline .modal-lg,
     .proposal-pipeline-modal .modal-lg {
         width: auto;
@@ -5512,6 +5527,14 @@ div.dataTables_wrapper div.dataTables_length select {
     left: 0;
     right: 0;
 }
+.eventmanager-percent {
+    position: absolute;
+    font-size: 33px;
+    font-weight: 500;
+    top: 35%;
+    left: 0;
+    right: 0;
+}
 
 .fn-label a {
     font-weight: 500;
@@ -5575,6 +5598,14 @@ div.dataTables_wrapper div.dataTables_length select {
 }
 
 #gantt .gantt_project_name {
+    font-weight: 500;
+    text-align: center;
+    font-size: 16px;
+    margin: 0 auto;
+    display: block;
+    margin-top: 32px;
+}
+#gantt .gantt_eventmanager_name {
     font-weight: 500;
     text-align: center;
     font-size: 16px;
@@ -5686,13 +5717,29 @@ a._timer:focus {
     border-right: 1px solid #E4E5E7;
     font-weight: 500;
 }
+.eventmanager-info-bg {
+    background: #FBFBFB !important;
+    color: #333 !important;
+    border-top: 1px solid #E4E5E7;
+    border-left: 1px solid #E4E5E7;
+    border-right: 1px solid #E4E5E7;
+    font-weight: 500;
+}
 
 [dir="rtl"] .project-info {
     margin-left: -15px;
     margin-right: -20px;
 }
+[dir="rtl"] .eventmanager-info {
+    margin-left: -15px;
+    margin-right: -20px;
+}
 
 [dir="rtl"] .hr-panel-heading.project-area-separation {
+    margin-left: -15px;
+    margin-right: -20px;
+}
+[dir="rtl"] .hr-panel-heading.eventmanager-area-separation {
     margin-left: -15px;
     margin-right: -20px;
 }
@@ -5725,6 +5772,11 @@ a._timer:focus {
     border-radius: 4px;
     margin-right: 15px;
 }
+.eventmanager-file-image {
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    margin-right: 15px;
+}
 
 #task-tracking-stats-modal {
     z-index: 999999999999;
@@ -5740,6 +5792,13 @@ a._timer:focus {
 }
 
 .project-progress-bars i:not(.text-success) {
+    color: #bfbfbf;
+}
+.eventmanager-progress-bars i {
+    font-size: 24px;
+}
+
+.eventmanager-progress-bars i:not(.text-success) {
     color: #bfbfbf;
 }
 
@@ -5778,6 +5837,31 @@ a._timer:focus {
 
 .project_invoices,
 .project_estimates {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.eventmanager_invoices .new-invoice-list {
+    display: none;
+}
+
+.eventmanager_estimates .new-estimate-btn,
+.eventmanager_estimates .switch-pipeline {
+    display: none;
+}
+
+.eventmanager_invoices .panel-body,
+.eventmanager_estimates .panel-body {
+    border: 0px;
+    padding: 0px;
+}
+
+.eventmanager_invoices .toggle-small-view,
+.eventmanager_estimates .toggle-small-view {
+    display: none;
+}
+
+.eventmanager_invoices,
+.eventmanager_estimates {
     margin-left: -15px;
     margin-right: -15px;
 }
@@ -5840,6 +5924,9 @@ a._timer:focus {
 #pre_invoice_project_settings .popover {
     width: 300px !important;
 }
+#pre_invoice_eventmanager_settings .popover {
+    width: 300px !important;
+}
 
 .td-border-left-transparent {
     border-left: 10px solid transparent;
@@ -5870,7 +5957,7 @@ a._timer:focus {
     font-weight: 400;
 }
 
-.projects-activity .activity-feed {
+.projects-activity .activity-feed .eventmanager-activity {
     overflow-y: scroll;
     height: 750px;
 }
@@ -6014,6 +6101,9 @@ a._timer:focus {
 #side-menu.nav>li.pinned_project {
     padding-bottom: 15px;
 }
+#side-menu.nav>li.pinned_eventmanager {
+    padding-bottom: 15px;
+}
 
 #side-menu.nav>li.pinned_project>a:hover,
 #side-menu.nav>li.pinned_project>a:focus,
@@ -6022,8 +6112,18 @@ a._timer:focus {
     background: transparent;
     color: #fff;
 }
+#side-menu.nav>li.pinned_eventmanager>a:hover,
+#side-menu.nav>li.pinned_eventmanager>a:focus,
+#side-menu.nav>li.pinned_eventmanager.active,
+#side-menu.nav>li.pinned_eventmanager.active>a {
+    background: transparent;
+    color: #fff;
+}
 
 #side-menu.nav>li.pinned_project:last-child {
+    border-bottom: 1px solid #85898E;
+}
+#side-menu.nav>li.pinned_eventmanager:last-child {
     border-bottom: 1px solid #85898E;
 }
 
@@ -6318,8 +6418,18 @@ table.dataTable>tbody>tr.child span.dtr-title {
     border-color: #bfcbd9;
     background: #fff;
 }
+.eventmanager_progress_slider_horizontal.ui-widget.ui-widget-content {
+    height: 20px;
+    border-color: #bfcbd9;
+    background: #fff;
+}
 
 .project_progress_slider_horizontal .ui-slider-handle {
+    height: 25px;
+    background: #84c529;
+    border: 1px solid #84c529;
+}
+.eventmanager_progress_slider_horizontal .ui-slider-handle {
     height: 25px;
     background: #84c529;
     border: 1px solid #84c529;
@@ -6711,6 +6821,9 @@ li.task.overdue-task .panel-body {
     .project-percent-col {
         margin-top: 25px;
     }
+    .eventmanager-percent-col {
+        margin-top: 25px;
+    }
 }
 
 div.dataTables_wrapper div.dataTables_info,
@@ -6790,10 +6903,19 @@ div.dataTables_wrapper div.dataTables_filter .glyphicon {
     overflow-y: scroll;
     height: 400px;
 }
+.eventmanager_file_discusssions_area,
+.eventmanager_file_area {
+    overflow-y: scroll;
+    height: 400px;
+}
 
 @media(max-width:768px) {
     .project_file_discusssions_area,
     .project_file_area {
+        height: auto !important;
+    }
+    .eventmanager_file_discusssions_area,
+    .eventmanager_file_area {
         height: auto !important;
     }
     .full-screen-modal {
@@ -6808,6 +6930,9 @@ div.dataTables_wrapper div.dataTables_filter .glyphicon {
         overflow-y: initial !important;
     }
     .project_file_discusssions_area {
+        margin-top: 30px;
+    }
+    .eventmanager_file_discusssions_area {
         margin-top: 30px;
     }
     .full-screen-modal .modal-footer {
@@ -7354,6 +7479,10 @@ div.dataTables_wrapper div.dataTables_paginate {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+.eventmanager-tabs .dropdown-menu>li:first-child>a {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
 
 .lightboxOverlay,
 #lightbox {
@@ -7486,6 +7615,9 @@ ul.tagit li.tagit-choice:hover {
 .project-overview-tags ul.tagit {
     margin-bottom: -10px;
 }
+.eventmanager-overview-tags ul.tagit {
+    margin-bottom: -10px;
+}
 
 .tags-read-only-custom a.tagit-close {
     display: none;
@@ -7552,8 +7684,14 @@ table .dtr-data .tags-labels {
 .table.project-overview-table>tbody>tr>td {
     padding-left: 2px;
 }
+.table.eventmanager-overview-table>tbody>tr>td {
+    padding-left: 2px;
+}
 
 .table.project-overview-table>tbody>tr:first-child>td {
+    border-top: 0px;
+}
+.table.eventmanager-overview-table>tbody>tr:first-child>td {
     border-top: 0px;
 }
 
@@ -7572,6 +7710,13 @@ table .dtr-data .tags-labels {
 }
 
 #project_view_name .bootstrap-select button[data-id="project_top"] {
+    border: 0px !important;
+    font-size: 18px;
+    padding-top: 0px;
+    font-weight: 500;
+    margin-bottom: -7px;
+}
+#eventmanager_view_name .bootstrap-select button[data-id="eventmanager_top"] {
     border: 0px !important;
     font-size: 18px;
     padding-top: 0px;
@@ -7698,8 +7843,16 @@ table .dtr-data .tags-labels {
 .project-top-panel {
     margin-bottom: 12px;
 }
+.panel_s.eventmanager-menu-panel,
+.eventmanager-top-panel {
+    margin-bottom: 12px;
+}
 
 .panel_s.project-menu-panel .panel-body {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.panel_s.eventmanager-menu-panel .panel-body {
     padding-top: 10px;
     padding-bottom: 10px;
 }
@@ -7835,6 +7988,9 @@ table .dtr-data .tags-labels {
 #project_vault_entries hr:last-child {
     display: none;
 }
+#eventmanager_vault_entries hr:last-child {
+    display: none;
+}
 
 .font-size-14 {
     font-size: 14px;
@@ -7865,6 +8021,9 @@ table .dtr-data .tags-labels {
 }
 
 .hr-panel-heading.project-area-separation {
+    margin-right: -15px;
+}
+.hr-panel-heading.eventmanager-area-separation {
     margin-right: -15px;
 }
 
@@ -7903,13 +8062,23 @@ input#tags {
 #project-expense-form {
     background-color: transparent;
 }
+#eventmanager-expense-form {
+    background-color: transparent;
+}
 
 .project-overview-left {
     margin-top: -20px;
     padding-top: 20px;
 }
+.eventmanager-overview-left {
+    margin-top: -20px;
+    padding-top: 20px;
+}
 
 .project-overview-right .hr-panel-heading {
+    margin-left: -15px;
+}
+.eventmanager-overview-right .hr-panel-heading {
     margin-left: -15px;
 }
 
@@ -8055,6 +8224,14 @@ table tbody tr .checkbox {
 }
 
 .project-info {
+    margin-left: -20px;
+    margin-right: -15px;
+    margin-top: -10px;
+    padding: 8px 22px;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+.eventmanager-info {
     margin-left: -20px;
     margin-right: -15px;
     margin-top: -10px;
@@ -8427,6 +8604,11 @@ div[data-container] {
     -webkit-box-shadow: none !important;
     box-shadow: none !important;
 }
+.eventmanager_estimates .panel_s,
+.eventmanager_invoices .panel_s {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
 
 .save_predefined_reply_from_message {
     clear: both !important;
@@ -8490,8 +8672,15 @@ body.project.project-milestones .project-menu-panel,
 body.project.project-milestones .project-toggler-opts {
     display: none;
 }
+body.eventmanager.eventmanager-milestones .eventmanager-menu-panel,
+body.eventmanager.eventmanager-milestones .eventmanager-toggler-opts {
+    display: none;
+}
 
 body.project.project-milestones .kan-ban-col .panel_s {
+    margin-bottom: 0px;
+}
+body.eventmanager.eventmanager-milestones .kan-ban-col .panel_s {
     margin-bottom: 0px;
 }
 
@@ -8598,4 +8787,7 @@ td[align="center"] {
 
 .mce-branding {
     display: none !important;
+}
+.venue-task {
+    font-size: 13px !important;
 }

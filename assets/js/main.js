@@ -788,6 +788,13 @@ $(function() {
         new_task(admin_url + 'tasks/task?rel_type=project&rel_id=' + project_id + '&milestone_id=' + milestone_id);
         $('body [data-toggle="popover"]').popover('hide');
     });
+    // Creates new task in specific milestones, the milestone is auto selected on the new task modal
+    $("body").on('click', '.new-eventtask-to-milestone', function(e) {
+       e.preventDefault();
+        var milestone_id = $(this).parents('.milestone-column').data('col-status-id');
+        new_task(admin_url + 'tasks/task?rel_type=eventmanager&rel_id=' + eventmanager_id + '&milestone_id=' + milestone_id);
+        $('body [data-toggle="popover"]').popover('hide');
+    });
 
     // On shown task add/edit modal
     $("body").on("shown.bs.modal", '#_task_modal', function(e) {
@@ -2636,7 +2643,7 @@ function init_rel_tasks_table(rel_id, rel_type, selector) {
 
     not_sortable_tasks = [($selector.find('th').length - 1)];
 
-    if ($selector.attr('data-new-rel-type') == 'project') {
+    if (($selector.attr('data-new-rel-type') == 'project') || ($selector.attr('data-new-rel-type') == 'eventmanager')){
         not_sortable_tasks.push(0);
         url += '?bulk_actions=true';
     }
@@ -3930,6 +3937,23 @@ function init_kanban(url, callbackUpdate, connect_with, column_px, container_px,
         parameters['sort'] = sort;
     }
 
+    var staff = $('select[name="assigned_staff"]').val();
+    if (staff != '') {
+        parameters['staff'] = staff;
+    }
+    var lead_status = $('select[name="lead_status[]"]').val().join(',');
+    if (lead_status != '') {
+        parameters['lead_status'] = lead_status;
+    }
+    var lead_source = $('select[name="lead_source"]').val();
+    if (lead_source != '') {
+        parameters['lead_source'] = lead_source;
+    }
+    var lead_custom_view = $('select[name="lead_custom_view"]').val();
+    if (lead_custom_view != '') {
+        parameters['lead_custom_view'] = lead_custom_view;
+    }
+
     parameters['kanban'] = true;
     var url = admin_url + url;
     url = buildUrl(url, parameters);
@@ -4620,8 +4644,8 @@ function delete_lead_note(wrapper, id) {
 }
 
 // Mark lead as lost function
-function lead_mark_as_lost(id) {
-    requestGetJSON('leads/mark_as_lost/' + id).done(function(response) {
+function lead_mark_as_lost(id,lost_reason) {
+    requestGetJSON('leads/mark_as_lost/' + id +'/' +lost_reason).done(function(response) {
         if (response.success == true) {
             alert_float('success', response.message);
             $("body").find('tr#lead_' + id).remove();
@@ -4631,6 +4655,15 @@ function lead_mark_as_lost(id) {
     }).fail(function(error) {
             alert_float('danger', error.responseText);
         });
+}
+
+function lead_mark_as_lost_reason(id) {
+    $('#lost_reason_modal').modal('show');
+    $('#lead_id').val(id);
+}
+function lead_mark_as_lost_reason_save() {
+    $('#lost_reason_modal').modal('hide');
+    lead_mark_as_lost($('#lead_id').val(),$('select[name="lost_reason"]').val());
 }
 
 // Unmark lead as lost function
@@ -5614,6 +5647,7 @@ function add_item_to_preview(id) {
 
         $('.main textarea[name="description"]').val(response.description);
         $('.main textarea[name="long_description"]').val(response.long_description.replace(/(<|&lt;)br\s*\/*(>|&gt;)/g, " "));
+        $('.main select[name="venue_items[]"]').selectpicker('val', response.item_venues);
 
         _set_item_preview_custom_fields_array(response.custom_fields);
 
@@ -5753,9 +5787,13 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
     var amount = data.rate * data.qty;
     amount = accounting.formatNumber(amount);
     var tax_name = 'newitems[' + item_key + '][taxname][]';
+    var venue_items = 'newitems[' + item_key + '][venue_items][]';
     $("body").append('<div class="dt-loader"></div>');
     var regex = /<br[^>]*>/gi;
+    var tax_dropdown_content;
     get_taxes_dropdown_template(tax_name, data.taxname).done(function(tax_dropdown) {
+        tax_dropdown_content = tax_dropdown
+        get_venue_dropdown_template(venue_items, data.venues).done(function(venue_dropdown) {
 
         // order input
         table_row += '<input type="hidden" class="order" name="newitems[' + item_key + '][order]">';
@@ -5837,7 +5875,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
                 table_row += '<td class="custom_field">' + cf_html + '</td>';
             });
         }
-
+            table_row += '<td>' + venue_dropdown + '</td>';
         table_row += '<td><input type="number" min="0" onblur="calculate_total();" onchange="calculate_total();" data-quantity name="newitems[' + item_key + '][qty]" value="' + data.qty + '" class="form-control">';
 
         unit_placeholder = '';
@@ -5853,7 +5891,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
 
         table_row += '<td class="rate"><input type="number" data-toggle="tooltip" title="' + appLang.item_field_not_formatted + '" onblur="calculate_total();" onchange="calculate_total();" name="newitems[' + item_key + '][rate]" value="' + data.rate + '" class="form-control"></td>';
 
-        table_row += '<td class="taxrate">' + tax_dropdown + '</td>';
+        table_row += '<td class="taxrate">' + tax_dropdown_content + '</td>';
 
         table_row += '<td class="amount" align="right">' + amount + '</td>';
 
@@ -5913,6 +5951,7 @@ function add_item_to_table(data, itemid, merge_invoice, bill_expense) {
         return true;
 
     });
+    });
 
     return false;
 }
@@ -5923,6 +5962,13 @@ function get_taxes_dropdown_template(name, taxname) {
     var d = $.post(admin_url + 'misc/get_taxes_dropdown_template/', { name: name, taxname: taxname });
     jQuery.ajaxSetup({ async: true });
 
+    return d;
+}
+
+function get_venue_dropdown_template(name,venues) {
+    jQuery.ajaxSetup({ async: false });
+    var d = $.post(admin_url + 'misc/get_venues_dropdown_template/', {name:name, venues: venues });
+    jQuery.ajaxSetup({ async: true });
     return d;
 }
 
@@ -6042,6 +6088,7 @@ function get_item_preview_values() {
     response.long_description = $('.main textarea[name="long_description"]').val();
     response.qty = $('.main input[name="quantity"]').val();
     response.taxname = $('.main select.tax').selectpicker('val');
+    response.venues = $('.main select.venues').selectpicker('val');
     response.rate = $('.main input[name="rate"]').val();
     response.unit = $('.main input[name="unit"]').val();
     return response;

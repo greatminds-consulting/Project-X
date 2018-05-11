@@ -12,14 +12,30 @@ $aColumns      = array(
     );
 $sIndexColumn  = "id";
 $sTable        = 'tbltaskstimers';
-
+if($eventmanager_id !='')
+{
+    $aColumns = do_action('eventmanager_timesheets_table_sql_columns',$aColumns);
+}
+else {
 $aColumns = do_action('projects_timesheets_table_sql_columns',$aColumns);
-
+}
 $join          = array(
     'JOIN tblstafftasks ON tblstafftasks.id = tbltaskstimers.task_id',
     'JOIN tblstaff ON tblstaff.staffid = tbltaskstimers.staff_id'
     );
+if($eventmanager_id !='')
+{
+    $join = do_action('eventmanager_timesheets_table_sql_join',$join);
 
+    $where = array('AND task_id IN (SELECT id FROM tblstafftasks WHERE rel_id="'.$eventmanager_id.'" AND rel_type="eventmanager")');
+
+    if(!has_permission('events','','create')){
+        array_push($where,'AND tbltaskstimers.staff_id='.get_staff_user_id());
+    }
+
+    $staff_ids = $this->ci->eventmanager_model->get_distinct_tasks_timesheets_staff($eventmanager_id);
+
+} else {
 $join = do_action('projects_timesheets_table_sql_join',$join);
 
 $where = array('AND task_id IN (SELECT id FROM tblstafftasks WHERE rel_id="'.$project_id.'" AND rel_type="project")');
@@ -29,7 +45,7 @@ if(!has_permission('projects','','create')){
 }
 
 $staff_ids = $this->ci->projects_model->get_distinct_tasks_timesheets_staff($project_id);
-
+}
 $_staff_ids = array();
 
 foreach($staff_ids as $s){
@@ -121,9 +137,16 @@ $row[] = $_data;
 }
 $task_is_billed = $this->ci->tasks_model->is_task_billed($aRow['task_id']);
 $options = '';
-if(($aRow['staff_id'] == get_staff_user_id() || has_permission('projects','','edit'))){
+    if($eventmanager_id !='')
+    {
+       $permission= has_permission('events','','edit');
+    }
+    else{
+        $permission = has_permission('projects','','edit');
+    }
+if(($aRow['staff_id'] == get_staff_user_id() || $permission)){
 
-    if(($aRow['staff_id'] == get_staff_user_id() || has_permission('projects','','edit'))){
+    if(($aRow['staff_id'] == get_staff_user_id() || $permission)){
         if($aRow['end_time'] !== NULL){
             $attrs = array(
                 'onclick' => 'edit_timesheet(this,' . $aRow['id'] . ');return false',

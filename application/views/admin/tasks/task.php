@@ -208,6 +208,8 @@
         <option value=""></option>
         <option value="project"
         <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'project'){echo 'selected';}} ?>><?php echo _l('project'); ?></option>
+        <option value="eventmanager"
+        <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'eventmanager'){echo 'selected';}} ?>><?php echo _l('eventmanager'); ?></option>
         <option value="invoice" <?php if(isset($task) || $this->input->get('rel_type')){if($rel_type == 'invoice'){echo 'selected';}} ?>>
           <?php echo _l('invoice'); ?>
         </option>
@@ -271,7 +273,8 @@
     <input type="text" class="tagsinput" id="tags" name="tags" value="<?php echo (isset($task) ? prep_tags_input(get_tags_in($task->id,'task')) : ''); ?>" data-role="tagsinput">
   </div>
 </div>
-<?php $rel_id_custom_field = (isset($task) ? $task->id : false); ?>
+<?php $rel_id_custom_field = (isset($task) ? $task->id : false);
+echo render_select('venue[]',$venues,array('id','name'),'venues',$task_venues,array('multiple'=>true,'required'=>true),array(), '', '',false);?>
 <?php echo render_custom_fields('tasks',$rel_id_custom_field); ?>
 <hr />
 <p class="bold"><?php echo _l('task_add_edit_description'); ?></p>

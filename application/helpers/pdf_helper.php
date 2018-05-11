@@ -388,6 +388,80 @@ function estimate_pdf($estimate, $tag = '')
 }
 
 /**
+ * Prepare general leads pdf
+ * @since  Version 1.0.2
+ * @param  object $leads leads as object with all necessary fields
+ * @param  string $tag tag for bulk pdf exporter
+ * @return mixed object
+ */
+function leads_pdf($leads, $tag = '',$proposals = '', $tasks = '') {
+    $GLOBALS['leads_pdf'] = $leads;
+    $CI =& get_instance();
+    load_pdf_language(1);
+    $CI->load->library('pdf');
+    $estimate_number = format_estimate_number($leads->id);
+    $font_name       = get_option('pdf_font');
+    $font_size       = get_option('pdf_font_size');
+
+    if ($font_size == '') {
+        $font_size = 10;
+    }
+
+    $whereCF = array('show_on_pdf'=>1);
+    if (is_custom_fields_for_customers_portal()) {
+        $whereCF['show_on_client_portal'] = 1;
+    }
+
+    $pdf_custom_fields = get_custom_fields('leads', $whereCF);
+
+    $formatArray = get_pdf_format('pdf_format_estimate');
+
+    if (!file_exists(APPPATH.'libraries/Estimate_pdf.php')) {
+        $pdf         = new Pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false, false, 'leads');
+    } else {
+        include_once(APPPATH.'libraries/Estimate_pdf.php');
+        $pdf         = new Estimate_pdf($formatArray['orientation'], 'mm', $formatArray['format'], true, 'UTF-8', false, false);
+    }
+
+    if (defined('APP_PDF_MARGIN_LEFT') && defined('APP_PDF_MARGIN_TOP') && defined('APP_PDF_MARGIN_RIGHT')) {
+        $pdf->SetMargins(APP_PDF_MARGIN_LEFT, APP_PDF_MARGIN_TOP, APP_PDF_MARGIN_RIGHT);
+    }
+
+    $pdf->SetTitle($estimate_number);
+
+    $pdf->SetAutoPageBreak(true, (defined('APP_PDF_MARGIN_BOTTOM') ? APP_PDF_MARGIN_BOTTOM : PDF_MARGIN_BOTTOM));
+    $pdf->setImageScale(1.53);
+    $pdf->SetAuthor(get_option('company'));
+    $pdf->SetFont($font_name, '', $font_size);
+    $pdf->setJPEGQuality(100);
+    $pdf->AddPage($formatArray['orientation'], $formatArray['format']);
+    if ($CI->input->get('print') == 'true') {
+        // force print dialog
+        $js = 'print(true);';
+        $pdf->IncludeJS($js);
+    }
+    $status = 1;
+    $swap   = get_option('swap_pdf_info');
+    $CI->load->library('numberword', array(
+        'clientid' => 1,
+    ));
+    $estimate = do_action('estimate_html_pdf_data', $leads);
+
+    _bulk_pdf_export_maybe_tag($tag, $pdf);
+    if (file_exists(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_leadpdf.php')) {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/my_leadspdf.php');
+    } else {
+        include(APPPATH . 'views/themes/' . active_clients_theme() . '/views/leadpdf.php');
+    }
+
+    if (ob_get_length() > 0 && ENVIRONMENT == 'production') {
+        ob_end_clean();
+    }
+
+    return $pdf;
+}
+
+/**
  * Function that generates proposal pdf for admin and clients area
  * @param  object $proposal
  * @param  string $tag      tag for bulk pdf exporter
