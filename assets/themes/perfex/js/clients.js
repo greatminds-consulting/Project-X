@@ -1,8 +1,10 @@
 var project_id = $('input[name="project_id"]').val();
+var event_manager_id = $('input[name="eventmanager_id"]').val();
 var discussion_user_profile_image_url = $('input[name="discussion_user_profile_image_url"]').val();
 var discussion_id = $('input[name="discussion_id"]').val();
 
 Dropzone.options.projectFilesUpload = false;
+Dropzone.options.eventmanagerFilesUpload = false;
 Dropzone.options.taskFileUpload = false;
 Dropzone.options.filesUpload = false;
 
@@ -20,6 +22,7 @@ $(function() {
     var file_id = get_url_param('file_id');
     if (file_id) {
         view_project_file(file_id, project_id);
+        view_eventmanager_file(file_id, event_manager_id);
     }
 
     $("a[href='#top']").on("click", function(e) {
@@ -178,12 +181,12 @@ $(function() {
         $('.task-phase:eq(' + (i + 10) + ')').not('.color-not-auto-adjusted').css('background', color(r - (i * 13), g - (i * 13), b - (i * 13))).css('border', '1px solid ' + color(r - (i * 13), g - (i * 13), b - (i * 13)));
     };
 
-    var circle = $('.project-progress').circleProgress({
+    var circle = $('.project-progress,.eventmanager-progress').circleProgress({
         fill: {
             gradient: ["#84c529", "#84c529"]
         }
     }).on('circle-animation-progress', function(event, progress, stepValue) {
-        $(this).find('strong.project-percent').html(parseInt(100 * stepValue) + '<i>%</i>');
+        $(this).find('strong.project-percent,strong.eventmanager-percent').html(parseInt(100 * stepValue) + '<i>%</i>');
     });
 
     $('.toggle-change-ticket-status').on('click', function() {
@@ -250,6 +253,34 @@ $(function() {
 
     if ($('#project-files-upload').length > 0) {
         new Dropzone('#project-files-upload', {
+            paramName: "file",
+            uploadMultiple: true,
+            parallelUploads: 20,
+            maxFiles: 20,
+            dictFileTooBig: file_exceeds_maxfile_size_in_form,
+            dictDefaultMessage: drop_files_here_to_upload,
+            dictFallbackMessage: browser_not_support_drag_and_drop,
+            maxFilesize: (max_php_ini_upload_size_bytes / (1024 * 1024)).toFixed(0),
+            accept: function(file, done) {
+                done();
+            },
+            sending: function(file, xhr, formData) {
+                formData.append("action", 'upload_file');
+            },
+            success: function(file, response) {
+                if (this.getUploadingFiles().length === 0 && this.getQueuedFiles().length === 0) {
+                    window.location.reload();
+                }
+            },
+            acceptedFiles: allowed_files,
+            error: function(file, response) {
+                alert_float('danger', response);
+            }
+        });
+    }
+    if ($('#eventmanager-files-upload').length > 0) {
+        new Dropzone('#eventmanager-files-upload', {
+
             paramName: "file",
             uploadMultiple: true,
             parallelUploads: 20,
@@ -664,6 +695,15 @@ function view_project_file(id, project_id) {
         $('#project_file_data').html(response);
     }).fail(function(error) {
         alert_float('danger', error.statusText);
+    });
+}
+function view_eventmanager_file(id, event_manager_id) {
+    var event_manager_id=event_manager_id;
+    $('#eventmanager_file_data').empty();
+    $("#eventmanager_file_data").load(admin_url + 'eventmanager/file/' + id + '/' + event_manager_id, function(response, status, xhr) {
+        if (status == "error") {
+            alert_float('danger', xhr.statusText);
+        }
     });
 }
 

@@ -550,8 +550,7 @@ function eventmanagerExpenseSubmitHandler(form) {
 }
 
 function view_eventmanager_file(id, $event_manager_id) {
-  // var event_manager_id=$event_manager_id;
-   $('#eventmanager_file_data').empty();
+  $('#eventmanager_file_data').empty();
     $("#eventmanager_file_data").load(admin_url + 'eventmanager/file/' + id + '/' + eventmanager_id, function(response, status, xhr) {
         if (status == "error") {
             alert_float('danger', xhr.statusText);

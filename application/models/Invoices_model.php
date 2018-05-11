@@ -79,7 +79,6 @@ class Invoices_model extends CRM_Model
         }
 
         $this->db->order_by('number,YEAR(date)', 'desc');
-
         return $this->db->get()->result_array();
     }
 

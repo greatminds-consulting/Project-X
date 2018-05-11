@@ -1,4 +1,4 @@
-<?php init_head(); ?>
+<?php init_head();?>
 <style>
 #ribbon_eventmanager_<?php echo $eventmanager->id; ?> span::before {
   border-top: 3px solid <?php echo $eventmanager_status['color']; ?>;

@@ -252,19 +252,6 @@ class Eventmanager_model extends CRM_Model
                     $eventmanager->settings->{$setting['name']} = $setting['value'];
                 }
 
-                // In case any settings missing add them and set default 0 to prevent errors
-
-//                foreach ($this->$eventmanager_settings as $setting) {
-//
-//                    if (!isset($eventmanager->settings->{$setting})) {
-//                        $this->db->insert('tbleventsettings', array(
-//                            'event_manager_id' => $id,
-//                            'name' => $setting,
-//                            'value' => 0,
-//                        ));
-//                        $eventmanager->settings->{$setting} = 0;
-//                    }
-//                }
                 $eventmanager->client_data = new StdClass();
                 $eventmanager->client_data = $this->clients_model->get($eventmanager->clientid);
 
@@ -277,7 +264,6 @@ class Eventmanager_model extends CRM_Model
         $this->db->select('*,'.get_sql_select_client_company());
         $this->db->join('tblclients', 'tblclients.userid=tbleventmanager.clientid');
         $this->db->order_by('id', 'desc');
-
         return $this->db->get('tbleventmanager')->result_array();
     }
 
@@ -378,7 +364,6 @@ class Eventmanager_model extends CRM_Model
             $this->db->where('visible_to_customer', 1);
         }
         $this->db->where('event_manager_id', $eventmanager_id);
-
         return $this->db->get('tbleventfiles')->result_array();
     }
 
@@ -1560,6 +1545,7 @@ class Eventmanager_model extends CRM_Model
     public function get_eventmanager_settings($eventmanager_id)
     {
         $this->db->where('event_manager_id', $eventmanager_id);
+        $this->db->get('tbleventsettings');
         return $this->db->get('tbleventsettings')->result_array();
     }
 

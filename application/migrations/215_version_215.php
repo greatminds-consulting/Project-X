@@ -47,6 +47,16 @@ class Migration_Version_210 extends CI_Migration
         $this->db->query("ALTER TABLE `navarra_venues_s`.`tblexpenses` ADD COLUMN `event_manager_id` INT(11) NULL AFTER `addedfrom`; ");
         // alter tblmilestone
         $this->db->query("ALTER TABLE `navarra_venues_s`.`tblmilestones` ADD COLUMN `event_manager_id` INT(11) NOT NULL AFTER `datecreated`; ");
+        // alter tblcontacts
+        $this->db->query("ALTER TABLE `navarra_venues_s`.`tblcontacts` ADD COLUMN `eventmanager_emails` TINYINT(1) DEFAULT 1 NOT NULL AFTER `is_delete`; ");
+        // alter tbltickets
+        $this->db->query("ALTER TABLE `navarra_venues_s`.`tbltickets` ADD COLUMN `event_manager_id` INT(11) DEFAULT 0 NOT NULL AFTER `assigned`; ");
+        // alter tblinvoices
+        $this->db->query("ALTER TABLE `navarra_venues_s`.`tblinvoices` ADD COLUMN `event_manager_id` INT(11) DEFAULT 0 NOT NULL AFTER `is_delete`;");
+        // alter tblpermissions
+        $this->db->query("INSERT INTO `tblpermissions` ( `name`, `shortname`) VALUES ('events', 'events');");
+        // alter tblestimates
+        $this->db->query("ALTER TABLE `navarra_venues_s`.`tblestimates` ADD COLUMN `event_manager_id` INT(11) DEFAULT 0 NOT NULL AFTER `acceptance_ip`; ");
 
         if (file_exists(FCPATH.'pipe.php')) {
             @chmod(FCPATH.'pipe.php', 0755);
