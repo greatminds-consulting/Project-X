@@ -1289,13 +1289,8 @@ class Cron_model extends CRM_Model
                     $this->db->insert('tblleads', $lead_data);
                     $insert_id = $this->db->insert_id();
 
-                    $data_staff['lead_id'] = $insert_id;
-                    $data_staff['datecreated'] = date("Y/m/d H:i:s");
-                    $data_staff['staff_id'] = $mail->responsible;
-                    $this->db->insert('tblleadstaffs', $data_staff);
 
                     if ($insert_id) {
-                        $this->leads_model->lead_assigned_member_notification($insert_id, array($mail->responsible), true);
                         $this->load->helper('simple_html_dom');
                         $html                      = str_get_html($email['body']);
                         $insert_lead_fields        = array();
@@ -1318,7 +1313,14 @@ class Cron_model extends CRM_Model
                             $field = (strpos($key, 'custom_field_') !== false ? strafter($key, 'custom_field_') : strafter($key, 'field_'));
 
                             if (strpos($key, 'custom_field_') !== false) {
-                                $insert_lead_custom_fields[$field] = $val;
+                                if ($field == 1) {
+                                    $this->leads_model->venues_in_leads($insert_id, $val);
+                                } else {
+                                    if ($field == 16) {
+                                        $this->leads_model->event_categories_in_leads($insert_id, $val);
+                                    }
+                                    $insert_lead_custom_fields[$field] = $val;
+                                }
                             } elseif ($this->db->field_exists($field, 'tblleads')) {
                                 $insert_lead_fields[$field] = $val;
                             }

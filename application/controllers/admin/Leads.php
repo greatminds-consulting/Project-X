@@ -1018,8 +1018,7 @@ class Leads extends Admin_controller
         redirect(admin_url('leads/email_integration'));
     }
 
-    public function email_integration()
-    {
+    public function email_integration() {
         if (!is_admin()) {
             access_denied('Leads Email Intregration');
         }
@@ -1043,6 +1042,10 @@ class Leads extends Admin_controller
         $data['roles']    = $this->roles_model->get();
         $data['sources']  = $this->leads_model->get_source();
         $data['statuses'] = $this->leads_model->get_status();
+        $data['venue_staffs'] = $this->leads_model->venues_in_staffs();
+        $data['event_categories_staffs'] = $this->leads_model->event_categories_in_staffs();
+        $data['event_categories'] = get_custom_fields_by_slug('leads_event_category');
+
 
         $data['members'] = $this->staff_model->get('', 1, array(
             'is_not_staff' => 0,
@@ -1051,6 +1054,8 @@ class Leads extends Admin_controller
         $data['title']   = _l('leads_email_integration');
         $data['mail']    = $this->leads_model->get_email_integration();
         $data['bodyclass']    = 'leads-email-integration';
+        $data['venues'] = $this->venues_model->getvenues();
+        $data['staffs'] = $this->staff_model->get('', 1);
         $this->load->view('admin/leads/email_integration', $data);
     }
 
