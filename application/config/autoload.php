@@ -122,6 +122,7 @@ $autoload['helper'] = array(
         'tags',
         'pdf',
         'clients',
+        'suppliers',
         'database',
         'upload',
         'sales',
@@ -131,6 +132,7 @@ $autoload['helper'] = array(
         'widgets',
         'sms',
         'deprecated',
+        'events'
     );
 
 if (file_exists(APPPATH.'helpers/system_messages_helper.php')) {

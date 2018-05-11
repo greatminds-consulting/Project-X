@@ -11,7 +11,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 function handle_tags_save($tags, $rel_id, $rel_type)
 {
     $CI =& get_instance();
-
+    $CI->load->model('leads_model');
     $affectedRows = 0;
     if ($tags == '') {
         $CI->db->where('rel_id', $rel_id);
@@ -45,6 +45,12 @@ function handle_tags_save($tags, $rel_id, $rel_type)
                 $CI->db->delete('tbltags_in');
                 if ($CI->db->affected_rows() > 0) {
                     $affectedRows++;
+                    if ($rel_type == 'lead') {
+                        $CI->leads_model->log_lead_activity($rel_id, 'not_lead_activity_tag_removed', false, serialize(array(
+                            get_staff_full_name(),
+                            $tag->name
+                        )));
+                    }
                 }
             }
         }
@@ -79,6 +85,12 @@ function handle_tags_save($tags, $rel_id, $rel_type)
 
                 if ($CI->db->affected_rows() > 0) {
                     $affectedRows++;
+                    if ($rel_type == 'lead') {
+                        $CI->leads_model->log_lead_activity($rel_id, 'not_lead_activity_tag_added', false, serialize(array(
+                            get_staff_full_name(),
+                            $tag
+                        )));
+                    }
                 }
             }
             $order++;

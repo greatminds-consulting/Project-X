@@ -278,7 +278,8 @@ class Tickets_model extends CRM_Model
             return $this->db->get('tbltickets')->row();
         }
         $this->db->order_by('lastreply', 'asc');
-
+//        $this->db->get('tbltickets');
+//        echo $this->db->last_query();exit;
         return $this->db->get('tbltickets')->result_array();
     }
 
@@ -681,6 +682,9 @@ class Tickets_model extends CRM_Model
 
         if (isset($data['project_id']) && $data['project_id'] == '') {
             $data['project_id'] = 0;
+        }
+        if (isset($data['event_manager_id']) && $data['event_manager_id'] == '') {
+            $data['event_manager_id'] = 0;
         }
 
         if ($admin == null) {

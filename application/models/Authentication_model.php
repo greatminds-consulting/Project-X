@@ -18,7 +18,7 @@ class Authentication_model extends CRM_Model
      * @param  boolean Is Staff Or Client
      * @return boolean if not redirect url found, if found redirect to the url
      */
-    public function login($email, $password, $remember, $staff)
+    public function login($email, $password, $remember, $staff, $type = '')
     {
         if ((!empty($email)) and (!empty($password))) {
             $table = 'tblcontacts';
@@ -26,6 +26,10 @@ class Authentication_model extends CRM_Model
             if ($staff == true) {
                 $table = 'tblstaff';
                 $_id   = 'staffid';
+            }
+            if ($type && $type == 'supplier') {
+                $table = 'tblsuppliers';
+                $_id   = 'supplierid';
             }
             $this->db->where('email', $email);
             $user = $this->db->get($table)->row();
@@ -70,6 +74,16 @@ class Authentication_model extends CRM_Model
                         $user_data['tfa_remember'] = true;
                     }
                 }
+            } else if ($type && $type == 'supplier') {
+                do_action('before_supplier_login', array(
+                    'email' => $email,
+                    'supplier_user_id' => $user->$_id,
+                ));
+
+                $user_data = array(
+                    'supplier_user_id' => $user->$_id,
+                    'supplier_logged_in' => true,
+                );
             } else {
                 do_action('before_client_login', array(
                     'email' => $email,
@@ -113,6 +127,10 @@ class Authentication_model extends CRM_Model
             do_action('before_client_logout', get_client_user_id());
             $this->session->unset_userdata('client_user_id');
             $this->session->unset_userdata('client_logged_in');
+        } else if (is_supplier_logged_in()) {
+            do_action('before_supplier_logout', get_supplier_user_id());
+            $this->session->unset_userdata('supplier_user_id');
+            $this->session->unset_userdata('supplier_logged_in');
         } else {
             do_action('before_staff_logout', get_client_user_id());
             $this->session->unset_userdata('staff_user_id');

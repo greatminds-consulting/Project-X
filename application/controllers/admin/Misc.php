@@ -416,6 +416,33 @@ class Misc extends Admin_controller
         }
     }
 
+    /* Check if supplier email exists / ajax */
+    public function supplier_email_exists()
+    {
+        if ($this->input->is_ajax_request()) {
+            if ($this->input->post()) {
+                // First we need to check if the email is the same
+                $member_id = $this->input->post('memberid');
+                if ($member_id != '') {
+                    $this->db->where('supplierid', $member_id);
+                    $_current_email = $this->db->get('tblsuppliers')->row();
+                    if ($_current_email->email == $this->input->post('email')) {
+                        echo json_encode(true);
+                        die();
+                    }
+                }
+                $this->db->where('email', $this->input->post('email'));
+                $total_rows = $this->db->count_all_results('tblsuppliers');
+                if ($total_rows > 0) {
+                    echo json_encode(false);
+                } else {
+                    echo json_encode(true);
+                }
+                die();
+            }
+        }
+    }
+
     /* Check if client email exists/  ajax */
     public function contact_email_exists()
     {

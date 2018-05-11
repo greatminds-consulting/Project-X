@@ -175,6 +175,108 @@ function handle_project_file_uploads($project_id)
     return false;
 }
 /**
+ * Handles upload for eventmanager files
+ * @param  mixed $event_manager_id event_manager_id
+ * @return boolean
+ */
+function handle_eventmanager_file_uploads($event_manager_id)
+{
+    $filesIDS = array();
+    $errors = array();
+
+    if (isset($_FILES['file']['name'])
+        && ($_FILES['file']['name'] != '' || is_array($_FILES['file']['name']) && count($_FILES['file']['name']) > 0)) {
+        do_action('before_upload_eventmanager_attachment', $event_manager_id);
+
+        if (!is_array($_FILES['file']['name'])) {
+            $_FILES['file']['name'] = array($_FILES['file']['name']);
+            $_FILES['file']['type'] = array($_FILES['file']['type']);
+            $_FILES['file']['tmp_name'] = array($_FILES['file']['tmp_name']);
+            $_FILES['file']['error'] = array($_FILES['file']['error']);
+            $_FILES['file']['size'] = array($_FILES['file']['size']);
+        }
+
+        $path        = get_upload_path_by_type('eventmanager') . $event_manager_id . '/';
+
+        for ($i = 0; $i < count($_FILES['file']['name']); $i++) {
+            if (_perfex_upload_error($_FILES['file']['error'][$i])) {
+                $errors[$_FILES['file']['name'][$i]] = _perfex_upload_error($_FILES['file']['error'][$i]);
+                continue;
+            }
+
+            // Get the temp file path
+            $tmpFilePath = $_FILES['file']['tmp_name'][$i];
+            // Make sure we have a filepath
+            if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                _maybe_create_upload_path($path);
+                $filename    = unique_filename($path, $_FILES["file"]["name"][$i]);
+                $newFilePath = $path . $filename;
+                // Upload the file into the company uploads dir
+                if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    $CI =& get_instance();
+                    if (is_client_logged_in()) {
+                        $contact_id = get_contact_user_id();
+                        $staffid = 0;
+                    } else {
+                        $staffid = get_staff_user_id();
+                        $contact_id = 0;
+                    }
+                    $data = array(
+                        'event_manager_id' => $event_manager_id,
+                        'file_name' => $filename,
+                        'filetype' => $_FILES["file"]["type"][$i],
+                        'dateadded' => date('Y-m-d H:i:s'),
+                        'staffid' => $staffid,
+                        'contact_id' => $contact_id,
+                        'subject' => $filename,
+                    );
+                    if (is_client_logged_in()) {
+                        $data['visible_to_customer'] = 1;
+                    } else {
+                        $data['visible_to_customer'] = ($CI->input->post('visible_to_customer') == 'true' ? 1 : 0);
+                    }
+                    $CI->db->insert('tbleventfiles', $data);
+
+                    $insert_id = $CI->db->insert_id();
+                    if ($insert_id) {
+                        if (is_image($newFilePath)) {
+                            create_img_thumb($path, $filename);
+                        }
+                        array_push($filesIDS, $insert_id);
+                    } else {
+                        unlink($newFilePath);
+
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    if (count($filesIDS) > 0) {
+        $CI->load->model('eventmanager_model');
+        end($filesIDS);
+        $lastFileID = key($filesIDS);
+        $CI->eventmanager_model->new_eventmanager_file_notification($filesIDS[$lastFileID], $event_manager_id);
+    }
+
+    if(count($errors) > 0){
+        $message = '';
+        foreach($errors as $filename => $error_message){
+            $message .= $filename . ' - ' . $error_message .'<br />';
+        }
+        header('HTTP/1.0 400 Bad error');
+        echo $message;
+        die;
+    }
+
+    if(count($filesIDS) > 0){
+        return true;
+    }
+
+    return false;
+}
+/**
  * Handle contract attachments if any
  * @param  mixed $contractid
  * @return boolean
@@ -794,6 +896,74 @@ function handle_contact_profile_image_upload($contact_id = '')
 
     return false;
 }
+
+/**
+ * Maybe upload item image
+ * @param  string $item_id item_id
+ * @return boolean
+ */
+function handle_contact_item_image_upload($item_id = '')
+{
+    if (isset($_FILES['item_images']['name']) && $_FILES['item_images']['name'] != '') {
+        //do_action('before_upload_contact_item_image');
+        $path        = get_upload_path_by_type('item_images') . $item_id . '/';
+        // Get the temp file path
+        $tmpFilePath = $_FILES['item_images']['tmp_name'];
+        // Make sure we have a filepath
+        if (!empty($tmpFilePath) && $tmpFilePath != '') {
+            // Getting file extension
+            $path_parts         = pathinfo($_FILES["item_images"]["name"]);
+            $extension          = $path_parts['extension'];
+            $extension = strtolower($extension);
+            $allowed_extensions = array(
+                'jpg',
+                'jpeg',
+                'png'
+            );
+            if (!in_array($extension, $allowed_extensions)) {
+                set_alert('warning', _l('file_php_extension_blocked'));
+
+                return false;
+            }
+            _maybe_create_upload_path($path);
+            $filename    = unique_filename($path, $_FILES["item_images"]["name"]);
+            $newFilePath = $path . $filename;
+            // Upload the file into the company uploads dir
+            if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                $CI =& get_instance();
+                $config                   = array();
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $newFilePath;
+                $config['new_image']      = 'thumb_' . $filename;
+                $config['maintain_ratio'] = true;
+                $config['width']          = 160;
+                $config['height']         = 160;
+                $CI->image_lib->initialize($config);
+                $CI->image_lib->resize();
+                $CI->image_lib->clear();
+                $config['image_library']  = 'gd2';
+                $config['source_image']   = $newFilePath;
+                $config['new_image']      = 'small_' . $filename;
+                $config['maintain_ratio'] = true;
+                $config['width']          = 32;
+                $config['height']         = 32;
+                $CI->image_lib->initialize($config);
+                $CI->image_lib->resize();
+
+                $CI->db->where('id', $item_id);
+                $CI->db->update('tblitems', array(
+                    'item_image' => $filename
+                ));
+                // Remove original image
+                unlink($newFilePath);
+
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
 /**
  * Handle upload for project discussions comment
  * Function for jquery-comment plugin
@@ -954,6 +1124,9 @@ function get_upload_path_by_type($type)
         case 'project':
             return PROJECT_ATTACHMENTS_FOLDER;
         break;
+        case 'eventmanager':
+            return EVENTMANAGER_ATTACHMENTS_FOLDER;
+        break;
         case 'proposal':
             return PROPOSAL_ATTACHMENTS_FOLDER;
         break;
@@ -989,6 +1162,9 @@ function get_upload_path_by_type($type)
         break;
         case 'newsfeed':
         return NEWSFEED_FOLDER;
+        break;
+        case 'item_images':
+        return ITEM_FOLDER;
         break;
         default:
         return false;

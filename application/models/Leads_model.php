@@ -40,13 +40,12 @@ class Leads_model extends CRM_Model
         return $this->db->get('tblleads')->result_array();
     }
 
-    public function do_kanban_query($status, $search = '', $page = 1, $sort = array(), $count = false)
+    public function do_kanban_query($status, $search = '', $page = 1, $sort = array(), $count = false,$staff = '',$lead_source = '',$lead_custom_view = '')
     {
         $limit                         = get_option('leads_kanban_limit');
         $default_leads_kanban_sort      = get_option('default_leads_kanban_sort');
         $default_leads_kanban_sort_type = get_option('default_leads_kanban_sort_type');
         $has_permission_view = has_permission('leads', '', 'view');
-
         $this->db->select('tblleads.name as lead_name,tblleadssources.name as source_name,tblleads.id as id,tblleadstaffs.staff_id,tblleads.email,tblleads.phonenumber,tblleads.company,tblleads.dateadded,tblleads.status,tblleads.lastcontact,(SELECT COUNT(*) FROM tblclients WHERE leadid=tblleads.id) as is_lead_client, (SELECT COUNT(id) FROM tblfiles WHERE rel_id=tblleads.id AND rel_type="lead") as total_files, (SELECT COUNT(id) FROM tblnotes WHERE rel_id=tblleads.id AND rel_type="lead") as total_notes,(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM tbltags_in JOIN tbltags ON tbltags_in.tag_id = tbltags.id WHERE rel_id = tblleads.id and rel_type="lead" ORDER by tag_order ASC) as tags');
         $this->db->from('tblleads');
         $this->db->join('tblleadstaffs', 'tblleadstaffs.lead_id=tblleads.id', 'left');
@@ -54,7 +53,27 @@ class Leads_model extends CRM_Model
         $this->db->join('tblstaff', 'tblstaff.staffid=tblleadstaffs.staff_id', 'left');
         $this->db->where('status', $status);
         if (!$has_permission_view) {
-            $this->db->where('(tblleadstaffs.staff_id = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
+                $this->db->where('(tblleadstaffs.staff_id = ' . get_staff_user_id() . ' OR addedfrom=' . get_staff_user_id() . ' OR is_public=1)');
+        }
+        if ($staff) {
+            $this->db->where('(tblleadstaffs.staff_id = ' . $staff . ' OR addedfrom=' . $staff . ' OR is_public=1)');
+        }
+        if ($lead_source) {
+            $this->db->where('(tblleadssources.id = ' . $lead_source . ')');
+        }
+        if ($lead_custom_view == 'lost') {
+            $this->db->where('tblleads.lost = 1');
+        }
+        elseif ($lead_custom_view == 'junk') {
+            $this->db->where('tblleads.junk = 1');
+        } elseif ($lead_custom_view == 'not_assigned') {
+            $this->db->where('tblleads.staff_id = 1');
+        } elseif ($lead_custom_view == 'contacted_today') {
+            $this->db->where('tblleads.lastcontact LIKE "'.date('Y-m-d').'%"');
+        } elseif ($lead_custom_view == 'created_today') {
+            $this->db->where('tblleads.dateadded LIKE "'.date('Y-m-d').'%"');
+        } elseif ($lead_custom_view == 'public') {
+            $this->db->where('tblleads.is_public = 1');
         }
         if ($search != '') {
             if (!_startsWith($search, '#')) {
@@ -84,7 +103,6 @@ class Leads_model extends CRM_Model
                 $this->db->limit($limit);
             }
         }
-
         if ($count == false) {
             return $this->db->get()->result_array();
         } else {
@@ -203,6 +221,13 @@ class Leads_model extends CRM_Model
             if ($venueArray) {
                 foreach ($venueArray as $key=> $venue_id) {
                     $this->db->insert('tblvenues_in', array('type_id' => $insert_id, 'type' => 'Leads', 'venue_id' => $venue_id));
+
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $venue_id) . '" target="_blank">' . get_venue_name($venue_id) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($insert_id, 'not_lead_activity_venue_added_to', false, $not_additional_data);
                 }
             }
 
@@ -303,7 +328,6 @@ class Leads_model extends CRM_Model
      */
     public function update($data, $id)
     {
-
         $current_lead_data = $this->get($id);
         $current_status    = $this->get_status($current_lead_data->status);
         if ($current_status) {
@@ -323,7 +347,7 @@ class Leads_model extends CRM_Model
         $affectedRows = 0;
         if (isset($data['custom_fields'])) {
             $custom_fields = $data['custom_fields'];
-            if (handle_custom_fields_post($id, $custom_fields)) {
+            if (handle_custom_fields_post($id, $custom_fields,'', 'lead')) {
                 $affectedRows++;
             }
             unset($data['custom_fields']);
@@ -350,10 +374,16 @@ class Leads_model extends CRM_Model
             $currentStaffLeads = $query->result_array();
             $datastaff['lead_id']=$id;
             $datastaff['datecreated']=date("Y/m/d H:i:s");
-
             foreach ($currentStaffLeads as $currentStaffLead) {
                 if (false !== $key = array_search($currentStaffLead['staff_id'], $assigned_fields)) {
                     unset($assigned_fields[$key]);
+                } else {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('profile/' . $currentStaffLead['staff_id']) . '" target="_blank">' . get_staff_full_name($currentStaffLead['staff_id']) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_assignee_removed_from', false, $not_additional_data);
                 }
             }
             $this->db->where('lead_id', $id);
@@ -397,8 +427,50 @@ class Leads_model extends CRM_Model
         $data['address']    = nl2br($data['address']);
         $data['email']      = trim($data['email']);
 
+        $this->db->select('*');
+        $this->db->from('tblleads');
+        $this->db->where('id', $id);
+        $currentlead = $this->db->get()->row();
+        $this->fieldCheck($data, $currentlead);
+
         $this->db->where('id', $id);
         $this->db->update('tblleads', $data);
+
+        $this->db->select('venue_id');
+        $this->db->from('tblvenues_in');
+        $this->db->where('type_id', $id);
+        $query = $this->db->get();
+        $currentVenueLeads = $query->result_array();
+        $this->db->where('type', 'Leads');
+        $this->db->where('type_id', $id);
+        $this->db->delete('tblvenues_in');
+        if ($venueArray) {
+            $newVenue = $venueArray;
+            foreach ($currentVenueLeads as $currentVenueLead) {
+                if (false === $key = array_search($currentVenueLead['venue_id'], $venueArray)) {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $currentVenueLead['venue_id']) . '" target="_blank">' . get_venue_name($currentVenueLead['venue_id']) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_venue_removed_from', false, $not_additional_data);
+                } else {
+                    unset($newVenue[$key]);
+                }
+            }
+            foreach ($venueArray as $key=> $venue_id) {
+                if (array_search($venue_id, $newVenue) !== false) {
+                    $not_additional_data = array(
+                        get_staff_full_name(),
+                        '<a href="' . admin_url('venue/' . $venue_id) . '" target="_blank">' . get_venue_name($venue_id) . '</a>',
+                    );
+                    $not_additional_data = serialize($not_additional_data);
+                    $this->log_lead_activity($id, 'not_lead_activity_venue_added_to', false, $not_additional_data);
+                }
+                $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
+
+            }
+        }
         if ($this->db->affected_rows() > 0 || $assigned_fields) {
             $affectedRows++;
             if (isset($data['status']) && $current_status_id != $data['status']) {
@@ -423,15 +495,6 @@ class Leads_model extends CRM_Model
                     'lost' => 0,
                 ));
             }
-            $this->db->where('type', 'Leads');
-            $this->db->where('type_id', $id);
-            $this->db->delete('tblvenues_in');
-                if ($venueArray) {
-                    foreach ($venueArray as $key=> $venue_id) {
-                        $this->db->insert('tblvenues_in', array('type_id' => $id, 'type' => 'Leads', 'venue_id' => $venue_id));
-                     }
-             }
-
             if ($assigned_fields) {
                 $this->lead_assigned_member_notification($id, $assigned_fields);
             }
@@ -545,19 +608,23 @@ class Leads_model extends CRM_Model
      * @param  mixed $id lead id
      * @return boolean
      */
-    public function mark_as_lost($id)
+    public function mark_as_lost($id ,$lost_reason)
     {
         $this->db->select('status');
         $this->db->from('tblleads');
         $this->db->where('id', $id);
         $last_lead_status = $this->db->get()->row()->status;
-
+        $lostReason = '';
+        if ($lost_reason) {
+            $lostReason = json_encode(array('lost_reason' => $lost_reason,'last_lost_change' => date('Y-m-d H:i:s')));
+        }
         $this->db->where('id', $id);
         $this->db->update('tblleads', array(
             'lost' => 1,
             'status' => 0,
             'last_status_change' => date('Y-m-d H:i:s'),
             'last_lead_status' => $last_lead_status,
+            'lead_data'=> $lostReason
         ));
         if ($this->db->affected_rows() > 0) {
             $this->log_lead_activity($id, 'not_lead_activity_marked_lost');
@@ -1334,6 +1401,7 @@ class Leads_model extends CRM_Model
         return $data;
     }
 
+
     public function venues_in_leads($insert_id, $val) {
         $values = explode(",",$val);
         $staffs = array();
@@ -1426,6 +1494,58 @@ class Leads_model extends CRM_Model
                     }
                     if ($staffs) {
                         $this->lead_assigned_member_notification($insert_id, $staffs, true);
+                    }
+                }
+            }
+        }
+    }
+
+
+    function add_lead_activity_fields($leadId , $activityText,$current_value = '',$new_value = '') {
+        $this->log_lead_activity($leadId, $activityText, false, serialize(array(
+            get_staff_full_name(),
+            $current_value ? $current_value : $new_value,
+            $new_value,
+        )));
+    }
+
+    public function fieldCheck($new, $current) {
+        $current = (array) $current;
+        $removeArray = array("status");
+        foreach ($new as $key => $value) {
+            if (is_array($value)) {
+
+            } else {
+                if (isset($current[$key]) && $current[$key] != $value) {
+                    if (!in_array($key ,$removeArray)) {
+                        $new_value = $value ? $value : '' ;
+                        $current_value = $current[$key] ? $current[$key] : '';
+                        $type = '_changed';
+                        if ($value && !$current_value) {
+                            $type = '_added';
+                        } else if (!$value && $current_value) {
+                            $type = '_removed';
+                        } else if ($value && $current_value == '0000-00-00 00:00:00') {
+                            $type = '_added';
+                            $current_value = '';
+                        }
+                        $activityText =  'not_lead_activity_'.$key.$type;
+                        switch ($key) {
+                            case 'source':
+                                $new_value = get_source_name($value);
+                                $current_value = get_source_name($current[$key]);
+                                break;
+                            case 'country':
+                                $new_value = get_country_name($value);
+                                $current_value = get_country_name($current[$key]);
+                                break;
+                            case 'is_public':
+                                $new_value = $value == 1? ' public' : ' not public';
+                                $current_value = $current[$key] == 1? ' public' : ' not public';
+                                $activityText =  'not_lead_activity_is_public_changed';
+                                break;
+                        }
+                        $this->add_lead_activity_fields($current['id'],$activityText,$current_value,$new_value);
                     }
                 }
             }
